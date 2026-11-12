@@ -1593,5 +1593,17 @@
     <string name="PcArchive_short">Archivia</string>
     <string name="PcQuickCleanupInfo">Gruppi inattivi, canali mai aperti</string>
     <string name="PcMuteAllGroupsInfo">Silenzia tutti i gruppi in una volta</string>
+    <string name="PcTabShop">Shop</string>
+    <string name="PcShopTitle">Shop</string>
+    <string name="PcShopLoading">Carico il catalogo...</string>
+    <string name="PcShopError">Impossibile caricare il catalogo. Trascina in basso per riprovare.</string>
+    <string name="PcShopOffline">Offline - catalogo salvato. Trascina in basso per aggiornare.</string>
+    <string name="PcShopSoldOut">Esaurito</string>
+    <string name="PcBuy">Acquista</string>
+    <string name="PcShareInChat">Condividi in chat</string>
+    <string name="PcShopShared">Link inviato</string>
+    <string name="PcShopVariants">Varianti</string>
+    <string name="PcShopAbout">Dettagli</string>
+    <string name="PcShopEmpty">Nessun prodotto al momento.</string>
     <!-- /PORCODIO PHASE3 -->
 </resources>

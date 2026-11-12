@@ -11734,5 +11734,17 @@
     <string name="PcArchive_short">Archive</string>
     <string name="PcQuickCleanupInfo">Inactive groups, unopened channels</string>
     <string name="PcMuteAllGroupsInfo">Silence every group at once</string>
+    <string name="PcTabShop">Shop</string>
+    <string name="PcShopTitle">Shop</string>
+    <string name="PcShopLoading">Loading catalogue...</string>
+    <string name="PcShopError">Can\'t load the catalogue. Pull down to retry.</string>
+    <string name="PcShopOffline">Offline - showing the saved catalogue. Pull down to refresh.</string>
+    <string name="PcShopSoldOut">Sold out</string>
+    <string name="PcBuy">Buy</string>
+    <string name="PcShareInChat">Share in chat</string>
+    <string name="PcShopShared">Link sent</string>
+    <string name="PcShopVariants">Variants</string>
+    <string name="PcShopAbout">Details</string>
+    <string name="PcShopEmpty">No products yet.</string>
     <!-- /PORCODIO PHASE3 -->
 </resources>

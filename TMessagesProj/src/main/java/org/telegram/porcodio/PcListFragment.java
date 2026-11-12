@@ -21,6 +21,17 @@ public abstract class PcListFragment extends BaseFragment {
     protected PcPullLayout pull;
     protected RecyclerListView.SelectionAdapter adapter;
 
+    protected boolean hasMainTabs;
+
+    public PcListFragment() {
+        super();
+    }
+
+    public PcListFragment(android.os.Bundle args) {
+        super(args);
+        hasMainTabs = args != null && args.getBoolean("hasMainTabs", false);
+    }
+
     protected abstract String screenTitle();
 
     protected abstract int itemCount();
@@ -68,7 +79,9 @@ public abstract class PcListFragment extends BaseFragment {
     @Override
     public View createView(Context context) {
         setHasOwnBackground(true);
-        simpleActionBar.setBackButtonImage(org.telegram.messenger.R.drawable.ic_ab_back);
+        if (!hasMainTabs) {
+            simpleActionBar.setBackButtonImage(org.telegram.messenger.R.drawable.ic_ab_back);
+        }
         simpleActionBar.setTitle(screenTitle());
         simpleActionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override
