@@ -9,9 +9,6 @@ on:
       build_type:
         description: "release (firmata) oppure debug"
         default: "release"
-  push:
-    branches: [main]
-    paths-ignore: ['**.md']
 
 concurrency:
   group: android-${{ github.ref }}
@@ -29,6 +26,8 @@ jobs:
       CCACHE_MAXSIZE: 1500M
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: recursive
 
       - name: Libera spazio su disco
         run: |
