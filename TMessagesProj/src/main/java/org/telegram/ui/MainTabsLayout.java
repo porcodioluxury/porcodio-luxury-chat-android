@@ -309,6 +309,7 @@ public class MainTabsLayout extends AnimatedLinearLayout {
 
     @Override
     protected void dispatchDraw(@NonNull Canvas canvas) {
+        pcDrawPanel(canvas);
         if (drawCustomSelector) {
             final float x = animatedLongSelectedViewCenterX + animatedLongSelectedViewOffsetX;
             final float sWidth = getInterpolatedWidthByX(x, this);
@@ -325,6 +326,22 @@ public class MainTabsLayout extends AnimatedLinearLayout {
 
 
     final Paint selectorPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Paint pcPanelFill = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Paint pcPanelStroke = new Paint(Paint.ANTI_ALIAS_FLAG);
+
+    /** Porcodio: barra in basso come pannello scuro squadrato (angoli 4dp, bordo 1px). */
+    private void pcDrawPanel(Canvas canvas) {
+        final float m = dp(DialogsActivity.MAIN_TABS_MARGIN);
+        final float sw = Math.max(1f, AndroidUtilities.density);
+        pcPanelStroke.setStyle(Paint.Style.STROKE);
+        pcPanelStroke.setStrokeWidth(sw);
+        pcPanelFill.setColor(Theme.getColor(Theme.key_windowBackgroundWhite, resourcesProvider));
+        pcPanelStroke.setColor(Theme.getColor(Theme.key_divider, resourcesProvider));
+        AndroidUtilities.rectTmp.set(m + sw / 2f, m + sw / 2f, getWidth() - m - sw / 2f, getHeight() - m - sw / 2f);
+        canvas.drawRoundRect(AndroidUtilities.rectTmp, dp(4), dp(4), pcPanelFill);
+        canvas.drawRoundRect(AndroidUtilities.rectTmp, dp(4), dp(4), pcPanelStroke);
+    }
+
     final SpringAnimation scaleX = new SpringAnimation(this, DynamicAnimation.SCALE_X, 1f);
     final SpringAnimation scaleY = new SpringAnimation(this, DynamicAnimation.SCALE_Y, 1f);
 

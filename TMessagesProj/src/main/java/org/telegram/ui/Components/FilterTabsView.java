@@ -297,6 +297,7 @@ public class FilterTabsView extends FrameLayout {
         @SuppressLint("DrawAllocation")
         @Override
         protected void onDraw(@NonNull Canvas canvas) {
+            pcDrawBadge(canvas, this);
             boolean reorderEnabled = true;
             boolean showRemove = !currentTab.isDefault && reorderEnabled;
             if (reorderEnabled && editingAnimationProgress != 0) {
@@ -820,6 +821,19 @@ public class FilterTabsView extends FrameLayout {
 
     private int scrollingToChild = -1;
     private final GradientDrawable selectorDrawable;
+    private final Paint pcBadgePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+
+    /** Porcodio: ogni cartella è un badge con bordo 1px e angoli 4dp. */
+    private void pcDrawBadge(Canvas canvas, View tab) {
+        pcBadgePaint.setStyle(Paint.Style.STROKE);
+        pcBadgePaint.setStrokeWidth(Math.max(1f, AndroidUtilities.density));
+        pcBadgePaint.setColor(Theme.getColor(Theme.key_divider, resourcesProvider));
+        float half = pcBadgePaint.getStrokeWidth() / 2f;
+        float cy = tab.getMeasuredHeight() / 2f;
+        AndroidUtilities.rectTmp.set(dp(2) + half, cy - dp(14) + half, tab.getMeasuredWidth() - dp(2) - half, cy + dp(14) - half);
+        canvas.drawRoundRect(AndroidUtilities.rectTmp, dp(4), dp(4), pcBadgePaint);
+    }
+
 
     private int tabLineColorKey = Theme.key_actionBarTabLine;
     private int activeTextColorKey = Theme.key_actionBarTabActiveText;
@@ -914,7 +928,7 @@ public class FilterTabsView extends FrameLayout {
         deletePaint.setStrokeWidth(dp(1.5f));
 
         selectorDrawable = new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, null);
-        float rad = AndroidUtilities.dpf2(14);
+        float rad = AndroidUtilities.dpf2(4);
         selectorDrawable.setCornerRadii(new float[]{rad, rad, rad, rad, rad, rad, rad, rad});
         selectorDrawable.setColor(Theme.getColor(tabLineColorKey, resourcesProvider));
 
@@ -1508,9 +1522,15 @@ public class FilterTabsView extends FrameLayout {
             final float add = additionalTabWidth / 2f;
 
             final int y = height / 2 - dp(14);
-            selectorDrawable.setBounds((int) (indicatorX - dp(TAB_INTERNAL_PADDING) - add), y, (int) (indicatorX + indicatorWidth + dp(TAB_INTERNAL_PADDING) + add), y + dp(28));
+            selectorDrawable.setBounds((int) (indicatorX - dp(10) - add), y, (int) (indicatorX + indicatorWidth + dp(10) + add), y + dp(28));
             selectorDrawable.setAlpha(31);
             selectorDrawable.draw(canvas);
+            pcBadgePaint.setStyle(Paint.Style.STROKE);
+            pcBadgePaint.setStrokeWidth(Math.max(1f, AndroidUtilities.density));
+            pcBadgePaint.setColor(ColorUtils.blendARGB(Theme.getColor(Theme.key_divider, resourcesProvider), Theme.getColor(tabLineColorKey, resourcesProvider), listView.getAlpha()));
+            float pcHalf = pcBadgePaint.getStrokeWidth() / 2f;
+            AndroidUtilities.rectTmp.set(selectorDrawable.getBounds().left + pcHalf, y + pcHalf, selectorDrawable.getBounds().right - pcHalf, y + dp(28) - pcHalf);
+            canvas.drawRoundRect(AndroidUtilities.rectTmp, dp(4), dp(4), pcBadgePaint);
             canvas.restore();
         }
     }

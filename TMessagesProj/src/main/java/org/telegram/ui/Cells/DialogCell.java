@@ -568,6 +568,9 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
 
     public boolean useForceThreeLines;
     public boolean useSeparator;
+    /** Porcodio: la riga è disegnata come card scura con bordo 1px e angoli 4dp. */
+    public boolean pcCard;
+    private Paint pcCardFill, pcCardStroke;
     public boolean fullSeparator;
     public boolean fullSeparator2;
 
@@ -3843,6 +3846,29 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
     private int archiveFadeGradientDrawableColor;
 
     @SuppressLint("DrawAllocation")
+    private void pcDrawCard(Canvas canvas) {
+        if (!pcCard || rightFragmentOpenedProgress == 1f) {
+            return;
+        }
+        if (pcCardFill == null) {
+            pcCardFill = new Paint(Paint.ANTI_ALIAS_FLAG);
+            pcCardStroke = new Paint(Paint.ANTI_ALIAS_FLAG);
+            pcCardStroke.setStyle(Paint.Style.STROKE);
+            pcCardStroke.setStrokeWidth(Math.max(1f, AndroidUtilities.density));
+        }
+        float inset = Math.max(1f, AndroidUtilities.density) / 2f;
+        AndroidUtilities.rectTmp.set(dp(5) + inset, dp(1.5f) + inset, getMeasuredWidth() - dp(5) - inset, getMeasuredHeight() - dp(1.5f) - inset);
+        float r = dp(4);
+        pcCardFill.setColor(Theme.getColor(Theme.key_windowBackgroundWhite, resourcesProvider));
+        canvas.drawRoundRect(AndroidUtilities.rectTmp, r, r, pcCardFill);
+        if (getIsPinned() || drawPinBackground) {
+            pcCardFill.setColor(Theme.getColor(Theme.key_chats_pinnedOverlay, resourcesProvider));
+            canvas.drawRoundRect(AndroidUtilities.rectTmp, r, r, pcCardFill);
+        }
+        pcCardStroke.setColor(Theme.getColor(Theme.key_divider, resourcesProvider));
+        canvas.drawRoundRect(AndroidUtilities.rectTmp, r, r, pcCardStroke);
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         if (currentDialogId == 0 && customDialog == null) {
@@ -4088,6 +4114,7 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
             Theme.dialogs_pinnedPaint.setAlpha((int) (Theme.dialogs_pinnedPaint.getAlpha() * (1f - rightFragmentOpenedProgress)));
             //canvas.drawRect(-xOffset, 0, getMeasuredWidth(), getMeasuredHeight() - translateY, Theme.dialogs_pinnedPaint);
         }
+        pcDrawCard(canvas);
         canvas.restore();
 
         updateHelper.updateAnimationValues();

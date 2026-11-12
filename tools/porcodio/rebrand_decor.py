@@ -47,7 +47,7 @@ tot = 0
 for sub in ('ui/Gifts', 'ui/Stars', 'ui/Wallet', 'ui/Components/Premium'):
     for dp, _, fs in os.walk(os.path.join(JAVA, sub)):
         for f in fs:
-            if not f.endswith('.java'): continue
+            if not f.endswith('.java') or f in ('WalletEngine2.java', 'WalletMessageHash.java'): continue  # contengono costanti BOC, non colori
             fp = os.path.join(dp, f); t = open(fp).read(); c = 0
             def r2(m):
                 global c
