@@ -3865,7 +3865,8 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
             pcCardFill.setColor(Theme.getColor(Theme.key_chats_pinnedOverlay, resourcesProvider));
             canvas.drawRoundRect(AndroidUtilities.rectTmp, r, r, pcCardFill);
         }
-        pcCardStroke.setColor(Theme.getColor(Theme.key_divider, resourcesProvider));
+        final boolean pcPin = getIsPinned() || drawPinBackground;
+        pcCardStroke.setColor(pcPin ? androidx.core.graphics.ColorUtils.blendARGB(Theme.getColor(Theme.key_divider, resourcesProvider), Theme.getColor(Theme.key_chats_actionBackground, resourcesProvider), 0.45f) : Theme.getColor(Theme.key_divider, resourcesProvider));
         canvas.drawRoundRect(AndroidUtilities.rectTmp, r, r, pcCardStroke);
     }
 

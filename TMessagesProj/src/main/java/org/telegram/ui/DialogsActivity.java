@@ -618,6 +618,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
     private FrameLayout fragmentContextViewWrapper;
     private DialogsActivityTopPanelLayout topPanelLayout;
     private org.telegram.porcodio.PcHomeTabsView pcTabs;
+    private org.telegram.porcodio.PcFavoritesRow pcFavs;
     private DialogsActivityTopBubblesFadeView topBubblesFadeView;
     private ActiveGiftAuctionsHintCell activeGiftAuctionsHintCell;
     private DialogsHintCell dialogsHintCell;
@@ -2993,6 +2994,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
         super.onFragmentDestroy();
         if (pcTabs != null) {
             pcTabs = null;
+            pcFavs = null;
             org.telegram.porcodio.PcHome.active = false;
             getMessagesController().sortDialogs(null);
         }
@@ -4789,6 +4791,18 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                 topPanelLayout.setPriority(pcTabs, 6);
                 topPanelLayout.setDebugName(pcTabs, "porcodio tabs");
                 topPanelLayout.setViewVisible(pcTabs, true, false);
+                pcFavs = new org.telegram.porcodio.PcFavoritesRow(context, currentAccount, this);
+                topPanelLayout.addView(pcFavs);
+                topPanelLayout.setPriority(pcFavs, 7);
+                topPanelLayout.setDebugName(pcFavs, "porcodio favourites");
+                topPanelLayout.setViewVisible(pcFavs, false, false);
+                pcTabs.setOnUpdate(() -> {
+                    if (pcFavs != null && topPanelLayout != null) {
+                        final boolean has = pcFavs.update();
+                        topPanelLayout.setViewVisible(pcFavs, has && org.telegram.porcodio.PcHome.tab == org.telegram.porcodio.PcHome.TAB_PRIVATE, true);
+                    }
+                });
+                pcTabs.update();
                 org.telegram.porcodio.PcHome.active = true;
                 getMessagesController().sortDialogs(null);
             }

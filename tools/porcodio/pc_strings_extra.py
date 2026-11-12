@@ -15,4 +15,6 @@ S = {
  'PcConfirmArchiveText': ('%1$d chats will be moved to the archive.', '%1$d chat saranno spostate nell\'archivio.'),
  'PcLeaveN_short': ('Leave', 'Esci'),
  'PcArchive_short': ('Archive', 'Archivia'),
+ 'PcQuickCleanupInfo': ('Inactive groups, unopened channels', 'Gruppi inattivi, canali mai aperti'),
+ 'PcMuteAllGroupsInfo': ('Silence every group at once', 'Silenzia tutti i gruppi in una volta'),
 }

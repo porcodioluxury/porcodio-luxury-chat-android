@@ -11732,5 +11732,7 @@
     <string name="PcConfirmArchiveText">%1$d chats will be moved to the archive.</string>
     <string name="PcLeaveN_short">Leave</string>
     <string name="PcArchive_short">Archive</string>
+    <string name="PcQuickCleanupInfo">Inactive groups, unopened channels</string>
+    <string name="PcMuteAllGroupsInfo">Silence every group at once</string>
     <!-- /PORCODIO PHASE3 -->
 </resources>

@@ -33,6 +33,11 @@ public class PcHomeTabsView extends FrameLayout {
     private final LinearLayout row;
     private final TabButton[] buttons = new TabButton[PcHome.TABS];
     private final MoreButton more;
+    private Runnable onUpdate;
+
+    public void setOnUpdate(Runnable r) {
+        onUpdate = r;
+    }
 
     public PcHomeTabsView(Context context, int currentAccount, Theme.ResourcesProvider resourcesProvider, BaseFragment fragment) {
         super(context);
@@ -75,6 +80,9 @@ public class PcHomeTabsView extends FrameLayout {
             buttons[i].refresh();
         }
         more.invalidate();
+        if (onUpdate != null) {
+            onUpdate.run();
+        }
     }
 
     private int color(int key) {
