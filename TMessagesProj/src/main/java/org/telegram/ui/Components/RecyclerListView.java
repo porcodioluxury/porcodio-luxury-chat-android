@@ -2740,6 +2740,7 @@ public class RecyclerListView extends RecyclerView implements IBlur3Capture {
         if (drawSelection && !drawSelectorBehind) {
             drawSelectors2(canvas);
         }
+        pcDrawSectionBorders(canvas);
         if (overlayContainer != null) {
             overlayContainer.draw(canvas);
         }
@@ -3480,11 +3481,52 @@ public class RecyclerListView extends RecyclerView implements IBlur3Capture {
         }
     }
 
+    private Paint pcBorderPaint;
+
+    /** Porcodio: bordo 1px #2F3442 attorno ai pannelli (sezioni) nelle schermate a pannelli, angoli 4dp. */
+    private void pcDrawSectionBorders(Canvas canvas) {
+        final Adapter adapter = getAdapter();
+        if (adapter == null || isSectionView == null || isViewTypeSection == null || bitmapSectionsItemDecoration == null || !bitmapSectionsDrawBackground) {
+            return;
+        }
+        if (pcBorderPaint == null) {
+            pcBorderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+            pcBorderPaint.setStyle(Paint.Style.STROKE);
+        }
+        final float sw = Math.max(1f, AndroidUtilities.density);
+        pcBorderPaint.setStrokeWidth(sw);
+        pcBorderPaint.setColor(Theme.getColor(Theme.key_divider, resourcesProvider));
+        final int count = getChildCount();
+        View first = null, last = null;
+        for (int i = 0; i <= count; i++) {
+            final View child = i < count ? getChildAt(i) : null;
+            final boolean section = child != null && child.getVisibility() == VISIBLE && isSectionView.run(child);
+            if (section) {
+                if (first == null) first = child;
+                last = child;
+                continue;
+            }
+            if (first != null) {
+                final int p1 = getChildAdapterPosition(first);
+                final int p2 = getChildAdapterPosition(last);
+                if (p1 != NO_POSITION && p2 != NO_POSITION) {
+                    final boolean above = p1 > 0 && isViewTypeSection.run(adapter.getItemViewType(p1 - 1));
+                    final boolean below = p2 < adapter.getItemCount() - 1 && isViewTypeSection.run(adapter.getItemViewType(p2 + 1));
+                    final float top = above ? -dp(60) : top(first);
+                    final float bottom = below ? getHeight() + dp(60) : bottom(last);
+                    AndroidUtilities.rectTmp.set(first.getLeft() + sw / 2f, top + sw / 2f, first.getRight() - sw / 2f, bottom - sw / 2f);
+                    canvas.drawRoundRect(AndroidUtilities.rectTmp, sectionRadius, sectionRadius, pcBorderPaint);
+                }
+                first = last = null;
+            }
+        }
+    }
+
     public void setSections() {
-        setSections(dp(12), dp(16), false);
+        setSections(dp(12), dp(4), false);
     }
     public void setSections(boolean topPadding) {
-        setSections(dp(12), dp(16), topPadding);
+        setSections(dp(12), dp(4), topPadding);
     }
     public void setSections(int padding, float roundRadius, boolean topPadding) {
         final Utilities.CallbackReturn<View, Boolean> isSectionView =

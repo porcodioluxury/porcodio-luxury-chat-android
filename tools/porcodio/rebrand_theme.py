@@ -17,7 +17,7 @@ OVERRIDE = {
     'chats_unreadCounterText': DARK_ON_ACCENT, 'chats_actionIcon': DARK_ON_ACCENT, 'chats_unreadCounter': TXT,
     'chats_actionBackground': TXT, 'chats_actionPressedBackground': TXT2,
     'glass_tabSelected': TXT, 'glass_tabSelectedText': TXT, 'glass_tabUnselected': TXT2,
-    'chat_messagePanelSend': TXT, 'chat_messagePanelBackground': SURF, 'chat_messagePanelText': TXT, 'chat_messagePanelHint': TXT2,
+    'chat_messagePanelSend': TXT, 'chat_messagePanelVoicePressed': DARK_ON_ACCENT, 'chat_messagePanelVoiceBackground': TXT, 'chat_messagePanelBackground': SURF, 'chat_messagePanelText': TXT, 'chat_messagePanelHint': TXT2,
 }
 
 def parse(v):
