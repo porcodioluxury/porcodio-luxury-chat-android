@@ -703,7 +703,7 @@ public class WalletCard2DView extends FrameLayout implements SensorEventListener
             int save = canvas.save();
             canvas.scale(getWidth() / 336f, getHeight() / 205f);
             if (material != null) material.drawSurface(canvas, style);
-            else canvas.drawColor(WalletGiftPalette.card2DEdgeTone(0xff088fee, style));
+            else canvas.drawColor(WalletGiftPalette.card2DEdgeTone(0xfff3f3f3, style));
             canvas.restoreToCount(save);
         }
     }

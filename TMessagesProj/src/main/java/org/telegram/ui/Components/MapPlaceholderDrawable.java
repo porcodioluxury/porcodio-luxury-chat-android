@@ -32,8 +32,8 @@ public class MapPlaceholderDrawable extends Drawable {
         linePaint.setStrokeWidth(AndroidUtilities.dp(1));
 
         if (isDark) {
-            paint.setColor(0xff1d2c4d);
-            linePaint.setColor(0xff0e1626);
+            paint.setColor(0xff2f3442);
+            linePaint.setColor(0xff1a1a1a);
         } else {
             paint.setColor(0xffded7d6);
             linePaint.setColor(0xffc6bfbe);

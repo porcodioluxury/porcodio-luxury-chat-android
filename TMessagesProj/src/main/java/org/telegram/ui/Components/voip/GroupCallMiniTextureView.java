@@ -1271,7 +1271,7 @@ public class GroupCallMiniTextureView extends FrameLayout implements GroupCallSt
             long peerId = MessageObject.getPeerId(participant.participant.peer);
 
             if (participant.participant.self && participant.presentation) {
-                imageReceiver.setImageBitmap(new MotionBackgroundDrawable(0xff212E3A, 0xff2B5B4D, 0xff245863, 0xff274558, true));
+                imageReceiver.setImageBitmap(new MotionBackgroundDrawable(0xff2f3442, 0xff2B5B4D, 0xff2f3442, 0xff2f3442, true));
             } else {
                 if (peerId > 0) {
                     TLRPC.User user = MessagesController.getInstance(currentAccount).getUser(peerId);

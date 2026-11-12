@@ -34,7 +34,7 @@ public class ShapeInput {
         centerPointStrokePaint.setColor(0xFFFFFFFF);
         centerPointStrokePaint.setStrokeWidth(AndroidUtilities.dp(1));
 
-        controlPointPaint.setColor(0xFF007AFF);
+        controlPointPaint.setColor(0xFFF3F3F3);
         controlPointStrokePaint.setStyle(Paint.Style.STROKE);
         controlPointStrokePaint.setColor(0xFFFFFFFF);
         controlPointStrokePaint.setStrokeWidth(AndroidUtilities.dp(1));

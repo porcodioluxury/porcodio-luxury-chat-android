@@ -462,11 +462,11 @@ public class BotHelpCell extends View {
 
         public BotIntroDrawable(Context context) {
             icon = context.getResources().getDrawable(R.drawable.msg_folders_bots).mutate();
-            icon.setColorFilter(new PorterDuffColorFilter(0xff300ab1, PorterDuff.Mode.SRC_IN));
+            icon.setColorFilter(new PorterDuffColorFilter(0xfff3f3f3, PorterDuff.Mode.SRC_IN));
 
             backgroundPaint.setShader(new RadialGradient(
                     400f, 213f, 500f,
-                    0xffb694f9, 0xff6c61df,
+                    0xfff3f3f3, 0xfff3f3f3,
                     Shader.TileMode.CLAMP
             ));
 

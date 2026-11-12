@@ -20,14 +20,14 @@ public class PersistColorPalette {
     public final static int COLOR_ORANGE = 0xffff8a00;
     public final static int COLOR_YELLOW = 0xffffd60a;
     public final static int COLOR_GREEN = 0xff34c759;
-    public final static int COLOR_LIGHT_BLUE = 0xff63e6e2;
-    public final static int COLOR_BLUE = 0xff0a84ff;
+    public final static int COLOR_LIGHT_BLUE = 0xfff3f3f3;
+    public final static int COLOR_BLUE = 0xfff3f3f3;
     public final static int COLOR_VIOLET = 0xffbf5af2;
 
     private final static List<Integer> DEFAULT_MODIFIABLE_COLORS = Arrays.asList(
             0xffD7A07C,
-            0xff7faffe,
-            0xffA58FDB,
+            0xfff3f3f3,
+            0xfff3f3f3,
             0xffDB95AE,
             0xffBADC9F
     );

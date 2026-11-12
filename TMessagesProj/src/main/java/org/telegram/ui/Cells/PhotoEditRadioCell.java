@@ -35,9 +35,9 @@ public class PhotoEditRadioCell extends FrameLayout {
             0xfff48022,
             0xffffcd00,
             0xff81d281,
-            0xff71c5d6,
-            0xff0072bc,
-            0xff662d91
+            0xfff3f3f3,
+            0xfff3f3f3,
+            0xfff3f3f3
     };
 
     private final int[] tintHighlighsColors = new int[] {
@@ -46,8 +46,8 @@ public class PhotoEditRadioCell extends FrameLayout {
             0xffeacea2,
             0xfff2e17c,
             0xffa4edae,
-            0xff89dce5,
-            0xff2e8bc8,
+            0xfff3f3f3,
+            0xfff3f3f3,
             0xffcd98e5
     };
 

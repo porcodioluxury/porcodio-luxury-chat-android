@@ -110,7 +110,7 @@ public class FireworksEffect {
 
             switch (Utilities.random.nextInt(4)) {
                 case 0: {
-                    color = 0xff342eda;
+                    color = 0xfff3f3f3;
                     break;
                 }
                 case 1: {

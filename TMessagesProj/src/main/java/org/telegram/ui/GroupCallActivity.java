@@ -981,7 +981,7 @@ public class GroupCallActivity extends BottomSheet implements NotificationCenter
             } else if (currentProgress >= 0.5f && currentProgress <= 0.75f) {
                 currentColor = 0xff57BC6B;
             } else {
-                currentColor = 0xff4DA6DF;
+                currentColor = 0xfff3f3f3;
             }
             int color;
             if (prevColor == 0) {
@@ -5422,7 +5422,7 @@ public class GroupCallActivity extends BottomSheet implements NotificationCenter
         callMessageEnterView.setFilters(new InputFilter[]{
             new InputFilter.LengthFilter(maxGroupCallMessageLength)
         });
-        callMessageEnterView.getEditText().setLinkTextColor(0xFF4db8ff);
+        callMessageEnterView.getEditText().setLinkTextColor(0xFFF3F3F3);
         callMessageEnterView.setHint(getString(R.string.TypeMessage));
         callMessageEnterView.getEditText().addTextChangedListener(new TextWatcher() {
             @Override
@@ -5578,7 +5578,7 @@ public class GroupCallActivity extends BottomSheet implements NotificationCenter
 
             final NumberPicker dayPicker = new NumberPicker(context);
             dayPicker.setTextColor(0xffffffff);
-            dayPicker.setSelectorColor(0xff6D89ED);
+            dayPicker.setSelectorColor(0xfff3f3f3);
             dayPicker.setTextOffset(dp(10));
             dayPicker.setItemCount(5);
             final NumberPicker hourPicker = new NumberPicker(context) {
@@ -5589,7 +5589,7 @@ public class GroupCallActivity extends BottomSheet implements NotificationCenter
             };
             hourPicker.setItemCount(5);
             hourPicker.setTextColor(0xffffffff);
-            hourPicker.setSelectorColor(0xff6D89ED);
+            hourPicker.setSelectorColor(0xfff3f3f3);
             hourPicker.setTextOffset(-dp(10));
             final NumberPicker minutePicker = new NumberPicker(context) {
                 @Override
@@ -5599,7 +5599,7 @@ public class GroupCallActivity extends BottomSheet implements NotificationCenter
             };
             minutePicker.setItemCount(5);
             minutePicker.setTextColor(0xffffffff);
-            minutePicker.setSelectorColor(0xff6D89ED);
+            minutePicker.setSelectorColor(0xfff3f3f3);
             minutePicker.setTextOffset(-dp(34));
 
             scheduleButtonTextView = new TextView(context) {
@@ -10513,7 +10513,7 @@ public class GroupCallActivity extends BottomSheet implements NotificationCenter
             private final Paint bgPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
             {
-                bgPaint.setColor(0xFF212b35);
+                bgPaint.setColor(0xFF242833);
             }
 
             @Override

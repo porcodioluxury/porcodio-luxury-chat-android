@@ -5750,7 +5750,7 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
                     if (videoPlayer != null) {
                         videoPlayer.setLooping(playerLooping);
                     }
-                    loopItem.setEnabledByColor(playerLooping, 0xFFFFFFFF, 0xFF73B4EC);
+                    loopItem.setEnabledByColor(playerLooping, 0xFFFFFFFF, 0xFFF3F3F3);
                     loopItem.setSelectorColor(playerLooping ? 0x0F73B4EC : 0x0fffffff);
                 } else if (id == gallery_menu_report) {
                     TLRPC.Photo photo = null;
@@ -5825,7 +5825,7 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
             @Override
             public void stateUpdated(boolean connected) {
                 if (castItem != null) {
-                    castItem.setEnabledByColor(connected, 0xFFFFFFFF, 0xFF73B4EC);
+                    castItem.setEnabledByColor(connected, 0xFFFFFFFF, 0xFFF3F3F3);
                     castItem.setSelectorColor(connected ? 0x0F73B4EC : 0x0fffffff);
                 }
                 if (videoPlayer != null) {
@@ -5846,7 +5846,7 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
         castItemButton.setVisibility(View.INVISIBLE);
         if (castAvailable) {
             castItem = videoItem.addSubItem(gallery_menu_chromecast, R.drawable.menu_video_chromecast, getString(R.string.VideoPlayerChromecast));
-            castItem.setEnabledByColor(false, 0xFFFFFFFF, 0xFF73B4EC);
+            castItem.setEnabledByColor(false, 0xFFFFFFFF, 0xFFF3F3F3);
             castItem.setSelectorColor(0x0fffffff);
             castItem.addView(castItemButton, 0, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
         }
@@ -8802,7 +8802,7 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
             };
             this.textSelectionHelper = textSelectionHelper;
             ViewHelper.setPadding(this, 16, 8, 16, 8);
-            setLinkTextColor(0xff79c4fc);
+            setLinkTextColor(0xfff3f3f3);
             setTextColor(0xffffffff);
             setHighlightColor(0x33ffffff);
             setGravity(Gravity.CENTER_VERTICAL | LayoutHelper.getAbsoluteGravityStart());
@@ -10739,7 +10739,7 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
         }
         videoPlayerControlFrameLayout.setSeekBarTransitionEnabled(playerLooping);
         videoPlayer.setLooping(playerLooping);
-        loopItem.setEnabledByColor(playerLooping, 0xFFFFFFFF, 0xFF73B4EC);
+        loopItem.setEnabledByColor(playerLooping, 0xFFFFFFFF, 0xFFF3F3F3);
         loopItem.setSelectorColor(playerLooping ? 0x0F73B4EC : 0x0fffffff);
 
         if (currentMessageObject != null && currentMessageObject.forceSeekTo >= 0) {
@@ -21210,7 +21210,7 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
             for (int a = 0; a < compressionsCount; a++) {
                 int cx = sideSide + (lineSize + gapSize * 2 + circleSize) * a + circleSize / 2;
                 if (a <= selectedCompression) {
-                    paint.setColor(0xff53aeef);
+                    paint.setColor(0xfff3f3f3);
                 } else {
                     paint.setColor(0x66ffffff);
                 }

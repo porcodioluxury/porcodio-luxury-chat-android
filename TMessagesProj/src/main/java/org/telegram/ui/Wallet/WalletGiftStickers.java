@@ -1794,7 +1794,7 @@ final class WalletGiftStickers extends View {
         float n = size * 176f / 128f * (1 + lift * .05f);
         rect.set(cx - n / 2, cy - n / 2, cx + n / 2, cy + n / 2);
         int alpha = paint.getAlpha();
-        paint.setColor(0xFF0B2E5C);
+        paint.setColor(0xFF2F3442);
         paint.setAlpha((int) (255 * clamp01(.16f + (.11f - .16f) * lift + .12f * impact) * clamp01(s.border.value) * presence));
         canvas.drawBitmap(s.shadow, null, rect, paint);
         paint.setColor(Color.WHITE);
@@ -2160,7 +2160,7 @@ final class WalletGiftStickers extends View {
         selectionStroke.setStyle(Paint.Style.STROKE);
         selectionStroke.setStrokeWidth(dp(2.66f));
         selectionStroke.setShadowLayer(dp(.75f), 0, 0, 0x50000000);
-        selectionDot.setColor(0xFF1A9CFF);
+        selectionDot.setColor(0xFFF3F3F3);
         canvas.save();
         canvas.rotate(s.rotation.value, cx, cy);
         canvas.drawArc(cx - r, cy - r, cx + r, cy + r, 0, 180, false, selectionDash);

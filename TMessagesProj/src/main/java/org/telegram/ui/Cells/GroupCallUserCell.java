@@ -216,7 +216,7 @@ public class GroupCallUserCell extends FrameLayout implements Theme.Colorable {
         public VerifiedDrawable(Context context) {
             super();
             drawables[0] = context.getResources().getDrawable(R.drawable.verified_area).mutate();
-            drawables[0].setColorFilter(new PorterDuffColorFilter(0xff75B3EE, PorterDuff.Mode.MULTIPLY));
+            drawables[0].setColorFilter(new PorterDuffColorFilter(0xfff3f3f3, PorterDuff.Mode.MULTIPLY));
             drawables[1] = context.getResources().getDrawable(R.drawable.verified_check).mutate();
         }
 

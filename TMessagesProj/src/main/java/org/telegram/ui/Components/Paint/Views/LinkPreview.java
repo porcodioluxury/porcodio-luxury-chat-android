@@ -281,8 +281,8 @@ public class LinkPreview extends View {
             icon.setColorFilter(null);
         } else {
             backgroundColor = 0xFFFFFFFF;
-            layoutPaint.setColor(0xFF3391D4);
-            icon.setColorFilter(new PorterDuffColorFilter(0xFF3391D4, PorterDuff.Mode.SRC_IN));
+            layoutPaint.setColor(0xFFF3F3F3);
+            icon.setColorFilter(new PorterDuffColorFilter(0xFFF3F3F3, PorterDuff.Mode.SRC_IN));
         }
         invalidate();
     }
@@ -375,7 +375,7 @@ public class LinkPreview extends View {
             y += 7.33f * density;
             if (messageText != null && above > 0) {
                 messageText
-                    .draw(canvas, 10 * density, y + messageText.getHeight() / 2f - (messageText.getHeight() + 15 * density) * (1f - above), 0xFF1A9CFF, preview);
+                    .draw(canvas, 10 * density, y + messageText.getHeight() / 2f - (messageText.getHeight() + 15 * density) * (1f - above), 0xFFF3F3F3, preview);
                 y += (messageText.getHeight() + 7 * density) * above;
             }
 
@@ -432,7 +432,7 @@ public class LinkPreview extends View {
 
             if (messageText != null && (1f - above) > 0) {
                 messageText
-                    .draw(canvas, 10 * density, y + messageText.getHeight() / 2f + (messageText.getHeight() + 15 * density) * above, 0xFF1A9CFF, preview);
+                    .draw(canvas, 10 * density, y + messageText.getHeight() / 2f + (messageText.getHeight() + 15 * density) * above, 0xFFF3F3F3, preview);
                 y += (messageText.getHeight() + 7 * density) * (1f - above);
             }
 

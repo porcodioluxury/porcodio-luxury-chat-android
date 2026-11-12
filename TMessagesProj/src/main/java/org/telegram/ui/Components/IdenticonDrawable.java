@@ -22,9 +22,9 @@ public class IdenticonDrawable extends Drawable {
     private Paint paint = new Paint();
     private int colors[] = {
             0xffffffff,
-            0xffd5e6f3,
-            0xff2d5775,
-            0xff2f99c9
+            0xfff3f3f3,
+            0xfff3f3f3,
+            0xfff3f3f3
     };
 
     private int getBits(int bitOffset) {

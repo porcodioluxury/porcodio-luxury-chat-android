@@ -107,7 +107,7 @@ public class PacmanAnimation {
         } else if (num == 1) {
             paint.setColor(0xfffeb2b2);
         } else {
-            paint.setColor(0xff00dedf);
+            paint.setColor(0xfff3f3f3);
         }
         canvas.drawPath(ghostPath, paint);
         paint.setColor(0xffffffff);

@@ -46,8 +46,8 @@ public class ColorPicker extends FrameLayout {
     private static final int[] COLORS = new int[]{
             0xffea2739,
             0xffdb3ad2,
-            0xff3051e3,
-            0xff49c5ed,
+            0xfff3f3f3,
+            0xfff3f3f3,
             0xff80c864,
             0xfffcde65,
             0xfffc964d,

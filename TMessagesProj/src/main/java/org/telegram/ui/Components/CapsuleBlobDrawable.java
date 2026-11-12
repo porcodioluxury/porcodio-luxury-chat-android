@@ -669,7 +669,7 @@ public class CapsuleBlobDrawable extends Drawable {
         float waveScale;
         float breathScale;
         int baseAlpha;
-        int color = 0xFF534AB7;
+        int color = 0xFFF3F3F3;
 
         final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         final Random random = new Random();

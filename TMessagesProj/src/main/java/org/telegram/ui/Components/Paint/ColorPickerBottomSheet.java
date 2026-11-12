@@ -308,9 +308,9 @@ public class ColorPickerBottomSheet extends BottomSheet {
         private Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
         private final int[] colors = {
-                0xFF00A1D8,
-                0xFF0060FD,
-                0xFF4C1FB7,
+                0xFFF3F3F3,
+                0xFFF3F3F3,
+                0xFFF3F3F3,
                 0xFF982BBC,
                 0xFFB82C5D,
                 0xFFFD3E12,

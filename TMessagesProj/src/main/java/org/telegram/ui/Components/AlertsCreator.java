@@ -6951,24 +6951,24 @@ public class AlertsCreator {
         String key = NotificationsController.getSharedPrefKey(dialog_id, topicId);
         if (dialog_id != 0) {
             if (preferences.contains("color_" + key)) {
-                currentColor = preferences.getInt("color_" + key, 0xff0000ff);
+                currentColor = preferences.getInt("color_" + key, 0xfff3f3f3);
             } else {
                 if (DialogObject.isChatDialog(dialog_id)) {
-                    currentColor = preferences.getInt("GroupLed", 0xff0000ff);
+                    currentColor = preferences.getInt("GroupLed", 0xfff3f3f3);
                 } else {
-                    currentColor = preferences.getInt("MessagesLed", 0xff0000ff);
+                    currentColor = preferences.getInt("MessagesLed", 0xfff3f3f3);
                 }
             }
         } else if (globalType == NotificationsController.TYPE_PRIVATE) {
-            currentColor = preferences.getInt("MessagesLed", 0xff0000ff);
+            currentColor = preferences.getInt("MessagesLed", 0xfff3f3f3);
         } else if (globalType == NotificationsController.TYPE_GROUP) {
-            currentColor = preferences.getInt("GroupLed", 0xff0000ff);
+            currentColor = preferences.getInt("GroupLed", 0xfff3f3f3);
         } else if (globalType == NotificationsController.TYPE_STORIES) {
-            currentColor = preferences.getInt("StoriesLed", 0xff0000ff);
+            currentColor = preferences.getInt("StoriesLed", 0xfff3f3f3);
         } else if (globalType == NotificationsController.TYPE_REACTIONS_STORIES || globalType == NotificationsController.TYPE_REACTIONS_MESSAGES) {
-            currentColor = preferences.getInt("ReactionsLed", 0xff0000ff);
+            currentColor = preferences.getInt("ReactionsLed", 0xfff3f3f3);
         } else {
-            currentColor = preferences.getInt("ChannelLed", 0xff0000ff);
+            currentColor = preferences.getInt("ChannelLed", 0xfff3f3f3);
         }
         final LinearLayout linearLayout = new LinearLayout(parentActivity);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
@@ -7288,7 +7288,7 @@ public class AlertsCreator {
         String svg = AndroidUtilities.readRes(R.raw.pip_video_request);
 
         FrameLayout frameLayout = new FrameLayout(activity);
-        frameLayout.setBackground(new GradientDrawable(GradientDrawable.Orientation.BL_TR, new int[]{0xFF22364F, 0xFF22526A}));
+        frameLayout.setBackground(new GradientDrawable(GradientDrawable.Orientation.BL_TR, new int[]{0xFF2F3442, 0xFF2F3442}));
         frameLayout.setClipToOutline(true);
         frameLayout.setOutlineProvider(new ViewOutlineProvider() {
             @Override
@@ -7346,7 +7346,7 @@ public class AlertsCreator {
                 button.setTranslationX(getMeasuredWidth() * 0.82f - button.getMeasuredWidth() / 2f);
             }
         };
-        frameLayout.setBackground(new GradientDrawable(GradientDrawable.Orientation.BL_TR, new int[]{0xFF192A3D, 0xFF19514E}));
+        frameLayout.setBackground(new GradientDrawable(GradientDrawable.Orientation.BL_TR, new int[]{0xFF242833, 0xFF2F3442}));
         frameLayout.setClipToOutline(true);
         frameLayout.setOutlineProvider(new ViewOutlineProvider() {
             @Override

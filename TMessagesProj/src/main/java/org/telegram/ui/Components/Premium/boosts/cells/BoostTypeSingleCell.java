@@ -37,7 +37,7 @@ public class BoostTypeSingleCell extends BoostTypeCell {
             if (prepaid.months == 12) {
                 avatarDrawable.setColor(0xFFff8560, 0xFFd55246);
             } else if (prepaid.months == 6) {
-                avatarDrawable.setColor(0xFF5caefa, 0xFF418bd0);
+                avatarDrawable.setColor(0xFFF3F3F3, 0xFFF3F3F3);
             } else {
                 avatarDrawable.setColor(0xFF9ad164, 0xFF49ba44);
             }

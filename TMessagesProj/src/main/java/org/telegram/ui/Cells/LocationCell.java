@@ -112,13 +112,13 @@ public class LocationCell extends FrameLayout {
             case 1:
                 return 0xfff2c04b;
             case 2:
-                return 0xff459df5;
+                return 0xfff3f3f3;
             case 3:
                 return 0xff36c766;
             case 4:
-                return 0xff8771fd;
+                return 0xfff3f3f3;
             case 5:
-                return 0xff43b9d7;
+                return 0xfff3f3f3;
             case 6:
             default:
                 return 0xffec638b;

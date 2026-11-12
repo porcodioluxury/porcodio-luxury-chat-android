@@ -362,7 +362,7 @@ public class EditTextBoldCursor extends EditTextEffects {
                 }
             };
             cursorDrawable.setShape(new RectShape());
-            gradientDrawable = new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, new int[]{0xff54a1db, 0xff54a1db});
+            gradientDrawable = new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, new int[]{0xfff3f3f3, 0xfff3f3f3});
 
             setTextCursorDrawable(cursorDrawable);
         }
@@ -398,7 +398,7 @@ public class EditTextBoldCursor extends EditTextEffects {
         }
         if (cursorDrawable == null) {
             try {
-                gradientDrawable = new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, new int[]{0xff54a1db, 0xff54a1db});
+                gradientDrawable = new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, new int[]{0xfff3f3f3, 0xfff3f3f3});
                 if (Build.VERSION.SDK_INT >= 29) {
                     setTextCursorDrawable(gradientDrawable);
                 }

@@ -2245,11 +2245,11 @@
     <string name="AutoNightPreferred">Preferred night theme</string>
     <string name="AutoNightBrightness">Brightness threshold</string>
     <string name="AutoNightBrightnessInfo">Switch to your preferred night theme when ambient lighting falls below %1$d%%.</string>
-    <string name="ThemeDark">Dark</string>
-    <string name="ThemeDay">Day</string>
-    <string name="ThemeNight">Night</string>
-    <string name="ThemeArcticBlue">Arctic</string>
-    <string name="ThemeClassic">Classic</string>
+    <string name="ThemeDark">Porcodio Dark</string>
+    <string name="ThemeDay">Porcodio Day</string>
+    <string name="ThemeNight">Porcodio Night</string>
+    <string name="ThemeArcticBlue">Porcodio Silver</string>
+    <string name="ThemeClassic">Porcodio Light</string>
     <string name="DeleteThemeTitle">Delete theme</string>
     <string name="DeleteThemeAlert">Are you sure you want to delete this theme?</string>
     <string name="IncorrectTheme">Incorrect theme file</string>
@@ -11679,4 +11679,16 @@
     <string name="FpnvConsentSimSlot">SIM Slot</string>
     <string name="FpnvConsentSimSlotValue">SIM %1$d</string>
     <string name="FpnvConsentPhoneNumber">Phone Number</string>
+    <string name="PcIntro1Title">Porcodio Luxury Chat</string>
+    <string name="PcIntro1Message">Luxury messaging: fast, private and beautifully simple.</string>
+    <string name="PcIntro2Title">Fast</string>
+    <string name="PcIntro2Message">Your messages arrive in an instant, on every device.</string>
+    <string name="PcIntro3Title">Elegant</string>
+    <string name="PcIntro3Message">A refined dark design, signed Porcodio Luxury.</string>
+    <string name="PcIntro4Title">Private</string>
+    <string name="PcIntro4Message">Your conversations are protected by strong encryption.</string>
+    <string name="PcIntro5Title">Everywhere</string>
+    <string name="PcIntro5Message">Phone, tablet and desktop: your chats always stay in sync.</string>
+    <string name="PcIntro6Title">Without limits</string>
+    <string name="PcIntro6Message">Groups, channels, calls and files of any size, all in one place.</string>
 </resources>

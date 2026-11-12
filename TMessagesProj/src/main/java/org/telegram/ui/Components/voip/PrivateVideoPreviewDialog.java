@@ -169,14 +169,14 @@ public abstract class PrivateVideoPreviewDialog extends FrameLayout implements V
                     int color3;
                     if (a == 0 && needScreencast) {
                         color1 = 0xff77E55C;
-                        color2 = 0xff56C7FE;
+                        color2 = 0xfff3f3f3;
                         color3 = 0;
                     } else if (a == 0 || a == 1 && needScreencast) {
-                        color1 = 0xff57A4FE;
-                        color2 = 0xff766EE9;
+                        color1 = 0xfff3f3f3;
+                        color2 = 0xfff3f3f3;
                         color3 = 0;
                     } else {
-                        color1 = 0xff766EE9;
+                        color1 = 0xfff3f3f3;
                         color2 = 0xffF05459;
                         color3 = 0xffE4A756;
                     }
@@ -514,7 +514,7 @@ public abstract class PrivateVideoPreviewDialog extends FrameLayout implements V
             View view;
             if (needScreencast && position == 0) {
                 FrameLayout frameLayout = new FrameLayout(getContext());
-                frameLayout.setBackground(new MotionBackgroundDrawable(0xff212E3A, 0xff2B5B4D, 0xff245863, 0xff274558, true));
+                frameLayout.setBackground(new MotionBackgroundDrawable(0xff2f3442, 0xff2B5B4D, 0xff2f3442, 0xff2f3442, true));
                 view = frameLayout;
 
                 ImageView imageView = new ImageView(getContext());

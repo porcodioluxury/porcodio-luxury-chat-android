@@ -52,7 +52,7 @@ public class VoIPOverlayBackground extends ImageView {
                 Utilities.blurBitmap(blur1, 3);
                 final Palette palette = Palette.from(src.bitmap).generate();
                 Paint paint = new Paint();
-                paint.setColor((palette.getDarkMutedColor(0xFF547499) & 0x00FFFFFF) | 0x44000000);
+                paint.setColor((palette.getDarkMutedColor(0xFFF3F3F3) & 0x00FFFFFF) | 0x44000000);
                 canvas.drawColor(0x26000000);
                 canvas.drawRect(0, 0, canvas.getWidth(), canvas.getHeight(), paint);
                 AndroidUtilities.runOnUIThread(() -> {

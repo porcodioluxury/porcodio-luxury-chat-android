@@ -76,7 +76,7 @@ public class DarkThemeResourceProvider implements Theme.ResourcesProvider {
         sparseIntArray.put(Theme.key_chat_messagePanelVoiceLock, -1);
         sparseIntArray.put(Theme.key_chat_recordedVoiceDot, -1221292);
         sparseIntArray.put(Theme.key_chat_messagePanelVoiceDelete, -1);
-        sparseIntArray.put(Theme.key_chat_recordedVoiceBackground, 0xFF1A9CFF);
+        sparseIntArray.put(Theme.key_chat_recordedVoiceBackground, 0xFFF3F3F3);
         sparseIntArray.put(Theme.key_chat_messagePanelVoiceDuration, -1);
         sparseIntArray.put(Theme.key_chat_recordTime, 2030043135);
         sparseIntArray.put(Theme.key_chat_recordVoiceCancel, -10638868);
@@ -112,12 +112,12 @@ public class DarkThemeResourceProvider implements Theme.ResourcesProvider {
         sparseIntArray.put(Theme.key_graySectionText, -8158332);
       //  sparseIntArray.put(Theme.key_windowBackgroundGray, 0xFF1F1F1F);
         sparseIntArray.put(Theme.key_windowBackgroundGray, Color.BLACK);
-        sparseIntArray.put(Theme.key_windowBackgroundWhiteBlueHeader, 0xFF1A9CFF);
+        sparseIntArray.put(Theme.key_windowBackgroundWhiteBlueHeader, 0xFFF3F3F3);
         sparseIntArray.put(Theme.key_windowBackgroundWhiteInputFieldActivated, -10177041);
         sparseIntArray.put(Theme.key_windowBackgroundWhiteInputField, -10177041);
         sparseIntArray.put(Theme.key_windowBackgroundWhiteGrayText3, ColorUtils.blendARGB(Color.WHITE, Color.BLACK, 0.3f));
         sparseIntArray.put(Theme.key_undo_background, 0xFF212426);
-        sparseIntArray.put(Theme.key_undo_cancelColor, 0xFF8BC8F5);
+        sparseIntArray.put(Theme.key_undo_cancelColor, 0xFFF3F3F3);
         sparseIntArray.put(Theme.key_undo_infoColor, Color.WHITE);
         sparseIntArray.put(Theme.key_actionBarDefaultSubmenuSeparator, 0xF2151515);
         sparseIntArray.put(Theme.key_chat_emojiPanelStickerSetNameHighlight, Color.WHITE);
@@ -130,10 +130,10 @@ public class DarkThemeResourceProvider implements Theme.ResourcesProvider {
         sparseIntArray.put(Theme.key_chat_serviceBackground, -2110438831);
 
         sparseIntArray.put(Theme.key_switchTrack, 0xFF636363);
-        sparseIntArray.put(Theme.key_switchTrackChecked, 0xFF1A9CFF);
-        sparseIntArray.put(Theme.key_dialogRoundCheckBox, 0xFF1A9CFF);
-        sparseIntArray.put(Theme.key_dialogRadioBackgroundChecked, 0xFF1A9CFF);
-        sparseIntArray.put(Theme.key_dialogTextBlue2, 0xFF1A9CFF);
+        sparseIntArray.put(Theme.key_switchTrackChecked, 0xFFF3F3F3);
+        sparseIntArray.put(Theme.key_dialogRoundCheckBox, 0xFFF3F3F3);
+        sparseIntArray.put(Theme.key_dialogRadioBackgroundChecked, 0xFFF3F3F3);
+        sparseIntArray.put(Theme.key_dialogTextBlue2, 0xFFF3F3F3);
         sparseIntArray.put(Theme.key_color_red, -832444);
         sparseIntArray.put(Theme.key_checkbox, -12692893);
         sparseIntArray.put(Theme.key_checkboxDisabled, 0xff626262);
@@ -150,10 +150,10 @@ public class DarkThemeResourceProvider implements Theme.ResourcesProvider {
         sparseIntArray.put(Theme.key_fastScrollInactive, -12500671);
         sparseIntArray.put(Theme.key_fastScrollActive, -13133079);
         sparseIntArray.put(Theme.key_fastScrollText, 0xffffffff);
-        sparseIntArray.put(Theme.key_featuredStickers_addButton, 0xFF1A9CFF);
+        sparseIntArray.put(Theme.key_featuredStickers_addButton, 0xFFF3F3F3);
         sparseIntArray.put(Theme.key_dialogTextLink, -10177041);
         sparseIntArray.put(Theme.key_dialogSearchText, Color.WHITE);
-        sparseIntArray.put(Theme.key_chat_messageLinkIn, 0xFF46A3EB);
+        sparseIntArray.put(Theme.key_chat_messageLinkIn, 0xFFF3F3F3);
         sparseIntArray.put(Theme.key_dialogTextGray2, -8553091);
 
         sparseIntArray.put(Theme.key_location_actionIcon, -592138);
@@ -173,8 +173,8 @@ public class DarkThemeResourceProvider implements Theme.ResourcesProvider {
         sparseIntArray.put(Theme.key_checkboxDisabled, -12237499);
         sparseIntArray.put(Theme.key_checkboxCheck, 0xFFFFFFFF);
 
-        sparseIntArray.put(Theme.key_avatar_backgroundSaved, 0xFF5CADF6);
-        sparseIntArray.put(Theme.key_avatar_background2Saved, 0xFF408BCF);
+        sparseIntArray.put(Theme.key_avatar_backgroundSaved, 0xFFF3F3F3);
+        sparseIntArray.put(Theme.key_avatar_background2Saved, 0xFFF3F3F3);
 
         sparseIntArray.put(Theme.key_share_icon, -1);
         sparseIntArray.put(Theme.key_share_linkText, 0xB7FFFFFF);

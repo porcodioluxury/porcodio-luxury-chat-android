@@ -282,8 +282,8 @@ public class ShareAlert extends BottomSheet implements NotificationCenter.Notifi
                     super.onDraw(canvas);
 
                     int color01 = 0xff75CB6B;
-                    int color02 = 0xff4FAFBE;
-                    int color11 = 0xff5F94F5;
+                    int color02 = 0xfff3f3f3;
+                    int color11 = 0xfff3f3f3;
                     int color12 = 0xffB95A91;
 
                     int color0 = AndroidUtilities.getOffsetColor(color01, color11, getTranslationX() / getMeasuredWidth(), 1.0f);

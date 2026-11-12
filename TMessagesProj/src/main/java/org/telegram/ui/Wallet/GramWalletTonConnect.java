@@ -1888,7 +1888,7 @@ public class GramWalletTonConnect {
         result.append(GramWallet.formatGrams(-nanotons, true)).append(" ");
         int labelStart = result.length();
         result.append(LocaleController.getString(R.string.GramCurrency));
-        result.setSpan(new ForegroundColorSpan(0xFF6DDCFF), labelStart, result.length(),
+        result.setSpan(new ForegroundColorSpan(0xFFF3F3F3), labelStart, result.length(),
                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         return result;
     }

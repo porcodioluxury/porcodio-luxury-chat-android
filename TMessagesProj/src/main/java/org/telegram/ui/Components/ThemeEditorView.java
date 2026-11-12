@@ -289,7 +289,7 @@ public class ThemeEditorView {
                 searchEditText.setSingleLine(true);
                 searchEditText.setImeOptions(EditorInfo.IME_ACTION_SEARCH | EditorInfo.IME_FLAG_NO_EXTRACT_UI);
                 searchEditText.setHint(LocaleController.getString(R.string.Search));
-                searchEditText.setCursorColor(0xff50a8eb);
+                searchEditText.setCursorColor(0xfff3f3f3);
                 searchEditText.setCursorSize(AndroidUtilities.dp(20));
                 searchEditText.setCursorWidth(1.5f);
                 addView(searchEditText, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 40, Gravity.LEFT | Gravity.TOP, 16 + 38, 9, 16 + 30, 0));
@@ -470,7 +470,7 @@ public class ThemeEditorView {
                             } else if (num == 1) {
                                 currentColor = (currentColor & 0xffff00ff) | ((color & 0xff) << 8);
                             } else if (num == 0) {
-                                currentColor = (currentColor & 0xff00ffff) | ((color & 0xff) << 16);
+                                currentColor = (currentColor & 0xfff3f3f3) | ((color & 0xff) << 16);
                             } else if (num == 3) {
                                 currentColor = (currentColor & 0x00ffffff) | ((color & 0xff) << 24);
                             }
@@ -928,7 +928,7 @@ public class ThemeEditorView {
 
             TextView closeButton = new TextView(context);
             closeButton.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
-            closeButton.setTextColor(0xff19a7e8);
+            closeButton.setTextColor(0xfff3f3f3);
             closeButton.setGravity(Gravity.CENTER);
             closeButton.setBackgroundDrawable(Theme.createSelectorDrawable(Theme.ACTION_BAR_AUDIO_SELECTOR_COLOR, 0));
             closeButton.setPadding(AndroidUtilities.dp(18), 0, AndroidUtilities.dp(18), 0);
@@ -939,7 +939,7 @@ public class ThemeEditorView {
 
             TextView saveButton = new TextView(context);
             saveButton.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
-            saveButton.setTextColor(0xff19a7e8);
+            saveButton.setTextColor(0xfff3f3f3);
             saveButton.setGravity(Gravity.CENTER);
             saveButton.setBackgroundDrawable(Theme.createSelectorDrawable(Theme.ACTION_BAR_AUDIO_SELECTOR_COLOR, 0));
             saveButton.setPadding(AndroidUtilities.dp(18), 0, AndroidUtilities.dp(18), 0);
@@ -960,7 +960,7 @@ public class ThemeEditorView {
 
             TextView cancelButton = new TextView(context);
             cancelButton.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
-            cancelButton.setTextColor(0xff19a7e8);
+            cancelButton.setTextColor(0xfff3f3f3);
             cancelButton.setGravity(Gravity.CENTER);
             cancelButton.setBackgroundDrawable(Theme.createSelectorDrawable(Theme.ACTION_BAR_AUDIO_SELECTOR_COLOR, 0));
             cancelButton.setPadding(AndroidUtilities.dp(18), 0, AndroidUtilities.dp(18), 0);
@@ -981,7 +981,7 @@ public class ThemeEditorView {
 
             TextView defaultButtom = new TextView(context);
             defaultButtom.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
-            defaultButtom.setTextColor(0xff19a7e8);
+            defaultButtom.setTextColor(0xfff3f3f3);
             defaultButtom.setGravity(Gravity.CENTER);
             defaultButtom.setBackgroundDrawable(Theme.createSelectorDrawable(Theme.ACTION_BAR_AUDIO_SELECTOR_COLOR, 0));
             defaultButtom.setPadding(AndroidUtilities.dp(18), 0, AndroidUtilities.dp(18), 0);
@@ -998,7 +998,7 @@ public class ThemeEditorView {
 
             saveButton = new TextView(context);
             saveButton.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
-            saveButton.setTextColor(0xff19a7e8);
+            saveButton.setTextColor(0xfff3f3f3);
             saveButton.setGravity(Gravity.CENTER);
             saveButton.setBackgroundDrawable(Theme.createSelectorDrawable(Theme.ACTION_BAR_AUDIO_SELECTOR_COLOR, 0));
             saveButton.setPadding(AndroidUtilities.dp(18), 0, AndroidUtilities.dp(18), 0);
@@ -1219,7 +1219,7 @@ public class ThemeEditorView {
 
                     int start = builder.length();
                     builder.append(query);
-                    builder.setSpan(new ForegroundColorSpan(0xff4d83b3), start, start + query.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    builder.setSpan(new ForegroundColorSpan(0xfff3f3f3), start, start + query.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
                     lastIndex = end;
                 }

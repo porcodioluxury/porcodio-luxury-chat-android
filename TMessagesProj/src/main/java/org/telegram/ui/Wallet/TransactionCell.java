@@ -631,7 +631,7 @@ public class TransactionCell extends FrameLayout implements Theme.Colorable {
         final float band = getWidth() * .5f;
         final float x = -band + wave * (getWidth() + 2 * band);
         pendingPaint.setShader(new LinearGradient(x - band / 2, 0, x + band / 2, 0,
-                new int[]{blue & 0x00ffffff, blue, 0xFF8FE6FF, blue & 0x00ffffff},
+                new int[]{blue & 0x00ffffff, blue, 0xFFF3F3F3, blue & 0x00ffffff},
                 new float[]{0f, .45f, .6f, 1f}, Shader.TileMode.CLAMP));
         pendingPaint.setAlpha(Math.round(150 * p * (float) Math.sin(wave * Math.PI)));
         pendingPaint.setStrokeWidth(dp(1.5f));

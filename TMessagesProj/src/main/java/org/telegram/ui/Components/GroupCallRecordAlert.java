@@ -166,15 +166,15 @@ public class GroupCallRecordAlert extends BottomSheet {
                     int color2;
                     int color3;
                     if (a == 0) {
-                        color1 = 0xff57A4FE;
-                        color2 = 0xff766EE9;
+                        color1 = 0xfff3f3f3;
+                        color2 = 0xfff3f3f3;
                         color3 = 0;
                     } else if (a == 1) {
                         color1 = 0xff77E55C;
-                        color2 = 0xff56C7FE;
+                        color2 = 0xfff3f3f3;
                         color3 = 0;
                     } else {
-                        color1 = 0xff766EE9;
+                        color1 = 0xfff3f3f3;
                         color2 = 0xffF05459;
                         color3 = 0xffE4A756;
                     }

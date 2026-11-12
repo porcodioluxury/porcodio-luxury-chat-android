@@ -266,7 +266,7 @@ public class NotificationsCustomSettingsActivity extends BaseFragment implements
     }
 
     private int getLedColor() {
-        int color = 0xff0000ff;
+        int color = 0xfff3f3f3;
         switch (currentType) {
             case TYPE_PRIVATE: color = getNotificationsSettings().getInt("MessagesLed", color); break;
             case TYPE_GROUP:   color = getNotificationsSettings().getInt("GroupLed", color); break;

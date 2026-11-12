@@ -3458,10 +3458,10 @@ public class StarGiftSheet extends BottomSheetWithRecyclerListView implements No
             if (color != null) color[0] = 0xFF40A920;
             return getString(R.string.GiftRarityUncommon);
         } else if (rarity instanceof TL_stars.TL_starGiftAttributeRarityRare) {
-            if (color != null) color[0] = 0xFF11AABE;
+            if (color != null) color[0] = 0xFFF3F3F3;
             return getString(R.string.GiftRarityRare);
         } else if (rarity instanceof TL_stars.TL_starGiftAttributeRarityEpic) {
-            if (color != null) color[0] = 0xFF955CDB;
+            if (color != null) color[0] = 0xFFF3F3F3;
             return getString(R.string.GiftRarityEpic);
         } else if (rarity instanceof TL_stars.TL_starGiftAttributeRarityLegendary) {
             if (color != null) color[0] = 0xFFBF7600;
@@ -9653,14 +9653,14 @@ public class StarGiftSheet extends BottomSheetWithRecyclerListView implements No
         private HintView2 currentHint;
 
         private final int[] BACKGROUND_COLORS = new int[] {
-            0xFF1D3C4F, 0xFF0F192C,
+            0xFF2F3442, 0xFF242833,
             0xFF53270A, 0xFF1F0B0B,
-            0xFF22535F, 0xFF0D1123
+            0xFF2F3442, 0xFF1A1A1A
         };
         private final int[] COLORS = new int[] {
             Theme.multAlpha(0xFFFFFFFF, 0.08f), Theme.multAlpha(0xFFFFFFFF, 0.08f),
             0xFFFB8226, 0xFFC4432D,
-            0xFF31B74A, 0xFF3F8999
+            0xFF31B74A, 0xFFF3F3F3
         };
 
         public CraftTopView(Context context, Theme.ResourcesProvider resourcesProvider) {
@@ -10560,7 +10560,7 @@ public class StarGiftSheet extends BottomSheetWithRecyclerListView implements No
                 layout = new FrameLayout(context);
                 addView(layout, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, Gravity.FILL, 6, 6, 6, 6));
 
-                layout.setBackground(Theme.createRoundRectDrawable(dp(18), Theme.multAlpha(0xFFBADFFF, .12f)));
+                layout.setBackground(Theme.createRoundRectDrawable(dp(18), Theme.multAlpha(0xFFF3F3F3, .12f)));
                 layout.setForeground(new RoundRectStrokeDrawable(dp(18), 0));
 
                 plus = new ImageView(context);

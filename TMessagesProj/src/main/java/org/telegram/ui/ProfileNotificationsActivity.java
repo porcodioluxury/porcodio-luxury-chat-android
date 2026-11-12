@@ -886,12 +886,12 @@ public class ProfileNotificationsActivity extends BaseFragment implements Notifi
                     SharedPreferences preferences = MessagesController.getNotificationsSettings(currentAccount);
                     int color;
                     if (preferences.contains("color_" + key)) {
-                        color = preferences.getInt("color_" + key, 0xff0000ff);
+                        color = preferences.getInt("color_" + key, 0xfff3f3f3);
                     } else {
                         if (DialogObject.isChatDialog(dialogId)) {
-                            color = preferences.getInt("GroupLed", 0xff0000ff);
+                            color = preferences.getInt("GroupLed", 0xfff3f3f3);
                         } else {
-                            color = preferences.getInt("MessagesLed", 0xff0000ff);
+                            color = preferences.getInt("MessagesLed", 0xfff3f3f3);
                         }
                     }
                     for (int a = 0; a < 9; a++) {

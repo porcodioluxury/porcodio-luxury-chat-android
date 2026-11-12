@@ -40,7 +40,7 @@ public class PickerBottomLayoutViewer extends FrameLayout {
 
         cancelButton = new TextView(context);
         cancelButton.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
-        cancelButton.setTextColor(isDarkTheme ? 0xffffffff : 0xff19a7e8);
+        cancelButton.setTextColor(isDarkTheme ? 0xffffffff : 0xfff3f3f3);
         cancelButton.setGravity(Gravity.CENTER);
         cancelButton.setBackground(Theme.createSelectorDrawable(isDarkTheme ? Theme.ACTION_BAR_PICKER_SELECTOR_COLOR : Theme.ACTION_BAR_AUDIO_SELECTOR_COLOR, 0));
         cancelButton.setPadding(AndroidUtilities.dp(20), 0, AndroidUtilities.dp(20), 0);
@@ -50,7 +50,7 @@ public class PickerBottomLayoutViewer extends FrameLayout {
 
         doneButton = new TextView(context);
         doneButton.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
-        doneButton.setTextColor(isDarkTheme ? 0xffffffff : 0xff19a7e8);
+        doneButton.setTextColor(isDarkTheme ? 0xffffffff : 0xfff3f3f3);
         doneButton.setGravity(Gravity.CENTER);
         doneButton.setBackgroundDrawable(Theme.createSelectorDrawable(isDarkTheme ? Theme.ACTION_BAR_PICKER_SELECTOR_COLOR : Theme.ACTION_BAR_AUDIO_SELECTOR_COLOR, 0));
         doneButton.setPadding(AndroidUtilities.dp(20), 0, AndroidUtilities.dp(20), 0);
@@ -77,13 +77,13 @@ public class PickerBottomLayoutViewer extends FrameLayout {
                 doneButton.setTextColor(0xff999999);
                 doneButton.setEnabled(false);
             } else {
-                doneButton.setTextColor(isDarkTheme ? 0xffffffff : 0xff19a7e8);
+                doneButton.setTextColor(isDarkTheme ? 0xffffffff : 0xfff3f3f3);
             }
         } else {
             doneButtonBadgeTextView.setVisibility(View.VISIBLE);
             doneButtonBadgeTextView.setText(String.format("%d", count));
 
-            doneButton.setTextColor(isDarkTheme ? 0xffffffff : 0xff19a7e8);
+            doneButton.setTextColor(isDarkTheme ? 0xffffffff : 0xfff3f3f3);
             if (disable) {
                 doneButton.setEnabled(true);
             }

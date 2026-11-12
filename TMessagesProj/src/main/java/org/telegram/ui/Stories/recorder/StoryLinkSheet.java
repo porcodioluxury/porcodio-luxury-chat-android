@@ -81,8 +81,8 @@ public class StoryLinkSheet extends BottomSheetWithRecyclerListView implements N
         urlEditText.whenHitEnter(this::processDone);
 
         String def = "https://";
-        urlEditText.editText.setHandlesColor(0xFF419FE8);
-        urlEditText.editText.setCursorColor(0xff54a1db);
+        urlEditText.editText.setHandlesColor(0xFFF3F3F3);
+        urlEditText.editText.setCursorColor(0xfff3f3f3);
         urlEditText.editText.setText(def);
         urlEditText.editText.setSelection(def.length());
         TextView pasteTextView = new TextView(getContext());
@@ -440,11 +440,11 @@ public class StoryLinkSheet extends BottomSheetWithRecyclerListView implements N
             imageView = new ImageView(context);
             imageView.setScaleType(ImageView.ScaleType.CENTER);
             imageView.setImageResource(R.drawable.filled_link);
-            imageView.setColorFilter(new PorterDuffColorFilter(0xFF1A9CFF, PorterDuff.Mode.SRC_IN));
+            imageView.setColorFilter(new PorterDuffColorFilter(0xFFF3F3F3, PorterDuff.Mode.SRC_IN));
             addView(imageView, LayoutHelper.createFrame(48, 48, Gravity.CENTER_VERTICAL | Gravity.LEFT, 9, 0, 0, 0));
 
             loadingView = new ImageView(context);
-            loadingView.setBackground(new CircularProgressDrawable(dp(20), dp(2.4f), 0xFF1A9CFF) {
+            loadingView.setBackground(new CircularProgressDrawable(dp(20), dp(2.4f), 0xFFF3F3F3) {
                 @Override
                 public int getIntrinsicHeight() {
                     return dp(26);
@@ -458,7 +458,7 @@ public class StoryLinkSheet extends BottomSheetWithRecyclerListView implements N
             addView(loadingView, LayoutHelper.createFrame(48, 48, Gravity.CENTER_VERTICAL | Gravity.LEFT, 9, 0, 0, 0));
 
             titleView = new AnimatedTextView(context);
-            titleView.setTextColor(0xFF1A9CFF);
+            titleView.setTextColor(0xFFF3F3F3);
             titleView.setTextSize(dp(14.21f));
             titleView.setTypeface(AndroidUtilities.bold());
             titleView.setEllipsizeByGradient(true);

@@ -33,7 +33,7 @@ public class CounterDrawable extends Drawable {
         textPaint.setColor(Color.WHITE);
         textPaint.setTypeface(AndroidUtilities.bold());
         textPaint.setTextSize(dp(12));
-        bgPaint.setColor(0xFF967bff);
+        bgPaint.setColor(0xFFF3F3F3);
         icon = ContextCompat.getDrawable(context, R.drawable.mini_boost_badge);
     }
 

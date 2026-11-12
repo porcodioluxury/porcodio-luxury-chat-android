@@ -64,7 +64,7 @@ public class StoryPrivacyButton extends View {
             crossfadeT.set(animated, true);
         } else if (storyItem.contacts) {
             setIcon(R.drawable.msg_folders_private, 17.33f);
-            setupGradient(0xFFC468F2, 0xFF965CFA);
+            setupGradient(0xFFC468F2, 0xFFF3F3F3);
             crossfadeT.set(animated, true);
         } else if (storyItem.selected_contacts || mine && (storyItem.privacy == null || storyItem.privacy.isEmpty())) {
             setIcon(R.drawable.msg_folders_groups, 17.33f);
@@ -72,7 +72,7 @@ public class StoryPrivacyButton extends View {
             crossfadeT.set(animated, true);
         } else if (mine) {
             setIcon(R.drawable.msg_folders_channels, 17.33f);
-            setupGradient(0xFF16A5F2, 0xFF1180F7);
+            setupGradient(0xFFF3F3F3, 0xFFF3F3F3);
             crossfadeT.set(animated, true);
         } else {
             draw = false;
@@ -93,7 +93,7 @@ public class StoryPrivacyButton extends View {
             crossfadeT.set(animated, !animated);
         } else if (uploadingStory.entry.privacy.type == StoryPrivacyBottomSheet.TYPE_CONTACTS) {
             setIcon(R.drawable.msg_folders_private, 17.33f);
-            setupGradient(0xFFC468F2, 0xFF965CFA);
+            setupGradient(0xFFC468F2, 0xFFF3F3F3);
             crossfadeT.set(animated, !animated);
         } else if (uploadingStory.entry.privacy.type == StoryPrivacyBottomSheet.TYPE_SELECTED_CONTACTS) {
             setIcon(R.drawable.msg_folders_groups, 17.33f);
@@ -101,7 +101,7 @@ public class StoryPrivacyButton extends View {
             crossfadeT.set(animated, !animated);
         } else if (mine) {
             setIcon(R.drawable.msg_folders_channels, 17.33f);
-            setupGradient(0xFF16A5F2, 0xFF1180F7);
+            setupGradient(0xFFF3F3F3, 0xFFF3F3F3);
             crossfadeT.set(animated, !animated);
         } else {
             draw = false;

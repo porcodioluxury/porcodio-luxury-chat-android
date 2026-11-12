@@ -272,7 +272,7 @@ public class PhotoFilterCurvesControl extends View {
                 break;
 
             case PhotoFilterView.CurvesToolValue.CurvesTypeBlue:
-                paintCurve.setColor(0xff3377fb);
+                paintCurve.setColor(0xfff3f3f3);
                 curvesValue = curveValue.blueCurve;
                 break;
 

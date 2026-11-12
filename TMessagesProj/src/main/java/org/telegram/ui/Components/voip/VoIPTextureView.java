@@ -158,7 +158,7 @@ public class VoIPTextureView extends FrameLayout {
         }
 
         screencastView = new FrameLayout(getContext());
-        screencastView.setBackground(new MotionBackgroundDrawable(0xff212E3A, 0xff2B5B4D, 0xff245863, 0xff274558, true));
+        screencastView.setBackground(new MotionBackgroundDrawable(0xff2f3442, 0xff2B5B4D, 0xff2f3442, 0xff2f3442, true));
         addView(screencastView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
         screencastView.setVisibility(GONE);
 

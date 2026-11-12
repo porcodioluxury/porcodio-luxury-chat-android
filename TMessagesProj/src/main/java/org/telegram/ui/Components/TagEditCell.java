@@ -379,7 +379,7 @@ public class TagEditCell extends LinearLayout {
         layout.setOrientation(LinearLayout.VERTICAL);
         b.setCustomView(layout);
 
-        final int color = owner ? 0xFF955CDB : admin ? 0xFF40A920 : 0xFF96A2AD;
+        final int color = owner ? 0xFFF3F3F3 : admin ? 0xFF40A920 : 0xFF96A2AD;
         final BackupImageView iconView = new BackupImageView(context);
         iconView.setImageResource(R.drawable.large_user_tag);
         iconView.setBackground(Theme.createCircleDrawable(dp(80), color));
@@ -396,7 +396,7 @@ public class TagEditCell extends LinearLayout {
         final String rankStr = rank == null ? (owner ? getString(R.string.ChatTagOwner) : admin ? getString(R.string.ChatTagAdmin) : "") : rank;
         SpannableStringBuilder tag = new SpannableStringBuilder(rankStr);
         if (owner || admin) {
-            final int textColor = owner ? 0xFF955CDB : 0xFF40A920;
+            final int textColor = owner ? 0xFFF3F3F3 : 0xFF40A920;
             final Paint bgPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
             bgPaint.setColor(Theme.multAlpha(textColor, 0.10f));
             tag.setSpan(new ReplacementSpan() {

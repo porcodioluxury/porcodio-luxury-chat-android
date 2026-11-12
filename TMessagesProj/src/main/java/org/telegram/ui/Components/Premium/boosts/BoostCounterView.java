@@ -40,7 +40,7 @@ public class BoostCounterView extends View {
         countText.setGravity(Gravity.CENTER);
 
         bgPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        bgPaint.setColor(0xFF967bff);
+        bgPaint.setColor(0xFFF3F3F3);
         setVisibility(GONE);
     }
 

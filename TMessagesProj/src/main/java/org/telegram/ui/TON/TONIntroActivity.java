@@ -637,7 +637,7 @@ public class TONIntroActivity extends GradientHeaderActivity implements Notifica
                 paints = new Paint[20];
                 for (int i = 0; i < paints.length; ++i) {
                     paints[i] = new Paint(Paint.ANTI_ALIAS_FLAG);
-                    paints[i].setColorFilter(new PorterDuffColorFilter(ColorUtils.blendARGB(0xFF2E81D9, 0xFF26BBFA, i / (float) (paints.length - 1)), PorterDuff.Mode.SRC_IN));
+                    paints[i].setColorFilter(new PorterDuffColorFilter(ColorUtils.blendARGB(0xFFF3F3F3, 0xFFF3F3F3, i / (float) (paints.length - 1)), PorterDuff.Mode.SRC_IN));
                 }
                 drawable.getPaint = i -> paints[i % paints.length];
                 drawable.size1 = 17;

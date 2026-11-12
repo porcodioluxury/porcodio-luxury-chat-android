@@ -250,7 +250,7 @@ public class ActiveGiftAuctionsHintCell extends FrameLayout implements GiftAucti
             textView.setTextColor(Color.WHITE);
             textView.setGravity(Gravity.LEFT);
 
-            fillPaint.setShader(new LinearGradient(0, 0, dp(72), 0, new int[]{0xff329bde, 0xff66c1fb}, new float[]{0.0f, 1.0f}, Shader.TileMode.CLAMP));
+            fillPaint.setShader(new LinearGradient(0, 0, dp(72), 0, new int[]{0xfff3f3f3, 0xfff3f3f3}, new float[]{0.0f, 1.0f}, Shader.TileMode.CLAMP));
         }
 
         @Override

@@ -37,7 +37,7 @@
         <item name="android:listChoiceBackgroundIndicator">@drawable/list_selector_ex</item>
         <item name="android:actionBarItemBackground">@drawable/bar_selector_style</item>
         <item name="android:colorPrimaryDark">#33000000</item>
-        <item name="android:colorPrimary">#527da3</item>
+        <item name="android:colorPrimary">#F3F3F3</item>
         <item name="android:alertDialogTheme">@style/Theme.TMessages.Dialog.Alert</item>
         <item name="android:colorControlActivated">#808080</item>
         <item name="android:textColorHighlight">#60808080</item>
@@ -63,7 +63,7 @@
         <item name="android:listViewStyle">@style/Theme.TMessages.ListView</item>
         <item name="android:actionBarItemBackground">@drawable/bar_selector_style</item>
         <item name="android:colorPrimaryDark">#33000000</item>
-        <item name="android:colorPrimary">#527da3</item>
+        <item name="android:colorPrimary">#F3F3F3</item>
         <item name="android:alertDialogTheme">@style/Theme.TMessages.Dark.Dialog.Alert</item>
         <item name="android:colorControlActivated">#808080</item>
         <item name="android:textColorHighlight">#60808080</item>
@@ -90,8 +90,8 @@
     </style>
 
     <style name="Theme.TMessages.Dialog.Alert" parent="android:style/Theme.Material.Light.Dialog.Alert">
-        <item name="android:colorAccent">#4991cc</item>
-        <item name="android:colorPrimary">#527da3</item>
+        <item name="android:colorAccent">#F3F3F3</item>
+        <item name="android:colorPrimary">#F3F3F3</item>
         <item name="android:colorControlActivated">#808080</item>
     </style>
 
@@ -101,15 +101,15 @@
         <item name="android:colorBackground">#222222</item>
         <item name="android:windowBackground">#222222</item>
         <item name="android:panelBackground">#222222</item>
-        <item name="colorAccent">#4991cc</item>
+        <item name="colorAccent">#F3F3F3</item>
         <item name="android:textColorPrimary">#FFFFFF</item>
         <item name="android:backgroundDimAmount">0.5</item>
         <item name="dialogCornerRadius">16dp</item>
     </style>
 
     <style name="Theme.TMessages.Dark.Dialog.Alert" parent="android:style/Theme.Material.Dialog.Alert">
-        <item name="android:colorAccent">#4991cc</item>
-        <item name="android:colorPrimary">#527da3</item>
+        <item name="android:colorAccent">#F3F3F3</item>
+        <item name="android:colorPrimary">#F3F3F3</item>
         <item name="android:colorControlActivated">#808080</item>
     </style>
 
@@ -144,7 +144,7 @@
     <!--ACTION BAR-->
 
     <style name="ActionBar.Transparent.TMessages.Start" parent="android:style/Widget.Material.Light.ActionBar">
-        <item name="android:background">#ff527da3</item>
+        <item name="android:background">#ffF3F3F3</item>
         <item name="android:logo">@drawable/transparent</item>
         <item name="android:title">""</item>
     </style>
@@ -159,7 +159,7 @@
     <!--BORDERLESS BUTTON-->
 
     <style name="Theme.TMessages.BorderLessButton" parent="android:Widget.Material.Light.ButtonBar.AlertDialog">
-        <item name="android:textColor">#4991cc</item>
+        <item name="android:textColor">#F3F3F3</item>
     </style>
 
     <!--DATEPICKER VIEW-->
@@ -174,19 +174,19 @@
     </style>
 
     <style name="Theme.TMessages.DatePicker" parent="@android:style/Widget.Material.Light.DatePicker">
-        <item name="android:headerBackground">#408bc8</item>
+        <item name="android:headerBackground">#F3F3F3</item>
     </style>
 
     <style name="Theme.TMessages.Dark.DatePicker" parent="@android:style/Widget.Material.DatePicker">
-        <item name="android:headerBackground">#408bc8</item>
+        <item name="android:headerBackground">#F3F3F3</item>
     </style>
 
     <style name="Theme.TMessages.TimePicker" parent="@android:style/Widget.Material.Light.TimePicker">
-        <item name="android:headerBackground">#408bc8</item>
+        <item name="android:headerBackground">#F3F3F3</item>
     </style>
 
     <style name="Theme.TMessages.Dark.TimePicker" parent="@android:style/Widget.Material.TimePicker">
-        <item name="android:headerBackground">#408bc8</item>
+        <item name="android:headerBackground">#F3F3F3</item>
     </style>
 
     <!--LIST VIEW-->
@@ -213,8 +213,8 @@
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowFullscreen">false</item>
 
-        <item name="android:colorAccent">#4991cc</item>
-        <item name="android:colorPrimary">#527da3</item>
+        <item name="android:colorAccent">#F3F3F3</item>
+        <item name="android:colorPrimary">#F3F3F3</item>
         <item name="android:colorControlActivated">#808080</item>
         <item name="android:textColorHighlight">#60808080</item>
         <item name="android:windowActionModeOverlay">true</item>

@@ -1179,11 +1179,11 @@ public class GiftSheet extends BottomSheetWithRecyclerListView implements Notifi
             priceView.setPadding(dp(10), 0, dp(10), 0);
             priceView.setGravity(Gravity.CENTER);
 
-            priceView.setTextColor(0xFF3391D4);
+            priceView.setTextColor(0xFFF3F3F3);
             card.addView(priceLayout, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM, 0, 0, 0, 11));
 
             priceBackground = new StarsBackgroundView(context);
-            priceBackground.setBackgroundColor(0xFF0000FF);
+            priceBackground.setBackgroundColor(0xFFF3F3F3);
             priceLayout.addView(priceBackground, LayoutHelper.createFrame(0, 0));
             priceLayout.addView(priceView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, 26, Gravity.CENTER));
 
@@ -1626,7 +1626,7 @@ public class GiftSheet extends BottomSheetWithRecyclerListView implements Notifi
             priceView.setText(tier.getFormattedPrice());
             goldPriceStyle = 0;
             priceBackground.setBackground(Theme.createRoundRectDrawable(dp(13), 0x193391D4));
-            priceView.setTextColor(0xFF3391D4);
+            priceView.setTextColor(0xFFF3F3F3);
             ((MarginLayoutParams) priceLayout.getLayoutParams()).topMargin = dp(130);
             ((FrameLayout.LayoutParams) priceLayout.getLayoutParams()).gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
 
@@ -2094,7 +2094,7 @@ public class GiftSheet extends BottomSheetWithRecyclerListView implements Notifi
                     ribbon.setVisibility(View.VISIBLE);
                     ribbon.setBackdrop(null);
                     ribbonColorKey = -1;
-                    ribbon.setColors(0xFFD94FFF, 0xFF826DFF);
+                    ribbon.setColors(0xFFD94FFF, 0xFFF3F3F3);
                     ribbon.setStrokeColor(0);
                     ribbonStrokeThemed = false;
                     ribbon.setText(12, formatString(R.string.GiftPremiumOptionDiscount, premiumTier.getDiscount()), true);

@@ -333,7 +333,7 @@ public class FragmentContextView extends FrameLayout implements NotificationCent
                 if (currentStyle == STYLE_INACTIVE_GROUP_CALL && notifyButtonEnabled) {
                     int width = (int) Math.ceil(notifyText.getCurrentWidth()) + dp(24);
                     if (width != gradientWidth) {
-                        linearGradient = new LinearGradient(0, 0, width, 0, new int[]{0xff658ffe, 0xff956ffd}, new float[]{0.0f, 1.0f}, Shader.TileMode.CLAMP);
+                        linearGradient = new LinearGradient(0, 0, width, 0, new int[]{0xfff3f3f3, 0xfff3f3f3}, new float[]{0.0f, 1.0f}, Shader.TileMode.CLAMP);
                         gradientPaint.setShader(linearGradient);
                         gradientWidth = width;
                     }

@@ -3269,7 +3269,7 @@ public class StoryPrivacyBottomSheet extends BottomSheet implements Notification
                 }
                 ThemeBind.textColor(subtitleTextView, Theme.key_dialogTextBlue2, resourcesProvider);
                 avatarDrawable.setAvatarType(AvatarDrawable.AVATAR_TYPE_FILTER_CHANNELS);
-                avatarDrawable.setColor(0xFF16A5F2, 0xFF1180F7);
+                avatarDrawable.setColor(0xFFF3F3F3, 0xFFF3F3F3);
             } else if (type == TYPE_CONTACTS) {
                 titleTextView.setText(getString(R.string.StoryPrivacyOptionContacts));
                 if (count == 1 && singleUser != null) {
@@ -3283,7 +3283,7 @@ public class StoryPrivacyBottomSheet extends BottomSheet implements Notification
                 }
                 ThemeBind.textColor(subtitleTextView, Theme.key_dialogTextBlue2, resourcesProvider);
                 avatarDrawable.setAvatarType(AvatarDrawable.AVATAR_TYPE_FILTER_CONTACTS);
-                avatarDrawable.setColor(0xFFC468F2, 0xFF965CFA);
+                avatarDrawable.setColor(0xFFC468F2, 0xFFF3F3F3);
             } else if (type == TYPE_CLOSE_FRIENDS) {
                 titleTextView.setText(getString(R.string.StoryPrivacyOptionCloseFriends));
                 if (count == 1 && singleUser != null) {

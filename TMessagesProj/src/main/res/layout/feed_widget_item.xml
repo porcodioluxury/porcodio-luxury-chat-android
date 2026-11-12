@@ -23,7 +23,7 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:textSize="16sp"
-        android:textColorLink="#2678b6"
+        android:textColorLink="#F3F3F3"
         android:textColor="#212121" />
 
 </LinearLayout>

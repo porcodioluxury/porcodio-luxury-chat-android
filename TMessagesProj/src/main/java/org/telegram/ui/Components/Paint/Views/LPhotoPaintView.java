@@ -3746,7 +3746,7 @@ public class LPhotoPaintView extends SizeNotifierFrameLayoutPhoto implements IPh
                 int[] colors = {
                         0xffeb4b4b,
                         0xffee82ee,
-                        0xff6080e4,
+                        0xfff3f3f3,
                         Color.CYAN,
                         0xff8fce00,
                         Color.YELLOW,

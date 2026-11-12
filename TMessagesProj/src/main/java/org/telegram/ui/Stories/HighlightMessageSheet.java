@@ -55,9 +55,9 @@ public class HighlightMessageSheet {
             500,        900,         200,         7,           0xFFED771E, 0xFFED771E, 0xFF9B3100,
             250,        600,         150,         4,           0xFFE29A09, 0xFFE29A09, 0xFF9A3E00,
             100,        300,         110,         3,           0xFF40A920, 0xFF40A920, 0xFF176200,
-            50,         120,         80,          2,           0xFF46A3EB, 0xFF46A3EB, 0xFF00508E,
-            10,         60,          60,          1,           0xFF955CDB, 0xFF955CDB, 0xFF49079B,
-            0,          30,          30,          0,           0xFF955CDB, 0xFF955CDB, 0xFF49079B
+            50,         120,         80,          2,           0xFFF3F3F3, 0xFFF3F3F3, 0xFF2F3442,
+            10,         60,          60,          1,           0xFFF3F3F3, 0xFFF3F3F3, 0xFFF3F3F3,
+            0,          30,          30,          0,           0xFFF3F3F3, 0xFFF3F3F3, 0xFFF3F3F3
         };
     }
 

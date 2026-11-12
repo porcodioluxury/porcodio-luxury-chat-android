@@ -88,8 +88,8 @@ public abstract class PrivateVideoPreviewDialogNew extends FrameLayout implement
 
     private final BitmapShaderTools bgGreenShaderTools = new BitmapShaderTools(80, 80);
     private final BitmapShaderTools bgBlueVioletShaderTools = new BitmapShaderTools(80, 80);
-    private final MotionBackgroundDrawable bgGreen = new MotionBackgroundDrawable(0xFF5FD051, 0xFF00B48E, 0xFFA9CC66, 0xFF5AB147, 0, false, true);
-    private final MotionBackgroundDrawable bgBlueViolet = new MotionBackgroundDrawable(0xFF00A3E6, 0xFF296EF7, 0xFF18CEE2, 0xFF3FB2FF, 0, false, true);
+    private final MotionBackgroundDrawable bgGreen = new MotionBackgroundDrawable(0xFF5FD051, 0xFFF3F3F3, 0xFFA9CC66, 0xFF5AB147, 0, false, true);
+    private final MotionBackgroundDrawable bgBlueViolet = new MotionBackgroundDrawable(0xFFF3F3F3, 0xFFF3F3F3, 0xFFF3F3F3, 0xFFF3F3F3, 0, false, true);
     private final GestureDetector scrollGestureDetector;
 
     public PrivateVideoPreviewDialogNew(Context context, float startLocationX, float startLocationY) {
@@ -490,7 +490,7 @@ public abstract class PrivateVideoPreviewDialogNew extends FrameLayout implement
     private void createPages(FrameLayout container) {
         {
             FrameLayout frameLayout = new FrameLayout(getContext());
-            frameLayout.setBackground(new MotionBackgroundDrawable(0xff212E3A, 0xff2B5B4D, 0xff245863, 0xff274558, true));
+            frameLayout.setBackground(new MotionBackgroundDrawable(0xff2f3442, 0xff2B5B4D, 0xff2f3442, 0xff2f3442, true));
 
             ImageView imageView = new ImageView(getContext());
             imageView.setScaleType(ImageView.ScaleType.CENTER);

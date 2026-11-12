@@ -28,7 +28,7 @@
     </style>
 
     <style name="ActionBar.Transparent.TMessages.Start" parent="android:style/Widget.Material.Light.ActionBar">
-        <item name="android:background">#ff232d3a</item>
+        <item name="android:background">#ff2F3442</item>
         <item name="android:textColor">#ffffff</item>
         <item name="android:logo">@drawable/transparent</item>
         <item name="android:title">""</item>

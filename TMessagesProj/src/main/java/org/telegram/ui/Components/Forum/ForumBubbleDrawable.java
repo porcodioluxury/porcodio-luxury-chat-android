@@ -51,7 +51,7 @@ public class ForumBubbleDrawable extends Drawable {
     static final SparseArray<int[]> colorsMap = new SparseArray<>();
 
     static {
-        colorsMap.put(0x6FB9F0, new int[]{0xff015EC1, 0xff4BB7FF}); //blue
+        colorsMap.put(0x6FB9F0, new int[]{0xfff3f3f3, 0xfff3f3f3}); //blue
         colorsMap.put(0xFFD67E, new int[]{0xffEA5800, 0xffFFDB5C}); //yellow
         colorsMap.put(0xCB86DB, new int[]{0xffA438BB, 0xffE57AFF}); //violet
         colorsMap.put(0x8EEE98, new int[]{0xff11B411, 0xff97E334}); //green

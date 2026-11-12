@@ -85,7 +85,7 @@ public class GroupCallMessageCell extends ViewGroup
         messageTextView.setDisablePaddingsOffset(true);
         messageTextView.setTextSize(14);
         messageTextView.setTextColor(Color.WHITE);
-        messageTextView.setLinkTextColor(0xFF4db8ff);
+        messageTextView.setLinkTextColor(0xFFF3F3F3);
         messageTextView.setHintTextColor(Color.WHITE);
         addView(messageTextView);
 

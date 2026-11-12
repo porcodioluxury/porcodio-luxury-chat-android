@@ -56,7 +56,7 @@ public class BottomPagesView extends View {
         if (colorKey >= 0) {
             paint.setColor((Theme.getColor(colorKey) & 0x00ffffff) | 0xb4000000);
         } else {
-            paint.setColor(Theme.getCurrentTheme().isDark() ? 0xff555555 : 0xffbbbbbb);
+            paint.setColor(Theme.getCurrentTheme().isDark() ? 0xff2F3442 : 0xffbbbbbb);
         }
         int x;
         currentPage = viewPager.getCurrentItem();
@@ -71,7 +71,7 @@ public class BottomPagesView extends View {
         if (selectedColorKey >= 0) {
             paint.setColor(Theme.getColor(selectedColorKey));
         } else {
-            paint.setColor(ThemeColors.TELEGRAM_COLOR);
+            paint.setColor(Theme.getCurrentTheme().isDark() ? 0xffF3F3F3 : 0xff242833);
         }
         x = currentPage * AndroidUtilities.dp(11);
         if (progress != 0) {

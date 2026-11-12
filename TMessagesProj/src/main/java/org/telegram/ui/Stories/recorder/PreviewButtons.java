@@ -231,7 +231,7 @@ public class PreviewButtons extends FrameLayout {
             this.arrow = withArrow;
 
 //            buttonPaint.setColor(0xffffffff);
-            buttonPaint.setColor(0xff199cff);
+            buttonPaint.setColor(0xfff3f3f3);
             darkenPaint.setColor(0x60000000);
 
             textPaint.setTextSize(dp(13));

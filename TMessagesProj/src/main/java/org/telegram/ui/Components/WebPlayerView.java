@@ -1273,7 +1273,7 @@ public class WebPlayerView extends ViewGroup implements VideoPlayer.VideoPlayerD
             textPaint.setTextSize(AndroidUtilities.dp(12));
 
             progressPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-            progressPaint.setColor(0xff19a7e8);
+            progressPaint.setColor(0xfff3f3f3);
 
             progressInnerPaint = new Paint();
             progressInnerPaint.setColor(0xff959197);

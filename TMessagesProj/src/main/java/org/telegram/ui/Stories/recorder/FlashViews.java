@@ -46,10 +46,10 @@ import java.util.ArrayList;
 
 public class FlashViews {
 
-    public static final int[] COLORS = new int[]{0xffffffff, 0xfffeee8c, 0xff8cdfff};
+    public static final int[] COLORS = new int[]{0xffffffff, 0xfffeee8c, 0xfff3f3f3};
     public static int getColor(float warmth) {
         if (warmth < .5f) {
-            return ColorUtils.blendARGB(0xff8cdfff, 0xffffffff, Utilities.clamp(warmth / .5f, 1, 0));
+            return ColorUtils.blendARGB(0xfff3f3f3, 0xffffffff, Utilities.clamp(warmth / .5f, 1, 0));
         }
         return ColorUtils.blendARGB(0xffffffff, 0xfffeee8c, Utilities.clamp((warmth - .5f) / .5f, 1, 0));
     }

@@ -4,8 +4,6 @@
 Lo script parte da tools/porcodio/upstream/darkblue.attheme (copia dell'originale) e riscrive l'asset."""
 import re, os, colorsys
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
-SRC = os.path.join(ROOT, 'tools/porcodio/upstream/darkblue.attheme')
-DST = os.path.join(ROOT, 'TMessagesProj/src/main/assets/darkblue.attheme')
 BG, SURF, RAISED, BORDER = 0x121212, 0x1A1A1A, 0x242833, 0x2F3442
 TXT, TXT2 = 0xF3F3F3, 0xBFBFBF
 DARK_ON_ACCENT = 0x121212
@@ -52,25 +50,46 @@ def transform(key, argb):
         v = int(l * 255); out = (v << 16) | (v << 8) | v
     return (a << 24) | out
 
-lines = open(SRC, encoding='utf-8').read().splitlines()
-res = []
-seen = set()
-for ln in lines:
-    m = re.match(r'^(\w+)=(.+)$', ln)
-    if not m: res.append(ln); continue
-    key, val = m.group(1), m.group(2)
-    try: argb, kind = parse(val)
-    except ValueError: res.append(ln); continue
-    seen.add(key)
-    if key in OVERRIDE:
-        new = (argb & 0xFF000000) | OVERRIDE[key] if OVERRIDE[key] <= 0xFFFFFF else OVERRIDE[key]
-        if (argb >> 24) == 0xFF: new |= 0xFF000000
-    elif TEXT_ON_ACCENT.search(key):
-        new = 0xFF000000 | DARK_ON_ACCENT
-    else:
-        new = transform(key, argb)
-    res.append('%s=%s' % (key, fmt(new, kind)))
-for k, v in OVERRIDE.items():
-    if k not in seen: res.append('%s=%s' % (k, fmt(0xFF000000 | (v & 0xFFFFFF), 'int')))
-open(DST, 'w', encoding='utf-8').write('\n'.join(res) + '\n')
-print('chiavi:', len(seen))
+
+sys_import = __import__('sys')
+LIGHT_ASSETS = ('arctic', 'day', 'bluebubbles')
+DARK_ASSETS = ('darkblue', 'night')
+
+def light_transform(argb):
+    a = (argb >> 24) & 0xFF; r, g, b = (argb >> 16) & 0xFF, (argb >> 8) & 0xFF, argb & 0xFF
+    h, l, s = colorsys.rgb_to_hls(r / 255, g / 255, b / 255)
+    if 165 <= h * 360 <= 275 and s > 0.2:
+        out = 0x1A1A1A if l < 0.15 else 0xE6E7EB if l >= 0.8 else 0x242833
+        return (a << 24) | out
+    return argb
+
+for name in DARK_ASSETS + LIGHT_ASSETS:
+    SRC = os.path.join(ROOT, 'tools/porcodio/upstream/%s.attheme' % name)
+    DST = os.path.join(ROOT, 'TMessagesProj/src/main/assets/%s.attheme' % name)
+    if not os.path.exists(SRC):
+        import shutil; os.makedirs(os.path.dirname(SRC), exist_ok=True); shutil.copy(DST, SRC)
+    dark = name in DARK_ASSETS
+    lines = open(SRC, encoding='utf-8').read().splitlines()
+    res = []; seen = set()
+    for ln in lines:
+        m = re.match(r'^(\w+)=(.+)$', ln)
+        if not m: res.append(ln); continue
+        key, val = m.group(1), m.group(2)
+        try: argb, kind = parse(val)
+        except ValueError: res.append(ln); continue
+        seen.add(key)
+        if not dark:
+            new = light_transform(argb)
+        elif key in OVERRIDE:
+            new = (argb & 0xFF000000) | OVERRIDE[key] if OVERRIDE[key] <= 0xFFFFFF else OVERRIDE[key]
+            if (argb >> 24) == 0xFF: new |= 0xFF000000
+        elif TEXT_ON_ACCENT.search(key):
+            new = 0xFF000000 | DARK_ON_ACCENT
+        else:
+            new = transform(key, argb)
+        res.append('%s=%s' % (key, fmt(new, kind)))
+    if dark:
+        for k, v in OVERRIDE.items():
+            if k not in seen: res.append('%s=%s' % (k, fmt(0xFF000000 | (v & 0xFFFFFF), 'int')))
+    open(DST, 'w', encoding='utf-8').write('\n'.join(res) + '\n')
+    print(name, 'chiavi:', len(seen))

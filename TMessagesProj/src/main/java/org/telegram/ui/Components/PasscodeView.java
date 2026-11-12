@@ -1493,7 +1493,7 @@ public class PasscodeView extends FrameLayout implements NotificationCenter.Noti
         } else {
             String selectedBackgroundSlug = Theme.getSelectedBackgroundSlug();
             if (Theme.DEFAULT_BACKGROUND_SLUG.equals(selectedBackgroundSlug) || Theme.isPatternWallpaper()) {
-                backgroundFrameLayout.setBackgroundColor(backgroundFrameLayoutColor = 0xff517c9e);
+                backgroundFrameLayout.setBackgroundColor(backgroundFrameLayoutColor = 0xfff3f3f3);
             } else {
                 backgroundDrawable = Theme.getCachedWallpaper();
                 if (backgroundDrawable instanceof BackgroundGradientDrawable) {
@@ -1501,7 +1501,7 @@ public class PasscodeView extends FrameLayout implements NotificationCenter.Noti
                 } else if (backgroundDrawable != null) {
                     backgroundFrameLayout.setBackgroundColor(backgroundFrameLayoutColor = 0xbf000000);
                 } else {
-                    backgroundFrameLayout.setBackgroundColor(backgroundFrameLayoutColor = 0xff517c9e);
+                    backgroundFrameLayout.setBackgroundColor(backgroundFrameLayoutColor = 0xfff3f3f3);
                 }
             }
         }

@@ -447,7 +447,7 @@ public class TranslateButton extends FrameLayout implements Theme.Colorable {
         final FrameLayout topView = new FrameLayout(context);
         final GradientDrawable bg = new GradientDrawable();
         bg.setGradientType(GradientDrawable.RADIAL_GRADIENT);
-        bg.setColors(new int[] { 0xFF0C2065, 0xFF06112A });
+        bg.setColors(new int[] { 0xFF2F3442, 0xFF1A1A1A });
         bg.setGradientRadius(dp(150));
         final float r = dp(12);
         bg.setCornerRadii(new float[] { r, r, r, r, 0, 0, 0, 0 });
@@ -466,7 +466,7 @@ public class TranslateButton extends FrameLayout implements Theme.Colorable {
         topViewLayout.addView(titleView, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER_HORIZONTAL | Gravity.TOP, 32, 12, 32, 0));
 
         final TextView subtitleView = new TextView(context);
-        subtitleView.setTextColor(0xFFB8C9EF);
+        subtitleView.setTextColor(0xFFF3F3F3);
         subtitleView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 13);
         subtitleView.setGravity(Gravity.CENTER);
         final SpannableStringBuilder subtitle = AndroidUtilities.replaceTags(getString(R.string.CocoonSubtitle));

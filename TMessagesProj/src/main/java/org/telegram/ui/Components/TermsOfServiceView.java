@@ -143,7 +143,7 @@ public class TermsOfServiceView extends FrameLayout {
         acceptTextView.setTypeface(AndroidUtilities.bold());
         acceptTextView.setTextColor(0xffffffff);
         acceptTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
-        acceptTextView.setBackgroundDrawable(Theme.createSimpleSelectorRoundRectDrawable(AndroidUtilities.dp(4), 0xff50a8eb, 0xff439bde));
+        acceptTextView.setBackgroundDrawable(Theme.createSimpleSelectorRoundRectDrawable(AndroidUtilities.dp(4), 0xfff3f3f3, 0xfff3f3f3));
         acceptTextView.setPadding(AndroidUtilities.dp(34), 0, AndroidUtilities.dp(34), 0);
         addView(acceptTextView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, 42, Gravity.RIGHT | Gravity.BOTTOM, 16, 0, 16, 16));
         acceptTextView.setOnClickListener(view -> {
@@ -182,7 +182,7 @@ public class TermsOfServiceView extends FrameLayout {
         }
         SpannableStringBuilder builder = new SpannableStringBuilder(tos.text);
         MessageObject.addEntitiesToText(builder, tos.entities, false, false, false, false);
-        addBulletsToText(builder, '-', AndroidUtilities.dp(10f), 0xff50a8eb, AndroidUtilities.dp(4f));
+        addBulletsToText(builder, '-', AndroidUtilities.dp(10f), 0xfff3f3f3, AndroidUtilities.dp(4f));
         textView.setText(builder);
         currentTos = tos;
         currentAccount = account;

@@ -208,7 +208,7 @@ public class WalletCardComponent extends FrameLayout implements NotificationCent
         usdBalanceView.setScaleProperty(0.6f);
         usdBalanceView.setTypeface(AndroidUtilities.getTypeface("fonts/gram.ttf"));
         usdBalanceView.setTextSize(dp(14));
-        usdBalanceView.setTextColor(0xFF87EFFF);
+        usdBalanceView.setTextColor(0xFFF3F3F3);
         usdBalanceView.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
         usdBalanceView.setTextDirection(View.TEXT_DIRECTION_LTR);
         usdBalanceView.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
@@ -431,7 +431,7 @@ public class WalletCardComponent extends FrameLayout implements NotificationCent
         // Refresh the number's recorded ink color even when sticker coverage is unchanged.
         cardNumberView.invalidate();
         ((WalletCard2DView) cardView).setStickerStyle(style);
-        usdBalanceView.setTextColor(WalletGiftPalette.tint(0xFF87EFFF, style));
+        usdBalanceView.setTextColor(WalletGiftPalette.tint(0xFFF3F3F3, style));
         cardHolderView.invalidate();
     }
 
@@ -734,7 +734,7 @@ public class WalletCardComponent extends FrameLayout implements NotificationCent
         text.append(LocaleController.getString(R.string.GramCurrency));
         text.setSpan(new android.text.style.CharacterStyle() {
             @Override public void updateDrawState(android.text.TextPaint paint) {
-                paint.setColor(stickerStyle == null ? 0xFF6DDCFF : WalletGiftPalette.tint(0xFF6DDCFF, stickerStyle));
+                paint.setColor(stickerStyle == null ? 0xFFF3F3F3 : WalletGiftPalette.tint(0xFFF3F3F3, stickerStyle));
             }
         }, labelStart, text.length(),
                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);

@@ -269,7 +269,7 @@ public class EditTextEmoji extends FrameLayout implements NotificationCenter.Not
             editText.setPadding(0, dp(9), 0, dp(9));
             editText.setHandlesColor(0xffffffff);
             editText.setHighlightColor(0x30ffffff);
-            editText.setLinkTextColor(0xFF46A3EB);
+            editText.setLinkTextColor(0xFFF3F3F3);
             editText.quoteColor = 0xffffffff;
             editText.setTextIsSelectable(true);
             setClipChildren(false);

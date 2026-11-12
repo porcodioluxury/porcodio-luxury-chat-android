@@ -1537,4 +1537,17 @@
     <string name="RemindDayAt">\'Ricorda il\' d MMM \'alle\' HH:mm</string>
     <string name="RemindDayYearAt">\'Ricorda il\' d MMM yyyy \'alle\' HH:mm</string>
     <string name="BotsMenuTitle">Menu</string>
+    <string name="PcIntro1Title">Porcodio Luxury Chat</string>
+    <string name="PcIntro1Message">Messaggi di lusso: veloci, privati e semplicemente eleganti.</string>
+    <string name="PcIntro2Title">Veloce</string>
+    <string name="PcIntro2Message">I tuoi messaggi arrivano all\'istante, su ogni dispositivo.</string>
+    <string name="PcIntro3Title">Elegante</string>
+    <string name="PcIntro3Message">Un design scuro e raffinato, firmato Porcodio Luxury.</string>
+    <string name="PcIntro4Title">Privato</string>
+    <string name="PcIntro4Message">Le tue conversazioni sono protette da crittografia avanzata.</string>
+    <string name="PcIntro5Title">Ovunque</string>
+    <string name="PcIntro5Message">Telefono, tablet e computer: le tue chat restano sempre sincronizzate.</string>
+    <string name="PcIntro6Title">Senza limiti</string>
+    <string name="PcIntro6Message">Gruppi, canali, chiamate e file di ogni dimensione, tutto in un unico posto.</string>
+    <string name="StartMessaging">Inizia a chattare</string>
 </resources>

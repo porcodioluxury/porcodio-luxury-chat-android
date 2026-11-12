@@ -106,7 +106,7 @@ public class ReassignBoostBottomSheet extends BottomSheetWithRecyclerListView {
         ThemeBind.backgroundColor(buttonContainer, Theme.key_dialogBackground, resourcesProvider);
         actionButton = new GradientButtonWithCounterView(getContext(), true, resourcesProvider);
         actionButton.withCounterIcon();
-        actionButton.setCounterColor(0xFF9874fc);
+        actionButton.setCounterColor(0xFFF3F3F3);
         actionButton.setOnClickListener(view -> {
             if (selectedBoosts.isEmpty()) {
                 return;

@@ -1756,11 +1756,15 @@ public class Theme {
             for (int a = 0; a < accent.length; a++) {
                 ThemeAccent themeAccent = new ThemeAccent();
                 themeAccent.id = ids != null ? ids[a] : a;
+                themeAccent.parentTheme = this;
+                // Porcodio Luxury Chat: niente accenti colorati (blu Telegram e altri): resta solo l'accento di base
+                if (themeAccent.id != 0 && !isHome(themeAccent)) {
+                    continue;
+                }
                 if (isHome(themeAccent)) {
                     themeAccent.isDefault = true;
                 }
                 themeAccent.accentColor = accent[a];
-                themeAccent.parentTheme = this;
                 if (myMessages != null) {
                     themeAccent.myMessagesAccentColor = myMessages[a];
                 }
@@ -1816,10 +1820,24 @@ public class Theme {
                         themeAccent.backgroundGradientOverrideColor3 = 0xff333258;
                     }
                 }
+                // Porcodio Luxury Chat: palette PORCODIO, nessun colore messaggi / sfondo personalizzato dall'accento
+                boolean pcDark = "Dark Blue".equals(name) || "Night".equals(name);
+                themeAccent.accentColor = pcDark ? 0xFFF3F3F3 : 0xFF242833;
+                themeAccent.myMessagesAccentColor = 0;
+                themeAccent.myMessagesGradientAccentColor1 = 0;
+                themeAccent.myMessagesGradientAccentColor2 = 0;
+                themeAccent.myMessagesGradientAccentColor3 = 0;
+                if (themeAccent.backgroundOverrideColor != 0x100000000L) themeAccent.backgroundOverrideColor = 0;
+                if (themeAccent.backgroundGradientOverrideColor1 != 0x100000000L) themeAccent.backgroundGradientOverrideColor1 = 0;
+                if (themeAccent.backgroundGradientOverrideColor2 != 0x100000000L) themeAccent.backgroundGradientOverrideColor2 = 0;
+                if (themeAccent.backgroundGradientOverrideColor3 != 0x100000000L) themeAccent.backgroundGradientOverrideColor3 = 0;
+                themeAccent.patternSlug = "";
+                themeAccent.patternIntensity = 0;
                 themeAccentsMap.put(themeAccent.id, themeAccent);
                 themeAccents.add(themeAccent);
             }
-            accentBaseColor = themeAccentsMap.get(0).accentColor;
+            defaultAccentCount = themeAccents.size();
+            accentBaseColor = themeAccentsMap.get(0) != null ? themeAccentsMap.get(0).accentColor : themeAccents.get(0).accentColor;
         }
 
         @UiThread
@@ -4097,6 +4115,14 @@ public class Theme {
         sortAccents(themeInfo);
         themes.add(themeInfo);
         themesDict.put("Night", themeInfo);
+
+        // Porcodio Luxury Chat: anteprime dei temi built-in con la palette PORCODIO
+        for (ThemeInfo pcTheme : themes) {
+            boolean pcDark = "Dark Blue".equals(pcTheme.name) || "Night".equals(pcTheme.name);
+            pcTheme.previewBackgroundColor = pcDark ? 0xFF121212 : 0xFFF3F3F3;
+            pcTheme.previewInColor = pcDark ? 0xFF242833 : 0xFFFFFFFF;
+            pcTheme.previewOutColor = pcDark ? 0xFF2F3442 : 0xFFBFBFBF;
+        }
 
         String themesString = themeConfig.getString("themes2", null);
 

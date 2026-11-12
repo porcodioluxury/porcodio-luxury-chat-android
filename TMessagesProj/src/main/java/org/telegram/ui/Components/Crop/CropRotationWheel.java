@@ -65,7 +65,7 @@ public class CropRotationWheel extends FrameLayout {
 
         bluePaint = new Paint();
         bluePaint.setStyle(Paint.Style.FILL);
-        bluePaint.setColor(0xff51bdf3);
+        bluePaint.setColor(0xfff3f3f3);
         bluePaint.setAlpha(255);
         bluePaint.setAntiAlias(true);
 
@@ -164,7 +164,7 @@ public class CropRotationWheel extends FrameLayout {
     }
 
     public void setAspectLock(boolean enabled) {
-        aspectRatioButton.setColorFilter(enabled ? new PorterDuffColorFilter(0xff51bdf3, PorterDuff.Mode.MULTIPLY) : null);
+        aspectRatioButton.setColorFilter(enabled ? new PorterDuffColorFilter(0xfff3f3f3, PorterDuff.Mode.MULTIPLY) : null);
     }
 
     @Override

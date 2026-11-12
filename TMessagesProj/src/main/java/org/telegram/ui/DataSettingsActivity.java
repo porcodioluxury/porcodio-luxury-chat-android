@@ -663,10 +663,10 @@ public class DataSettingsActivity extends BaseFragment {
                     TextCell textCell = (TextCell) holder.itemView;
                     if (position == storageUsageRow) {
                         if (storageUsageLoading) {
-                            textCell.setTextAndValueAndColorfulIcon(LocaleController.getString(R.string.StorageUsage), "", false, R.drawable.msg_filled_storageusage, 0xFF4F85F6, 0xFF3568E8, false);
+                            textCell.setTextAndValueAndColorfulIcon(LocaleController.getString(R.string.StorageUsage), "", false, R.drawable.msg_filled_storageusage, 0xFFF3F3F3, 0xFFF3F3F3, false);
                             textCell.setDrawLoading(true, 45, updateStorageUsageAnimated);
                         } else {
-                            textCell.setTextAndValueAndColorfulIcon(LocaleController.getString(R.string.StorageUsage), storageUsageSize <= 0 ? "" : AndroidUtilities.formatFileSize(storageUsageSize), true, R.drawable.msg_filled_storageusage, 0xFF4F85F6, 0xFF3568E8, false);
+                            textCell.setTextAndValueAndColorfulIcon(LocaleController.getString(R.string.StorageUsage), storageUsageSize <= 0 ? "" : AndroidUtilities.formatFileSize(storageUsageSize), true, R.drawable.msg_filled_storageusage, 0xFFF3F3F3, 0xFFF3F3F3, false);
                             textCell.setDrawLoading(false, 45, updateStorageUsageAnimated);
                         }
                         updateStorageUsageAnimated = false;

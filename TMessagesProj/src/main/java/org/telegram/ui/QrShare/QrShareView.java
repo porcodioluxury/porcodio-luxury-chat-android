@@ -614,7 +614,7 @@ public class QrShareView extends View {
 
     /** The blur's stand-in: the backdrop's mean colour, nearly opaque (a blur of a gradient is close to its mean). */
     private void drawFrost(Canvas c, RectF bounds, float alpha) {
-        final int base = scene != null ? ColorUtils.blendARGB(scene.center, scene.edge, 0.5f) : 0xFF3A6EA5;
+        final int base = scene != null ? ColorUtils.blendARGB(scene.center, scene.edge, 0.5f) : 0xFFF3F3F3;
         fill.setColor(base | 0xFF000000);
         fill.setAlpha((int) (255 * FROST_ALPHA * Utilities.clamp01(alpha)));
         c.drawRect(bounds, fill);
@@ -679,7 +679,7 @@ public class QrShareView extends View {
 
     static int slotIndex(int slot) {return Backdrops.orderToIndex(slot);}
 
-    static final int DEFAULT_TOP = 0xFF3FB1FF, DEFAULT_BOTTOM = 0xFF166ACE, DEFAULT_QR = 0xFF0075F1; // as tuned by the user 2026-10-15
+    static final int DEFAULT_TOP = 0xFFF3F3F3, DEFAULT_BOTTOM = 0xFFF3F3F3, DEFAULT_QR = 0xFFF3F3F3; // as tuned by the user 2026-10-15
 
     private Scene colorScene(int i) {
         final Scene s = new Scene();
@@ -934,7 +934,7 @@ public class QrShareView extends View {
         }
         if (!QrRender.hasEffects() || !hasBlur(c)) {
             // the caller clips to its glass
-            final int base = scene != null ? ColorUtils.blendARGB(scene.center, scene.edge, 0.5f) : 0xFF3A6EA5;
+            final int base = scene != null ? ColorUtils.blendARGB(scene.center, scene.edge, 0.5f) : 0xFFF3F3F3;
             c.drawColor(ColorUtils.setAlphaComponent(base, (int) (255 * FROST_ALPHA)));
             return true;
         }
@@ -2072,17 +2072,16 @@ public class QrShareView extends View {
     /** The plane at its best frame (the stock QR screen's frame), rendered once from the same animation. */
     private void ensureLogoOptimal() {
         if (logoOptimal != null || logo.getIntrinsicWidth() <= 0) return;
-        org.telegram.ui.Components.RLottieNative frames = null;
         try {
-            frames = org.telegram.ui.Components.RLottieNative.createFromRawJson(AndroidUtilities.readRes(R.raw.plane_logo_plain));
-            if (frames == null) return;
-            final Bitmap b = Bitmap.createBitmap(logo.getIntrinsicWidth(), logo.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-            frames.getFrame(Math.min(LOGO_OPTIMAL_FRAME, frames.getFrameCount() - 1), b, true);
+            // Porcodio Luxury Chat: logo Porcodio al posto dell'aeroplanino Telegram
+            final android.graphics.drawable.Drawable crest = getContext().getResources().getDrawable(R.drawable.porcodio_crest_white).mutate();
+            final Bitmap b = Bitmap.createBitmap(dp(60), dp(60), Bitmap.Config.ARGB_8888);
+            final Canvas bc = new Canvas(b);
+            crest.setBounds(dp(12), dp(12), dp(48), dp(48));
+            crest.draw(bc);
             logoOptimal = b;
         } catch (Throwable e) {
             org.telegram.messenger.FileLog.e(e);
-        } finally {
-            if (frames != null) frames.recycle();
         }
     }
 
@@ -3833,10 +3832,11 @@ public class QrShareView extends View {
                     rect3.set(lcx - lr, lcy - lr, lcx + lr, lcy + lr);
                     c.drawBitmap(logoOptimal, null, rect3, logoOptimalPaint);
                 } else {
-                    logo.setAlpha((int) (255 * Utilities.clamp01(pu * 2f)));
-                    logo.setBounds((int) (lcx - lr), (int) (lcy - lr), (int) (lcx + lr), (int) (lcy + lr));
-                    logo.draw(c);
-                    logo.setAlpha(255);
+                    final android.graphics.drawable.Drawable crest = getContext().getResources().getDrawable(R.drawable.porcodio_crest_white).mutate();
+                    crest.setAlpha((int) (255 * Utilities.clamp01(pu * 2f)));
+                    final float ci = lr * 0.6f;
+                    crest.setBounds((int) (lcx - ci), (int) (lcy - ci), (int) (lcx + ci), (int) (lcy + ci));
+                    crest.draw(c);
                 }
                 c.restore();
             }

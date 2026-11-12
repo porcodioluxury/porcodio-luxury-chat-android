@@ -208,13 +208,13 @@ public class DataUsage2Activity extends BaseFragment {
     }
 
     private static final int[][] colors2 = {
-        {0xFF1CA5ED, 0xFF1488E1},
+        {0xFFF3F3F3, 0xFFF3F3F3},
         {0xFF55CA47, 0xFF27B434},
-        {0xFF4F85F6, 0xFF3568E8},
+        {0xFFF3F3F3, 0xFFF3F3F3},
         {0xFFF09F1B, 0xFFE18A11},
         {0xFFF45255, 0xFFDF3955},
-        {0xFFC46EF4, 0xFF9F55DF},
-        {0xFF32C0CE, 0xFF1D9CC6}
+        {0xFFC46EF4, 0xFFF3F3F3},
+        {0xFFF3F3F3, 0xFFF3F3F3}
     };
 
     private static int[] colors = {
@@ -519,7 +519,7 @@ public class DataUsage2Activity extends BaseFragment {
                 itemInners.add(ItemInner.asCell(
                         -1,
                         R.drawable.msg_filled_data_sent,
-                        0xFF4F85F6, 0xFF3568E8,
+                        0xFFF3F3F3, 0xFFF3F3F3,
                         LocaleController.getString(R.string.BytesSent),
                         AndroidUtilities.formatFileSize(totalSizeOut)
                 ));
@@ -543,7 +543,7 @@ public class DataUsage2Activity extends BaseFragment {
                 itemInners.add(ItemInner.asCell(
                         -2,
                         R.drawable.msg_download_settings,
-                        0xFF4F85F6, 0xFF3568E8,
+                        0xFFF3F3F3, 0xFFF3F3F3,
                         LocaleController.getString(R.string.AutomaticDownloadSettings),
                         null
                 ));

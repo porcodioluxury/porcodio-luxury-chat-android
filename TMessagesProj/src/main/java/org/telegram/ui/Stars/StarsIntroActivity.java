@@ -5278,7 +5278,7 @@ public class StarsIntroActivity extends GradientHeaderActivity implements Notifi
         linearLayout.addView(textView, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER, 20, 0, 20, 4));
 
         textView = new TextView(context);
-        textView.setBackground(Theme.createRoundRectDrawable(dp(20), 0xFF967BFF));
+        textView.setBackground(Theme.createRoundRectDrawable(dp(20), 0xFFF3F3F3));
         textView.setTextColor(0xFFFFFFFF);
         textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 11.33f);
         textView.setPadding(dp(4), 0, dp(8.33f), 0);
