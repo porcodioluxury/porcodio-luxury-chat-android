@@ -1,0 +1,103 @@
+name: Android APK (Porcodio Luxury Chat)
+
+on:
+  workflow_dispatch:
+    inputs:
+      abis:
+        description: "ABI da compilare (separate da virgola)"
+        default: "arm64-v8a"
+      build_type:
+        description: "release (firmata) oppure debug"
+        default: "release"
+  push:
+    branches: [main]
+    paths-ignore: ['**.md']
+
+concurrency:
+  group: android-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 345
+    env:
+      ABIS: ${{ github.event.inputs.abis || 'arm64-v8a' }}
+      BUILD_TYPE: ${{ github.event.inputs.build_type || 'release' }}
+      USE_CCACHE: "1"
+      CCACHE_DIR: ${{ github.workspace }}/.ccache
+      CCACHE_MAXSIZE: 1500M
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Libera spazio su disco
+        run: |
+          df -h /
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android/sdk/ndk /opt/ghc /usr/local/.ghcup \
+            /usr/share/swift /usr/local/share/boost /opt/hostedtoolcache/CodeQL /usr/local/graalvm \
+            /usr/local/share/powershell /usr/local/share/chromium /usr/lib/google-cloud-sdk /usr/lib/firefox \
+            /usr/lib/jvm/temurin-8-jdk-amd64 /usr/lib/jvm/temurin-11-jdk-amd64 || true
+          sudo apt-get clean || true
+          df -h /
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: "platform-tools platforms;android-36 build-tools;36.0.0 ndk;27.2.12479018 cmake;3.22.1"
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: ccache
+        uses: actions/cache@v4
+        with:
+          path: .ccache
+          key: ccache-${{ env.ABIS }}-${{ github.run_id }}
+          restore-keys: |
+            ccache-${{ env.ABIS }}-
+
+      - name: Installa ccache
+        run: sudo apt-get install -y ccache && ccache -z
+
+      - name: Prepara keystore di firma
+        if: env.BUILD_TYPE == 'release'
+        env:
+          KS_B64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        run: |
+          echo "$KS_B64" | base64 -d > "$RUNNER_TEMP/porcodio-release.jks"
+          echo "PORCODIO_KEYSTORE=$RUNNER_TEMP/porcodio-release.jks" >> "$GITHUB_ENV"
+
+      - name: Compila APK
+        env:
+          TELEGRAM_API_ID: ${{ secrets.TELEGRAM_API_ID }}
+          TELEGRAM_API_HASH: ${{ secrets.TELEGRAM_API_HASH }}
+          PORCODIO_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          PORCODIO_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          PORCODIO_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          if [ "$BUILD_TYPE" = "release" ]; then TASK=:TMessagesProj_App:assembleAfatRelease; else TASK=:TMessagesProj_App:assembleAfatDebug; fi
+          chmod +x gradlew
+          ./gradlew "$TASK" -PPORCODIO_ABIS="$ABIS" --no-daemon --stacktrace -Dorg.gradle.jvmargs="-Xmx6g -XX:MaxMetaspaceSize=1g"
+
+      - name: Statistiche ccache e spazio
+        if: always()
+        run: |
+          ccache -s || true
+          df -h /
+
+      - name: Raccogli APK
+        run: |
+          mkdir -p out
+          find TMessagesProj_App/build/outputs -name '*.apk' -exec cp -v {} out/porcodio-luxury-chat-${BUILD_TYPE}.apk \;
+          ls -la out
+          $ANDROID_HOME/build-tools/36.0.0/aapt dump badging out/*.apk | grep -E "^package|application-label:|application-icon" | head
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: porcodio-luxury-chat-${{ env.BUILD_TYPE }}-apk
+          path: out/*.apk
+          if-no-files-found: error
+          retention-days: 30

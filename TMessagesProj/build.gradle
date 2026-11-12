@@ -148,6 +148,20 @@ android {
         minSdkVersion 23
         targetSdkVersion 36
 
+        // Porcodio Luxury Chat: api_id / api_hash da env o da -P (Secrets GitHub Actions), mai nel codice
+        def tgApiId = (System.getenv('TELEGRAM_API_ID') ?: (project.findProperty('TELEGRAM_API_ID') ?: '0')).toString().trim()
+        def tgApiHash = (System.getenv('TELEGRAM_API_HASH') ?: (project.findProperty('TELEGRAM_API_HASH') ?: '')).toString().trim()
+        if (!(tgApiId ==~ /\d+/)) { tgApiId = '0' }
+        if (tgApiId == '0' || tgApiHash.isEmpty()) {
+            logger.warn('ATTENZIONE: TELEGRAM_API_ID / TELEGRAM_API_HASH non impostati: l\'app non potra\' collegarsi ai server.')
+        }
+        buildConfigField "int", "TG_API_ID", tgApiId
+        buildConfigField "String", "TG_API_HASH", "\"" + tgApiHash + "\""
+
+        ndk {
+            abiFilters(*(project.findProperty('PORCODIO_ABIS') ?: 'arm64-v8a,armeabi-v7a,x86,x86_64').toString().split(',')*.trim())
+        }
+
         vectorDrawables.generatedDensities = ['mdpi', 'hdpi', 'xhdpi', 'xxhdpi']
 
         multiDexEnabled true
@@ -155,7 +169,7 @@ android {
         externalNativeBuild {
             cmake {
                 version '3.22.1'
-                arguments '-DANDROID_STL=c++_static', '-DANDROID_PLATFORM=android-23' //, '-DANDROID_SUPPORT_FLEXIBLE_PAGE_SIZES=ON'
+                arguments '-DANDROID_STL=c++_static', '-DANDROID_PLATFORM=android-23', *(System.getenv('USE_CCACHE') ? ['-DCMAKE_C_COMPILER_LAUNCHER=ccache', '-DCMAKE_CXX_COMPILER_LAUNCHER=ccache'] : []) //, '-DANDROID_SUPPORT_FLEXIBLE_PAGE_SIZES=ON'
                 targets 'tmessages.49', 'twidget'
             }
         }

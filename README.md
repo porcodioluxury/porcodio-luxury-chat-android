@@ -1,46 +1,61 @@
-## Telegram messenger for Android
+# Porcodio Luxury Chat
 
-[Telegram](https://telegram.org) is a messaging app with a focus on speed and security. It’s superfast, simple and free.
-This repo contains the official source code for [Telegram App for Android](https://play.google.com/store/apps/details?id=org.telegram.messenger).
+**Porcodio Luxury Chat — unofficial app based on the Telegram API, not affiliated with Telegram.**
 
-## Creating your Telegram Application
+*App di messaggistica Android di Porcodio Luxury, basata sul client open source di Telegram e sulle API di Telegram. Non è un'app ufficiale e non è affiliata a Telegram.*
 
-We welcome all developers to use our API and source code to create applications on our platform.
-There are several things we require from **all developers** for the moment.
+This app uses the Telegram API. / Questa app utilizza le API di Telegram.
 
-1. [**Obtain your own api_id**](https://core.telegram.org/api/obtaining_api_id) for your application.
-2. Please **do not** use the name Telegram for your app — or make sure your users understand that it is unofficial.
-3. Kindly **do not** use our standard logo (white paper plane in a blue circle) as your app's logo.
-3. Please study our [**security guidelines**](https://core.telegram.org/mtproto/security_guidelines) and take good care of your users' data and privacy.
-4. Please remember to publish **your** code too in order to comply with the licences.
+---
 
-### API, Protocol documentation
+## Italiano
 
-Telegram API manuals: https://core.telegram.org/api
+Porcodio Luxury Chat è un fork di [DrKLO/Telegram](https://github.com/DrKLO/Telegram) (client Android open source di Telegram, versione base 13.2.2, build 7303) con il marchio e lo stile **Porcodio Luxury**.
 
-MTproto protocol manuals: https://core.telegram.org/mtproto
+- Package / applicationId: `com.porcodioluxury.chat`
+- Nome app: **Porcodio Luxury Chat**
+- Tema scuro predefinito con la palette Porcodio (`#121212`, `#1A1A1A`, `#242833`, `#2F3442`, testo `#F3F3F3` / `#BFBFBF`), nessun accento oro.
+- Chiamate, gruppi, canali, file e sincronizzazione multi-dispositivo provengono dal client upstream e sono mantenuti.
+- `api_id` e `api_hash` Telegram **non sono nel codice**: sono letti in fase di build dalle variabili d'ambiente `TELEGRAM_API_ID` / `TELEGRAM_API_HASH` (in GitHub Actions sono Secrets del repository).
+- Firebase: il repository contiene un `google-services.json` **fittizio** (solo per far compilare). Le notifiche push FCM non sono attive finché non viene collegato un progetto Firebase vero; l'app funziona comunque con la connessione diretta.
 
-### Compilation Guide
+### Conformità GPL
 
-**Note**: In order to support [reproducible builds](https://core.telegram.org/reproducible-builds), this repo contains dummy release.keystore,  google-services.json and filled variables inside BuildVars.java. Before publishing your own APKs please make sure to replace all these files with your own.
+Questo software è un'opera derivata di Telegram per Android ed è distribuito con licenza **GNU GPL v2** (vedi [LICENSE](LICENSE)). Sono mantenuti i copyright originali (© Nikolai Kudashov e collaboratori) nelle intestazioni dei file sorgente. Il **codice sorgente completo e modificato** di ogni APK distribuita è disponibile in questo repository; chi riceve l'app ha gli stessi diritti previsti dalla GPL (usare, studiare, modificare, ridistribuire). Il README originale di upstream è in [README.upstream.md](README.upstream.md).
 
-You will require Android Studio 2025.1.4, Android NDK 27.2.12479018 and Android SDK 36.
+### Conformità Telegram API
 
-1. Clone the Telegram source code with its submodules:
-   ```bash
-   git clone --recursive --shallow-submodules https://github.com/DrKLO/Telegram.git Telegram
-   ```
-   In case you forgot the `--recursive` flag, change to the `Telegram` directory and run:
-   ```bash
-   git submodule init && git submodule update --init --recursive --depth=1
-   ```
-2. Copy your release.keystore into TMessagesProj/config
-3. Fill out RELEASE_KEY_PASSWORD, RELEASE_KEY_ALIAS, RELEASE_STORE_PASSWORD in gradle.properties to access your  release.keystore
-4.  Go to https://console.firebase.google.com/, create two android apps with application IDs org.telegram.messenger and org.telegram.messenger.beta, turn on firebase messaging and download google-services.json, which should be copied to the same folder as TMessagesProj.
-5. Open the project in the Studio (note that it should be opened, NOT imported).
-6. Fill out values in TMessagesProj/src/main/java/org/telegram/messenger/BuildVars.java – there’s a link for each of the variables showing where and which data to obtain.
-7. You are ready to compile Telegram.
+- L'uso dell'API di Telegram è dichiarato in modo visibile (questo README, descrizione dello store, introduzione dell'app).
+- Nel nome dell'app non compare "Telegram" e non viene usato il logo di Telegram.
+- Ogni monetizzazione va dichiarata e rispettare i [Terms of Service dell'API di Telegram](https://core.telegram.org/api/terms).
 
-### Localization
+### Compilazione
 
-We moved all translations to https://translations.telegram.org/en/android/. Please use it.
+Vedi [`.github/workflows/android.yml`](.github/workflows/android.yml): compila un APK release firmato su `ubuntu-latest` (runner gratuito) e lo carica come artifact.
+In locale: JDK 17, Android SDK 36, NDK 27.2.12479018, CMake 3.22.1, poi
+
+```bash
+export TELEGRAM_API_ID=... TELEGRAM_API_HASH=...
+./gradlew :TMessagesProj_App:assembleAfatDebug -PPORCODIO_ABIS=arm64-v8a
+```
+
+Script di rebrand riproducibili in [`tools/porcodio/`](tools/porcodio).
+
+---
+
+## English
+
+Porcodio Luxury Chat is a fork of [DrKLO/Telegram](https://github.com/DrKLO/Telegram) (the open-source Telegram for Android client, base version 13.2.2, build 7303) with **Porcodio Luxury** branding.
+
+- applicationId: `com.porcodioluxury.chat`, app name **Porcodio Luxury Chat**, dark theme by default with the Porcodio palette, no gold accent.
+- Calls, groups, channels, files and multi-device sync come from the upstream client and are kept.
+- Telegram `api_id`/`api_hash` are **not in the source**: they are injected at build time from `TELEGRAM_API_ID` / `TELEGRAM_API_HASH` environment variables (GitHub Actions Secrets).
+- Firebase: a **placeholder** `google-services.json` is committed so the build works; FCM push is inactive until a real Firebase project is wired in.
+
+### GPL compliance
+
+This is a derivative work of Telegram for Android, licensed under the **GNU GPL v2** (see [LICENSE](LICENSE)). Original copyright notices are preserved. The complete corresponding source of every distributed APK is available in this repository. Upstream's README is kept as [README.upstream.md](README.upstream.md).
+
+### Telegram API compliance
+
+This app uses the Telegram API and is **unofficial and not affiliated with Telegram**. It does not use the Telegram name in the app title or the Telegram logo, and any monetization must be declared per the [Telegram API Terms of Service](https://core.telegram.org/api/terms).
