@@ -2717,6 +2717,23 @@ public class ChatActivityEnterView extends FrameLayout implements
                 }
             }
 
+            private final Paint pcFieldFill = new Paint(Paint.ANTI_ALIAS_FLAG);
+            private final Paint pcFieldStroke = new Paint(Paint.ANTI_ALIAS_FLAG);
+
+            @Override
+            protected void dispatchDraw(Canvas canvas) {
+                // Porcodio: campo di testo come pannello squadrato (angoli 4dp, bordo 1px)
+                final float sw = Math.max(1f, AndroidUtilities.density);
+                pcFieldStroke.setStyle(Paint.Style.STROKE);
+                pcFieldStroke.setStrokeWidth(sw);
+                pcFieldFill.setColor(getThemedColor(Theme.key_windowBackgroundGray));
+                pcFieldStroke.setColor(getThemedColor(Theme.key_divider));
+                AndroidUtilities.rectTmp.set(dp(6) + sw / 2f, dp(4) + sw / 2f, getMeasuredWidth() - dp(4) - sw / 2f, getMeasuredHeight() - dp(4) - sw / 2f);
+                canvas.drawRoundRect(AndroidUtilities.rectTmp, dp(4), dp(4), pcFieldFill);
+                canvas.drawRoundRect(AndroidUtilities.rectTmp, dp(4), dp(4), pcFieldStroke);
+                super.dispatchDraw(canvas);
+            }
+
             @Override
             protected boolean drawChild(Canvas canvas, View child, long drawingTime) {
                 if (child != null && child == messageEditText) {
@@ -15660,7 +15677,9 @@ public class ChatActivityEnterView extends FrameLayout implements
         private int drawableColor, inactiveDrawableColor, drawableInverseColor;
 
         public void updateColors() {
-            int color = isNewDesignSendButton ? Color.WHITE : Theme.getColor(Theme.key_chat_messagePanelSend, resourcesProvider);
+            // Porcodio: pulsante invio bianco (#F3F3F3) con freccia scura; icona chiara se lo sfondo è scuro
+            int pcSendBg = Theme.getColor(Theme.key_chat_messagePanelSend, resourcesProvider);
+            int color = isNewDesignSendButton ? (androidx.core.graphics.ColorUtils.calculateLuminance(pcSendBg) > 0.5 ? 0xFF121212 : Color.WHITE) : pcSendBg;
             int c = Theme.getColor(Theme.key_glass_defaultIcon, resourcesProvider);
             int inverseColor = Theme.getColor(Theme.key_chat_messagePanelVoicePressed, resourcesProvider);
             if (color != drawableColor || c != inactiveDrawableColor || inverseColor != drawableInverseColor) {
@@ -15734,7 +15753,7 @@ public class ChatActivityEnterView extends FrameLayout implements
         /* * */
 
         private final RectF backgroundRect = new RectF();
-        private static final int RADIUS = 19;
+        private static final int RADIUS = 4; // Porcodio: pulsante invio squadrato (angoli 4dp)
 
         private void checkBackgroundRect() {
             final float margin = dpf2(3);

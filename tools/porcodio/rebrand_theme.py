@@ -8,7 +8,7 @@ BG, SURF, RAISED, BORDER = 0x121212, 0x1A1A1A, 0x242833, 0x2F3442
 TXT, TXT2 = 0xF3F3F3, 0xBFBFBF
 DARK_ON_ACCENT = 0x121212
 FG_KEYS = re.compile(r'(Text|Link|Icon|Blue|Check|Progress|Line|Tab|Selected|Highlight|Cursor|Title|Subtitle)', re.I)
-TEXT_ON_ACCENT = re.compile(r'(ButtonText$|ButtonTextCounter$|^featuredStickers_buttonText$|^chats_unreadCounterText$|^chats_actionIcon$|^chat_goDownButtonCounter$|^chat_messagePanelSend$|^chats_pinnedIcon$|^switchTrackChecked$)')
+TEXT_ON_ACCENT = re.compile(r'(ButtonText$|ButtonTextCounter$|^featuredStickers_buttonText$|^chats_unreadCounterText$|^chats_actionIcon$|^chat_goDownButtonCounter$|^chats_pinnedIcon$|^switchTrackChecked$)')
 OVERRIDE = {
     'windowBackgroundGray': BG, 'chat_wallpaper': BG, 'chat_wallpaper_gradient_to': BG,
     'windowBackgroundWhite': SURF, 'actionBarDefault': SURF, 'actionBarActionModeDefault': SURF,
@@ -17,7 +17,7 @@ OVERRIDE = {
     'chats_unreadCounterText': DARK_ON_ACCENT, 'chats_actionIcon': DARK_ON_ACCENT, 'chats_unreadCounter': TXT,
     'chats_actionBackground': TXT, 'chats_actionPressedBackground': TXT2,
     'glass_tabSelected': TXT, 'glass_tabSelectedText': TXT, 'glass_tabUnselected': TXT2,
-    'chat_messagePanelBackground': SURF, 'chat_messagePanelText': TXT, 'chat_messagePanelHint': TXT2,
+    'chat_messagePanelSend': TXT, 'chat_messagePanelBackground': SURF, 'chat_messagePanelText': TXT, 'chat_messagePanelHint': TXT2,
 }
 
 def parse(v):
