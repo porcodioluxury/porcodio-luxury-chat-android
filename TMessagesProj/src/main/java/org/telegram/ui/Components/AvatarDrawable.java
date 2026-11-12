@@ -651,7 +651,10 @@ public class AvatarDrawable extends Drawable {
                 AndroidUtilities.rectTmp.set(0, 0, size, size);
                 canvas.drawRoundRect(AndroidUtilities.rectTmp, roundRadius, roundRadius, backgroundPaint);
             } else {
-                canvas.drawCircle(size / 2.0f, size / 2.0f, size / 2.0f, backgroundPaint);
+                // Porcodio Luxury Chat: avatar quadrati con angoli 4dp (al posto del cerchio)
+                AndroidUtilities.rectTmp.set(0, 0, size, size);
+                float pcRadius = Math.min(AndroidUtilities.dp(4), size / 2.0f);
+                canvas.drawRoundRect(AndroidUtilities.rectTmp, pcRadius, pcRadius, backgroundPaint);
             }
             if (rotate45Background) {
                 canvas.restore();

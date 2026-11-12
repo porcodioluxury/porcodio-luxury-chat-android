@@ -12,7 +12,7 @@ TEXT_ON_ACCENT = re.compile(r'(ButtonText$|ButtonTextCounter$|^featuredStickers_
 OVERRIDE = {
     'windowBackgroundGray': BG, 'chat_wallpaper': BG, 'chat_wallpaper_gradient_to': BG,
     'windowBackgroundWhite': SURF, 'actionBarDefault': SURF, 'actionBarActionModeDefault': SURF,
-    'chat_inBubble': RAISED, 'chat_outBubble': BORDER, 'chat_inBubbleSelected': BORDER, 'chat_outBubbleSelected': 0x3A4152,
+    'chat_inBubble': RAISED, 'chat_outBubble': 0xFFF3F3F3, 'chat_inBubbleSelected': BORDER, 'chat_outBubbleSelected': 0x3A4152,
     'divider': BORDER | 0xFF000000,
     'chats_unreadCounterText': DARK_ON_ACCENT, 'chats_actionIcon': DARK_ON_ACCENT, 'chats_unreadCounter': TXT,
     'chats_actionBackground': TXT, 'chats_actionPressedBackground': TXT2,
@@ -55,6 +55,22 @@ sys_import = __import__('sys')
 LIGHT_ASSETS = ('arctic', 'day', 'bluebubbles')
 DARK_ASSETS = ('darkblue', 'night')
 
+def out_override(key, argb):
+    """Bolle in uscita #F3F3F3 con testo scuro (palette PORCODIO)."""
+    if not (key.startswith('chat_out') or key in ('chat_messageTextOut', 'chat_messageLinkOut')):
+        return argb
+    a = argb & 0xFF000000
+    if key == 'chat_messageTextOut': return a | 0x121212
+    if key == 'chat_outBubble': return 0xFFF3F3F3
+    if key == 'chat_outBubbleSelected': return 0xFFDCDCDC
+    if key in ('chat_outBubbleShadow', 'chat_outBubbleGradientSelectedOverlay'): return argb
+    if 'Background' in key: return a | 0xD9D9D9
+    if any(t in key for t in ('Time', 'Views', 'Clock', 'Check', 'Perfomer', 'Info', 'Duration', 'Venue', 'Phone', 'Seekbar', 'Progress', 'Line', 'Icon', 'Loader', 'Menu', 'Instant', 'Reaction')):
+        return a | 0x2F3442
+    if key.endswith(('Text', 'Name')) or key == 'chat_messageLinkOut':
+        return a | 0x121212
+    return argb
+
 def light_transform(argb):
     a = (argb >> 24) & 0xFF; r, g, b = (argb >> 16) & 0xFF, (argb >> 8) & 0xFF, argb & 0xFF
     h, l, s = colorsys.rgb_to_hls(r / 255, g / 255, b / 255)
@@ -87,6 +103,7 @@ for name in DARK_ASSETS + LIGHT_ASSETS:
             new = 0xFF000000 | DARK_ON_ACCENT
         else:
             new = transform(key, argb)
+        if dark: new = out_override(key, new)
         res.append('%s=%s' % (key, fmt(new, kind)))
     if dark:
         for k, v in OVERRIDE.items():

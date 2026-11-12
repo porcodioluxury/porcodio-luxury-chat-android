@@ -9,7 +9,7 @@
     <string name="ContinueOnThisLanguage">Continua in italiano</string>
     <!--signin view-->
     <string name="YourPhone">Il tuo numero</string>
-    <string name="StartText">Conferma il prefisso internazionale\ne inserisci il tuo numero di telefono.</string>
+    <string name="StartText">Accedi con Telegram: conferma il prefisso internazionale e inserisci il tuo numero. Riceverai un codice di verifica per ritrovare contatti e chat.</string>
     <string name="Country">Paese</string>
     <string name="YourNumber">Il tuo numero di telefono</string>
     <string name="PhoneNumber">Numero di telefono</string>
@@ -1550,4 +1550,7 @@
     <string name="PcIntro6Title">Senza limiti</string>
     <string name="PcIntro6Message">Gruppi, canali, chiamate e file di ogni dimensione, tutto in un unico posto.</string>
     <string name="StartMessaging">Inizia a chattare</string>
+    <string name="PcSignInTelegram">Accedi con Telegram</string>
+    <string name="PcSignInHint">Usa il tuo numero e il codice di verifica: ritrovi contatti e chat</string>
+    <string name="PcApiDisclosure">Porcodio Luxury Chat è un\'app non ufficiale basata sull\'API di Telegram, non affiliata a Telegram.</string>
 </resources>

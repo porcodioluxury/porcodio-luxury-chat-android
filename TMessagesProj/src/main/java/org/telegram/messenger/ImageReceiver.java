@@ -2544,6 +2544,13 @@ public class ImageReceiver implements NotificationCenter.NotificationCenterDeleg
     }
 
     public void setRoundRadius(int[] value) {
+        // Porcodio Luxury Chat: angoli massimi 4dp (avatar e foto quadrati arrotondati, niente cerchi)
+        int pcMax = AndroidUtilities.dp(4);
+        int[] pcValue = new int[value.length];
+        for (int pcI = 0; pcI < value.length; pcI++) {
+            pcValue[pcI] = Math.min(value[pcI], pcMax);
+        }
+        value = pcValue;
         boolean changed = false;
         int firstValue = value[0];
         isRoundRect = true;

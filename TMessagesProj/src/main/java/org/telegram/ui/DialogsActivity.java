@@ -3437,11 +3437,19 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                 statusDrawable = new AnimatedEmojiDrawable.SwapAnimatedEmojiDrawable(null, dp(26));
                 statusDrawable.center = true;
                 logoDrawable = context.getResources().getDrawable(R.drawable.telegram_logo_2).mutate();
-                logoDrawable.setBounds(0, dp(2), logoDrawable.getIntrinsicWidth(), dp(2) + logoDrawable.getIntrinsicHeight());
+                logoDrawable.setBounds(0, dp(1), dp(24), dp(25)); // Porcodio Luxury Chat: logo piccolo accanto al titolo
                 // a new drawable (also when the view is recreated after a theme switch made elsewhere): remember its tint, the
                 // theme hook only recolors when the color differs from the last one applied
                 logoDrawable.setColorFilter(lastLogoDrawableColor = getThemedColor(Theme.key_telegram_color_dialogsLogo), PorterDuff.Mode.MULTIPLY);
-                SpannableStringBuilder ssb = new SpannableStringBuilder(getString(R.string.AppName));
+                // Porcodio Luxury Chat: header con logo e kicker maiuscolo con tracking largo
+                StringBuilder pcKicker = new StringBuilder("\u200B  ");
+                String pcWord = "PORCODIO LUXURY";
+                for (int pcI = 0; pcI < pcWord.length(); pcI++) {
+                    pcKicker.append(pcWord.charAt(pcI));
+                    if (pcI < pcWord.length() - 1) pcKicker.append('\u200A').append('\u200A');
+                }
+                SpannableStringBuilder ssb = new SpannableStringBuilder(pcKicker);
+                ssb.setSpan(new ImageSpan(logoDrawable), 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 actionBar.setTitle(ssb, statusDrawable);
                 updateStatus(UserConfig.getInstance(currentAccount).getCurrentUser(), false);
             }

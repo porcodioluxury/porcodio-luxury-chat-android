@@ -125,7 +125,7 @@ public class IntroActivity extends BaseFragment implements NotificationCenter.No
         startMessagingButton.setBackground(buttonBg);
         startMessagingButton.setTextColor(PC_BG);
         ScaleStateListAnimator.apply(startMessagingButton, .02f, 1.2f);
-        startMessagingButton.setText(LocaleController.getString(R.string.StartMessaging));
+        startMessagingButton.setText(LocaleController.getString(R.string.PcSignInTelegram));
         startMessagingButton.setGravity(Gravity.CENTER);
         startMessagingButton.setTypeface(AndroidUtilities.bold());
         startMessagingButton.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 15);
@@ -139,6 +139,13 @@ public class IntroActivity extends BaseFragment implements NotificationCenter.No
             presentFragment(new LoginActivity().setIntroView(frameContainerView, startMessagingButton), true);
             destroyed = true;
         });
+
+        TextView hintView = new TextView(context);
+        hintView.setText(LocaleController.getString(R.string.PcSignInHint));
+        hintView.setTextColor(PC_TEXT2);
+        hintView.setGravity(Gravity.CENTER);
+        hintView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
+        frameContainerView.addView(hintView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 32, 0, 32, 54));
 
         switchLanguageTextView = new TextView(context);
         switchLanguageTextView.setGravity(Gravity.CENTER);
