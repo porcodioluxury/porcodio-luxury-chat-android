@@ -1,0 +1,18 @@
+S = {
+ 'PcCleanupInactive': ('Inactive or muted groups', 'Gruppi inattivi o silenziati'),
+ 'PcCleanupUnopened': ('Unopened channels', 'Canali mai aperti'),
+ 'PcCleanupEmpty': ('Nothing to clean up.', 'Niente da pulire.'),
+ 'PcCleanupHint': ('Select the chats you want to clean up. Nothing happens until you confirm.', 'Seleziona le chat da pulire. Non succede nulla finché non confermi.'),
+ 'PcArchiveN': ('Archive (%1$d)', 'Archivia (%1$d)'),
+ 'PcLeaveN': ('Leave (%1$d)', 'Esci (%1$d)'),
+ 'PcInactiveFor': ('No activity for %1$d days', 'Nessuna attività da %1$d giorni'),
+ 'PcMutedFor': ('Muted - last activity %1$d days ago', 'Silenziato - ultima attività %1$d giorni fa'),
+ 'PcUnreadNever': ('%1$d unread - never opened', '%1$d non letti - mai aperto'),
+ 'PcUnreadPile': ('%1$d unread - not opened lately', '%1$d non letti - non aperto di recente'),
+ 'PcConfirmLeaveTitle': ('Leave selected chats?', 'Uscire dalle chat selezionate?'),
+ 'PcConfirmLeaveText': ('You will leave %1$d chats.', 'Uscirai da %1$d chat.'),
+ 'PcConfirmArchiveTitle': ('Archive selected chats?', 'Archiviare le chat selezionate?'),
+ 'PcConfirmArchiveText': ('%1$d chats will be moved to the archive.', '%1$d chat saranno spostate nell\'archivio.'),
+ 'PcLeaveN_short': ('Leave', 'Esci'),
+ 'PcArchive_short': ('Archive', 'Archivia'),
+}

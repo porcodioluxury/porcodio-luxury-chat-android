@@ -1553,4 +1553,43 @@
     <string name="PcSignInTelegram">Accedi con Telegram</string>
     <string name="PcSignInHint">Usa il tuo numero e il codice di verifica: ritrovi contatti e chat</string>
     <string name="PcApiDisclosure">Porcodio Luxury Chat è un\'app non ufficiale basata sull\'API di Telegram, non affiliata a Telegram.</string>
+    <!-- PORCODIO PHASE3 -->
+    <string name="PcTabPrivate">Private</string>
+    <string name="PcTabGroups">Gruppi</string>
+    <string name="PcTabChannels">Canali</string>
+    <string name="PcTabRequests">Richieste</string>
+    <string name="PcTabSpam">Spam</string>
+    <string name="PcAntispamMenu">Antispam</string>
+    <string name="PcBlockReportRequests">Blocca e segnala tutte le Richieste</string>
+    <string name="PcBlockReportSpam">Blocca e segnala tutto lo Spam</string>
+    <string name="PcAcceptRequests">Accetta tutte le Richieste</string>
+    <string name="PcMuteAllGroups">Silenzia tutti i gruppi</string>
+    <string name="PcQuickCleanup">Pulizia rapida</string>
+    <string name="PcConfirmBlockTitle">Bloccare e segnalare?</string>
+    <string name="PcConfirmBlockText">%1$d chat saranno segnalate come spam e bloccate.</string>
+    <string name="PcConfirmAcceptTitle">Accettare le richieste?</string>
+    <string name="PcConfirmAcceptText">%1$d chat saranno spostate in Private.</string>
+    <string name="PcConfirmMuteTitle">Silenziare tutti i gruppi?</string>
+    <string name="PcConfirmMuteText">%1$d gruppi saranno silenziati.</string>
+    <string name="PcNothingToDo">Niente da fare qui.</string>
+    <string name="PcDoBlock">Blocca e segnala</string>
+    <string name="PcDoAccept">Accetta</string>
+    <string name="PcDoMute">Silenzia</string>
+    <string name="PcCleanupInactive">Gruppi inattivi o silenziati</string>
+    <string name="PcCleanupUnopened">Canali mai aperti</string>
+    <string name="PcCleanupEmpty">Niente da pulire.</string>
+    <string name="PcCleanupHint">Seleziona le chat da pulire. Non succede nulla finché non confermi.</string>
+    <string name="PcArchiveN">Archivia (%1$d)</string>
+    <string name="PcLeaveN">Esci (%1$d)</string>
+    <string name="PcInactiveFor">Nessuna attività da %1$d giorni</string>
+    <string name="PcMutedFor">Silenziato - ultima attività %1$d giorni fa</string>
+    <string name="PcUnreadNever">%1$d non letti - mai aperto</string>
+    <string name="PcUnreadPile">%1$d non letti - non aperto di recente</string>
+    <string name="PcConfirmLeaveTitle">Uscire dalle chat selezionate?</string>
+    <string name="PcConfirmLeaveText">Uscirai da %1$d chat.</string>
+    <string name="PcConfirmArchiveTitle">Archiviare le chat selezionate?</string>
+    <string name="PcConfirmArchiveText">%1$d chat saranno spostate nell\'archivio.</string>
+    <string name="PcLeaveN_short">Esci</string>
+    <string name="PcArchive_short">Archivia</string>
+    <!-- /PORCODIO PHASE3 -->
 </resources>

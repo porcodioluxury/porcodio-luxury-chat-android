@@ -22458,6 +22458,7 @@ public class MessagesController extends BaseController implements NotificationCe
             }
         }
         unreadUnmutedDialogs = 0;
+        org.telegram.porcodio.PcHome.resetCounts();
         boolean selfAdded = false;
         long selfId = getUserConfig().getClientUserId();
         if (selectedDialogFilter[0] != null || selectedDialogFilter[1] != null) {
@@ -22611,6 +22612,10 @@ public class MessagesController extends BaseController implements NotificationCe
             }
 
             if (addToFolder) {
+                // Porcodio: la lista principale mostra solo la scheda scelta (Private/Gruppi/Canali/Richieste/Spam)
+                if (d.folder_id == 0 && org.telegram.porcodio.PcHome.hides(this, d)) {
+                    continue;
+                }
                 addDialogToItsFolder(-1, d);
             }
 
@@ -22674,6 +22679,10 @@ public class MessagesController extends BaseController implements NotificationCe
         }
         dialogs.add(dialog);
         return true;
+    }
+
+    public int pcAccount() {
+        return currentAccount;
     }
 
     private void addDialogToItsFolder(int index, TLRPC.Dialog dialog) {

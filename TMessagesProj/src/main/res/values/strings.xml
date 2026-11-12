@@ -11694,4 +11694,43 @@
     <string name="PcSignInTelegram">Sign in with Telegram</string>
     <string name="PcSignInHint">Use your number and verification code: find your contacts and chats</string>
     <string name="PcApiDisclosure">Porcodio Luxury Chat is an unofficial app based on the Telegram API, not affiliated with Telegram.</string>
+    <!-- PORCODIO PHASE3 -->
+    <string name="PcTabPrivate">Private</string>
+    <string name="PcTabGroups">Groups</string>
+    <string name="PcTabChannels">Channels</string>
+    <string name="PcTabRequests">Requests</string>
+    <string name="PcTabSpam">Spam</string>
+    <string name="PcAntispamMenu">Antispam</string>
+    <string name="PcBlockReportRequests">Block and report all Requests</string>
+    <string name="PcBlockReportSpam">Block and report all Spam</string>
+    <string name="PcAcceptRequests">Accept all Requests</string>
+    <string name="PcMuteAllGroups">Mute all groups</string>
+    <string name="PcQuickCleanup">Quick cleanup</string>
+    <string name="PcConfirmBlockTitle">Block and report?</string>
+    <string name="PcConfirmBlockText">%1$d chats will be reported as spam and blocked.</string>
+    <string name="PcConfirmAcceptTitle">Accept requests?</string>
+    <string name="PcConfirmAcceptText">%1$d chats will be moved to Private.</string>
+    <string name="PcConfirmMuteTitle">Mute all groups?</string>
+    <string name="PcConfirmMuteText">%1$d groups will be muted.</string>
+    <string name="PcNothingToDo">Nothing to do here.</string>
+    <string name="PcDoBlock">Block and report</string>
+    <string name="PcDoAccept">Accept</string>
+    <string name="PcDoMute">Mute</string>
+    <string name="PcCleanupInactive">Inactive or muted groups</string>
+    <string name="PcCleanupUnopened">Unopened channels</string>
+    <string name="PcCleanupEmpty">Nothing to clean up.</string>
+    <string name="PcCleanupHint">Select the chats you want to clean up. Nothing happens until you confirm.</string>
+    <string name="PcArchiveN">Archive (%1$d)</string>
+    <string name="PcLeaveN">Leave (%1$d)</string>
+    <string name="PcInactiveFor">No activity for %1$d days</string>
+    <string name="PcMutedFor">Muted - last activity %1$d days ago</string>
+    <string name="PcUnreadNever">%1$d unread - never opened</string>
+    <string name="PcUnreadPile">%1$d unread - not opened lately</string>
+    <string name="PcConfirmLeaveTitle">Leave selected chats?</string>
+    <string name="PcConfirmLeaveText">You will leave %1$d chats.</string>
+    <string name="PcConfirmArchiveTitle">Archive selected chats?</string>
+    <string name="PcConfirmArchiveText">%1$d chats will be moved to the archive.</string>
+    <string name="PcLeaveN_short">Leave</string>
+    <string name="PcArchive_short">Archive</string>
+    <!-- /PORCODIO PHASE3 -->
 </resources>

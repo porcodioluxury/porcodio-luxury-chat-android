@@ -617,6 +617,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
     private FragmentContextView fragmentContextView;
     private FrameLayout fragmentContextViewWrapper;
     private DialogsActivityTopPanelLayout topPanelLayout;
+    private org.telegram.porcodio.PcHomeTabsView pcTabs;
     private DialogsActivityTopBubblesFadeView topBubblesFadeView;
     private ActiveGiftAuctionsHintCell activeGiftAuctionsHintCell;
     private DialogsHintCell dialogsHintCell;
@@ -2990,6 +2991,11 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
     @Override
     public void onFragmentDestroy() {
         super.onFragmentDestroy();
+        if (pcTabs != null) {
+            pcTabs = null;
+            org.telegram.porcodio.PcHome.active = false;
+            getMessagesController().sortDialogs(null);
+        }
         if (observersGroup != null) {
             observersGroup.removeAllObservers();
             observersGroup = null;
@@ -4729,9 +4735,10 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                 .setColorProvider(BlurredBackgroundProviderImpl.topPanel(resourceProvider))
                 .setPadding(dp(7));
 
-            topPanelLayout.setPadding(dp(11), dp(21), dp(11), dp(21));
+            final boolean pcHome = folderId == 0 && communityId == 0;
+            topPanelLayout.setPadding(dp(11), pcHome ? dp(10) : dp(21), dp(11), pcHome ? dp(10) : dp(21));
             topPanelLayout.setBlurredBackground(topPanelLayoutBackground);
-            topPanelLayout.setDefaultRadiusDp(communityId != 0 ? 18 : 24);
+            topPanelLayout.setDefaultRadiusDp(pcHome ? 6 : communityId != 0 ? 18 : 24);
 
             fragmentLocationContextViewWrapper = new FrameLayout(context);
             topPanelLayout.addView(fragmentLocationContextViewWrapper);
@@ -4775,6 +4782,16 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
             });
             topPanelLayout.addView(dialogsHintCell);
 
+            if (pcHome) {
+                // Porcodio: schede fisse Private / Gruppi / Canali (+ Richieste e Spam) al posto dei filtri a badge
+                pcTabs = new org.telegram.porcodio.PcHomeTabsView(context, currentAccount, resourceProvider, this);
+                topPanelLayout.addView(pcTabs);
+                topPanelLayout.setPriority(pcTabs, 6);
+                topPanelLayout.setDebugName(pcTabs, "porcodio tabs");
+                topPanelLayout.setViewVisible(pcTabs, true, false);
+                org.telegram.porcodio.PcHome.active = true;
+                getMessagesController().sortDialogs(null);
+            }
 
             if (communityId != 0) {
                 communityPendingRequests = new CommunityRequestsCell(context, resourceProvider, true);
@@ -6781,7 +6798,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
     }
 
     private void updateFilterTabs(boolean force, boolean animated) {
-        if (filterTabsView == null || inPreviewMode || searchIsShowed || (rightSlidingDialogContainer != null && rightSlidingDialogContainer.hasFragment())) {
+        if (filterTabsView == null || pcTabs != null || inPreviewMode || searchIsShowed || (rightSlidingDialogContainer != null && rightSlidingDialogContainer.hasFragment())) {
             return;
         }
         if (filterOptions != null) {
@@ -10455,6 +10472,9 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
     @Override
     public void didReceivedNotification(int id, int account, Object... args) {
         if (id == NotificationCenter.dialogsNeedReload) {
+            if (pcTabs != null) {
+                pcTabs.update();
+            }
             if (viewPages == null || dialogsListFrozen) {
                 return;
             }
