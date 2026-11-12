@@ -3455,7 +3455,7 @@ public class StarGiftSheet extends BottomSheetWithRecyclerListView implements No
     }
     public static CharSequence getRarityName(TL_stars.StarGiftAttributeRarity rarity, Integer[] color) {
         if (rarity instanceof TL_stars.TL_starGiftAttributeRarityUncommon) {
-            if (color != null) color[0] = 0xFF40A920;
+            if (color != null) color[0] = 0xFF5A616F;
             return getString(R.string.GiftRarityUncommon);
         } else if (rarity instanceof TL_stars.TL_starGiftAttributeRarityRare) {
             if (color != null) color[0] = 0xFFF3F3F3;
@@ -3464,7 +3464,7 @@ public class StarGiftSheet extends BottomSheetWithRecyclerListView implements No
             if (color != null) color[0] = 0xFFF3F3F3;
             return getString(R.string.GiftRarityEpic);
         } else if (rarity instanceof TL_stars.TL_starGiftAttributeRarityLegendary) {
-            if (color != null) color[0] = 0xFFBF7600;
+            if (color != null) color[0] = 0xFF565C69;
             return getString(R.string.GiftRarityLegendary);
         } else if (rarity instanceof TL_stars.TL_starGiftAttributeRarity) {
             final int permille = ((TL_stars.TL_starGiftAttributeRarity) rarity).permille;
@@ -9654,13 +9654,13 @@ public class StarGiftSheet extends BottomSheetWithRecyclerListView implements No
 
         private final int[] BACKGROUND_COLORS = new int[] {
             0xFF2F3442, 0xFF242833,
-            0xFF53270A, 0xFF1F0B0B,
+            0xFF2A2D33, 0xFF1F0B0B,
             0xFF2F3442, 0xFF1A1A1A
         };
         private final int[] COLORS = new int[] {
             Theme.multAlpha(0xFFFFFFFF, 0.08f), Theme.multAlpha(0xFFFFFFFF, 0.08f),
-            0xFFFB8226, 0xFFC4432D,
-            0xFF31B74A, 0xFFF3F3F3
+            0xFF858D9C, 0xFFC4432D,
+            0xFF687080, 0xFFF3F3F3
         };
 
         public CraftTopView(Context context, Theme.ResourcesProvider resourcesProvider) {
@@ -9893,7 +9893,7 @@ public class StarGiftSheet extends BottomSheetWithRecyclerListView implements No
             failedLayout.addView(failedTitle, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.TOP | Gravity.FILL_HORIZONTAL, 32, 352, 32, 0));
 
             failedSubtitle = new TextView(context);
-            failedSubtitle.setTextColor(0xFFFFBC9B);
+            failedSubtitle.setTextColor(0xFFC8CBD2);
             failedSubtitle.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 13);
             failedSubtitle.setGravity(Gravity.CENTER);
             failedLayout.addView(failedSubtitle, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.TOP | Gravity.FILL_HORIZONTAL, 32, 383, 32, 0));

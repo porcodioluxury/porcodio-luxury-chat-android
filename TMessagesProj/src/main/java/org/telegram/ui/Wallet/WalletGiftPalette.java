@@ -11,7 +11,7 @@ final class WalletGiftPalette {
         if (backdrop == null) return new float[]{0, 1, 1};
         float[] gift = lch(ColorUtils.blendARGB(backdrop.center_color | 0xff000000,
                 backdrop.edge_color | 0xff000000, .5f));
-        float[] stock = lch(0xFF088FEE);
+        float[] stock = lch(0xFF6F7787);
         float degrees = (float) ((Math.toDegrees(gift[2]) + 360) % 360);
         float violet = (float) Math.exp(-Math.pow((degrees - 300) / 38, 2));
         float chroma = Math.max(.15f, Math.min(1, gift[1] * 1.5f / .155f)) * (1 + .18f * violet);
@@ -83,7 +83,7 @@ final class WalletGiftPalette {
         float lShift=-.025f*violet;
         float[] giftC=oklch(center),giftE=oklch(edge);
         float darkness=Math.max(0,Math.min(1,(.6f-(giftC[0]+giftE[0])/2)/.15f));
-        float stockDarkL=oklch(0xFF088FEE)[0],stockLightL=oklch(0xFF16ABF9)[0];
+        float stockDarkL=oklch(0xFF6F7787)[0],stockLightL=oklch(0xFF7C8493)[0];
         float[] ref=oklch(stock);
         float pos=Math.max(-2,Math.min(3,(ref[0]-stockDarkL)/(stockLightL-stockDarkL)));
         float own=giftE[0]-.02f+pos*(giftC[0]-giftE[0]);
@@ -97,7 +97,7 @@ final class WalletGiftPalette {
 
     /** Canvas study baseTones(), kept separate from the original GL palette calibration. */
     static int card2DEdgeTone(int stock, float[] style) {
-        int fallback = stock == 0xff088fee ? 0xff2368d5 : 0xff278ff7;
+        int fallback = stock == 0xFF6F7787 ? 0xFF707888 : 0xFF848B9A;
         if (style == null || style.length < 18) return fallback;
         int first = style[10] < 0 ? fallback : surface2DEdge(stock, (int)style[10], (int)style[11]);
         int second = style[14] < 0 ? fallback : surface2DEdge(stock, (int)style[14], (int)style[15]);
@@ -115,12 +115,12 @@ final class WalletGiftPalette {
         float violet = (float)Math.exp(-Math.pow((hue - 300) / 38, 2));
         float chroma = Math.max(.15f, Math.min(1, gift[1] * 1.5f / .155f)) * (1 + .18f * violet);
         float darkness = Math.max(0, Math.min(1, (.6f - (gc[0] + ge[0]) / 2) / .15f));
-        float sd = oklch(0xff088fee)[0], sl = oklch(0xff16abf9)[0];
+        float sd = oklch(0xFF6F7787)[0], sl = oklch(0xFF7C8493)[0];
         float pos = Math.max(-2, Math.min(3, (ref[0] - sd) / (sl - sd)));
         float own = ge[0] - .02f + pos * (gc[0] - ge[0]);
         float l = ref[0] + (own - ref[0]) * darkness - .025f * violet;
         float c = Math.min(ref[1] * chroma, gc[1] * 1.2f * (ref[1] / .173f)) * (1 - darkness) + gc[1] * 1.1f * darkness;
-        float[] mine = stock == 0xff16abf9 ? oklch(ColorUtils.blendARGB(center, edge, .5f)) : ge;
+        float[] mine = stock == 0xFF7C8493 ? oklch(ColorUtils.blendARGB(center, edge, .5f)) : ge;
         l += (mine[0] - l) * .399f; c += (mine[1] - c) * .399f;
         float h = gift[2] + (float)Math.atan2(Math.sin(mine[2] - gift[2]), Math.cos(mine[2] - gift[2])) * .399f;
         float pure = Math.max(0, Math.min(1, (gift[1] - .06f) / .055f)) * (1 - Math.max(0, Math.min(1, (gift[1] - .125f) / .015f)));
@@ -219,11 +219,11 @@ final class WalletGiftPalette {
     private static int cardNumber2DColor(float[] style, int side) {
         int offset = 10 + side * 4;
         if (style == null || style.length < 18 || style[offset] < 0) return STOCK_2D_INK;
-        int face = surface(0xff088fee, (int) style[offset], (int) style[offset + 1]);
+        int face = surface(0xFF6F7787, (int) style[offset], (int) style[offset + 1]);
         Integer cached = CARD_2D_INKS.get(face);
         if (cached != null) return cached;
         float[] sc = oklch(face);
-        float ratio = (inkLuminance(0xff088fee) + .05f) / (inkLuminance(STOCK_2D_INK) + .05f);
+        float ratio = (inkLuminance(0xFF6F7787) + .05f) / (inkLuminance(STOCK_2D_INK) + .05f);
         float ys = inkLuminance(face), target = (ys + .05f) / ratio - .05f;
         if (target < .004f) target = ys * .3f;
         float vivid = Math.max(0, Math.min(1, sc[1] / .10f)), lo = 0, hi = 1;
@@ -239,7 +239,7 @@ final class WalletGiftPalette {
     }
 
     private static int makeStock2DInk() {
-        float[] base = oklch(0xff0071cc);
+        float[] base = oklch(0xFF5C6370);
         float lightness = base[0] * (1 + (.443f - 1) * .221f), hue = base[2];
         float chroma = inkMaxChroma(lightness, hue), bestHue = hue;
         for (int degrees = -15; degrees <= 15; degrees++) {
@@ -271,7 +271,7 @@ final class WalletGiftPalette {
     static int cardNumberColor(float[] style, int side) {
         int offset=10+side*4;
         if(style==null || style.length<18 || style[offset]<0)
-            return ColorUtils.blendARGB(0xFF0285D4, 0xFF0071CC, CARD_NUMBER_EDGE_MIX);
+            return ColorUtils.blendARGB(0xFF606776, 0xFF5C6370, CARD_NUMBER_EDGE_MIX);
         return cardNumberColor((int)style[offset+2], (int)style[offset+1]);
     }
 
@@ -300,7 +300,7 @@ final class WalletGiftPalette {
                 // GramWalletCards3 surface tones: card color is their midpoint, dark/grazing the
                 // dark tone, bright the light one. The shader's gift look is calibrated to GIFT_GAIN.
                 int center=(int)style[offset],edge=(int)style[offset+1];
-                int dark=surface(0xFF088FEE,center,edge),light=surface(0xFF16ABF9,center,edge);
+                int dark=surface(0xFF6F7787,center,edge),light=surface(0xFF7C8493,center,edge);
                 for(int channel=0;channel<3;channel++) {
                     float d=linear(dark,16-channel*8)*GIFT_GAIN,l=linear(light,16-channel*8)*GIFT_GAIN;
                     result[side*12+channel]=(d+l)/2;

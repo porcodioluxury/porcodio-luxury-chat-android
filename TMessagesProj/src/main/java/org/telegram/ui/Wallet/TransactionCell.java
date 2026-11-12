@@ -541,8 +541,8 @@ public class TransactionCell extends FrameLayout implements Theme.Colorable {
         applyLandingPress();
         setElevation(dp(8) * value);
         if (android.os.Build.VERSION.SDK_INT >= 28) {
-            setOutlineAmbientShadowColor(0x590B2A4A);
-            setOutlineSpotShadowColor(0x590B2A4A);
+            setOutlineAmbientShadowColor(0x5926292F);
+            setOutlineSpotShadowColor(0x5926292F);
         }
         transactionAmount.setPendingProgress(liveAmountEligible ? value : 0f);
         invalidate();

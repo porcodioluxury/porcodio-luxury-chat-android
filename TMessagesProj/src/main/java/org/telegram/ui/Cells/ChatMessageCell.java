@@ -6253,6 +6253,8 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
         lastHeight = AndroidUtilities.displaySize.y;
         lastWidth = getParentWidth();
         isRoundVideo = messageObject != null && messageObject.isRoundVideo();
+        photoImage.setPcNoClamp(isRoundVideo);
+        if (blurredPhotoImage != null) blurredPhotoImage.setPcNoClamp(isRoundVideo);
         mediaSpoilerRevealProgress = 0f;
         TLRPC.Message newReply = messageObject.hasValidReplyMessageObject() ? messageObject.replyMessageObject.messageOwner : null;
         boolean messageIdChanged = currentMessageObject == null || currentMessageObject.getId() != messageObject.getId();

@@ -78,11 +78,11 @@ public class GiveawayCell extends UserCell {
             avatarDrawable.setAvatarType(AvatarDrawable.AVATAR_TYPE_GIFT);
             TL_stories.TL_prepaidGiveaway prepaid = (TL_stories.TL_prepaidGiveaway) prepaidGiveaway;
             if (prepaid.months == 12) {
-                avatarDrawable.setColor(0xFFff8560, 0xFFd55246);
+                avatarDrawable.setColor(0xFFA8ADB7, 0xFFd55246);
             } else if (prepaid.months == 6) {
                 avatarDrawable.setColor(0xFFF3F3F3, 0xFFF3F3F3);
             } else {
-                avatarDrawable.setColor(0xFF9ad164, 0xFF49ba44);
+                avatarDrawable.setColor(0xFF9097A5, 0xFF727B8C);
             }
             String counterStr = String.valueOf(prepaidGiveaway.quantity * BoostRepository.giveawayBoostsPerPremium());
             counterDrawable.setText(counterStr);

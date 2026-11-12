@@ -2543,14 +2543,23 @@ public class ImageReceiver implements NotificationCenter.NotificationCenterDeleg
         setRoundRadius(new int[]{tl, tr, br, bl});
     }
 
+    private boolean pcNoClamp;
+
+    /** Porcodio: i video tondi restano cerchi (nessun limite a 4dp sul raggio). */
+    public void setPcNoClamp(boolean noClamp) {
+        pcNoClamp = noClamp;
+    }
+
     public void setRoundRadius(int[] value) {
         // Porcodio Luxury Chat: angoli massimi 4dp (avatar e foto quadrati arrotondati, niente cerchi)
-        int pcMax = AndroidUtilities.dp(4);
-        int[] pcValue = new int[value.length];
-        for (int pcI = 0; pcI < value.length; pcI++) {
-            pcValue[pcI] = Math.min(value[pcI], pcMax);
+        if (!pcNoClamp) {
+            int pcMax = AndroidUtilities.dp(4);
+            int[] pcValue = new int[value.length];
+            for (int pcI = 0; pcI < value.length; pcI++) {
+                pcValue[pcI] = Math.min(value[pcI], pcMax);
+            }
+            value = pcValue;
         }
-        value = pcValue;
         boolean changed = false;
         int firstValue = value[0];
         isRoundRect = true;

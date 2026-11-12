@@ -21,6 +21,7 @@ import androidx.annotation.Nullable;
 import org.telegram.messenger.ApplicationLoader;
 import org.telegram.messenger.BuildConfig;
 import org.telegram.messenger.BuildVars;
+import org.telegram.messenger.PcColors;
 import org.telegram.messenger.DialogObject;
 import org.telegram.messenger.FileLoader;
 import org.telegram.messenger.FileLog;
@@ -10445,9 +10446,9 @@ public class TLRPC {
         public void readParams(InputSerializedData stream, boolean exception) {
             gift = TL_stars.StarGift.TLdeserialize(stream, stream.readInt32(exception), exception);
             end_date = stream.readInt32(exception);
-            center_color = stream.readInt32(exception);
-            edge_color = stream.readInt32(exception);
-            text_color = stream.readInt32(exception);
+            center_color = PcColors.desat(stream.readInt32(exception));
+            edge_color = PcColors.desat(stream.readInt32(exception));
+            text_color = PcColors.desat(stream.readInt32(exception));
         }
 
         @Override
@@ -50474,10 +50475,10 @@ public class TLRPC {
             title = stream.readString(exception);
             slug = stream.readString(exception);
             pattern_document_id = stream.readInt64(exception);
-            center_color = stream.readInt32(exception);
-            edge_color = stream.readInt32(exception);
-            pattern_color = stream.readInt32(exception);
-            text_color = stream.readInt32(exception);
+            center_color = PcColors.desat(stream.readInt32(exception));
+            edge_color = PcColors.desat(stream.readInt32(exception));
+            pattern_color = PcColors.desat(stream.readInt32(exception));
+            text_color = PcColors.desat(stream.readInt32(exception));
             if (hasFlag(flags, FLAG_0)) {
                 until = stream.readInt32(exception);
             }
@@ -72200,10 +72201,10 @@ public class TLRPC {
         public void readParams(InputSerializedData stream, boolean exception) {
             backdrop_id = stream.readInt32(exception);
             name = stream.readString(exception);
-            center_color = stream.readInt32(exception);
-            edge_color = stream.readInt32(exception);
-            pattern_color = stream.readInt32(exception);
-            text_color = stream.readInt32(exception);
+            center_color = PcColors.desat(stream.readInt32(exception));
+            edge_color = PcColors.desat(stream.readInt32(exception));
+            pattern_color = PcColors.desat(stream.readInt32(exception));
+            text_color = PcColors.desat(stream.readInt32(exception));
         }
 
         public void serializeToStream(OutputSerializedData stream) {

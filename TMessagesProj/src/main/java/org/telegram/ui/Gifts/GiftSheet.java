@@ -1187,12 +1187,12 @@ public class GiftSheet extends BottomSheetWithRecyclerListView implements Notifi
             priceLayout.addView(priceBackground, LayoutHelper.createFrame(0, 0));
             priceLayout.addView(priceView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, 26, Gravity.CENTER));
 
-            priceBackground.setBackground(new StarsBackground(Theme.isCurrentThemeDark() ? 0x1EEBA52D : 0x40E8AB02));
+            priceBackground.setBackground(new StarsBackground(Theme.isCurrentThemeDark() ? 0x1E818897 : 0x40697181));
 
             starsPriceView = new TextView(context);
             starsPriceView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 10.66f);
             starsPriceView.setGravity(Gravity.CENTER);
-            starsPriceView.setTextColor(Theme.isCurrentThemeDark() ? 0xFFEBA52D : 0xFFD67722);
+            starsPriceView.setTextColor(Theme.isCurrentThemeDark() ? 0xFF818897 : 0xFF707888);
             starsPriceView.setVisibility(View.GONE);
             card.addView(starsPriceView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER_HORIZONTAL | Gravity.TOP, 0, 161, 0, 8));
 
@@ -1607,7 +1607,7 @@ public class GiftSheet extends BottomSheetWithRecyclerListView implements Notifi
             avatarView.setVisibility(View.GONE);
             lockView.setVisibility(View.GONE);
             if (tier.isStarsPaymentAvailable()) {
-                starsPriceView.setTextColor(Theme.isCurrentThemeDark() ? 0xFFEBA52D : 0xFFD67722);
+                starsPriceView.setTextColor(Theme.isCurrentThemeDark() ? 0xFF818897 : 0xFF707888);
                 starsPriceView.setVisibility(View.VISIBLE);
                 final SpannableStringBuilder starsPrice = new SpannableStringBuilder("" + LocaleController.formatNumber(tier.getStarsPrice(), ','));
                 starsPrice.setSpan(new TypefaceSpan(AndroidUtilities.bold()), 0, starsPrice.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -1625,7 +1625,7 @@ public class GiftSheet extends BottomSheetWithRecyclerListView implements Notifi
             priceView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
             priceView.setText(tier.getFormattedPrice());
             goldPriceStyle = 0;
-            priceBackground.setBackground(Theme.createRoundRectDrawable(dp(13), 0x193391D4));
+            priceBackground.setBackground(Theme.createRoundRectDrawable(dp(13), 0x19777F90));
             priceView.setTextColor(0xFFF3F3F3);
             ((MarginLayoutParams) priceLayout.getLayoutParams()).topMargin = dp(130);
             ((FrameLayout.LayoutParams) priceLayout.getLayoutParams()).gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
@@ -1674,7 +1674,7 @@ public class GiftSheet extends BottomSheetWithRecyclerListView implements Notifi
             );
         }
 
-        public static final int[] PREMIUM_STROKE = new int[] { 0xFFD58F25, 0xFFC8851D };
+        public static final int[] PREMIUM_STROKE = new int[] { 0xFF71798A, 0xFF676F7E };
         public boolean setStarsGift(
             TL_stars.StarGift gift,
             boolean mine,
@@ -2060,7 +2060,7 @@ public class GiftSheet extends BottomSheetWithRecyclerListView implements Notifi
                     ribbon.setVisibility(View.VISIBLE);
                     ribbon.setBackdrop(null);
                     ribbonColorKey = -1;
-                    ribbon.setColors(0xFFD79023, 0xFFBF7D16);
+                    ribbon.setColors(0xFF71798A, 0xFF606775);
                     ribbon.setStrokeColor(0);
                     ribbonStrokeThemed = false;
                     if (gift.auction_start_date > ConnectionsManager.getInstance(currentAccount).getCurrentTime()) {
@@ -2072,7 +2072,7 @@ public class GiftSheet extends BottomSheetWithRecyclerListView implements Notifi
                     ribbon.setVisibility(View.VISIBLE);
                     ribbon.setBackdrop(null);
                     ribbonColorKey = -1;
-                    ribbon.setColors(0xFFD79023, 0xFFBF7D16);
+                    ribbon.setColors(0xFF71798A, 0xFF606775);
                     ribbon.setStrokeColor(0);
                     ribbonStrokeThemed = false;
                     ribbon.setText(getString(R.string.Gift2LimitedPremium), true);
@@ -2094,7 +2094,7 @@ public class GiftSheet extends BottomSheetWithRecyclerListView implements Notifi
                     ribbon.setVisibility(View.VISIBLE);
                     ribbon.setBackdrop(null);
                     ribbonColorKey = -1;
-                    ribbon.setColors(0xFFD94FFF, 0xFFF3F3F3);
+                    ribbon.setColors(0xFF9EA4B0, 0xFFF3F3F3);
                     ribbon.setStrokeColor(0);
                     ribbonStrokeThemed = false;
                     ribbon.setText(12, formatString(R.string.GiftPremiumOptionDiscount, premiumTier.getDiscount()), true);
@@ -2128,8 +2128,8 @@ public class GiftSheet extends BottomSheetWithRecyclerListView implements Notifi
 
         private void applyGoldPriceColors() {
             final boolean dark = goldPriceDark = Theme.isCurrentThemeDark();
-            final int backgroundColor = goldPriceUniqueBackground ? 0x40FFFFFF : (dark ? 0x1EEBA52D : 0x40E8AB02);
-            final int textColor = dark ? 0xFFEBA52D : (goldPriceStyle == 2 ? 0xFFBF7600 : 0xFFD67722);
+            final int backgroundColor = goldPriceUniqueBackground ? 0x40FFFFFF : (dark ? 0x1E818897 : 0x40697181);
+            final int textColor = dark ? 0xFF818897 : (goldPriceStyle == 2 ? 0xFF565C69 : 0xFF707888);
             priceBackground.setBackground(new StarsBackground(backgroundColor));
             priceView.setTextColor(textColor);
             tonOnlySaleView.setColorFilter(textColor);
@@ -2152,7 +2152,7 @@ public class GiftSheet extends BottomSheetWithRecyclerListView implements Notifi
                         applyGoldPriceColors();
                     }
                     if (starsPriceView != null) {
-                        starsPriceView.setTextColor(dark ? 0xFFEBA52D : 0xFFD67722);
+                        starsPriceView.setTextColor(dark ? 0xFF818897 : 0xFF707888);
                     }
                 }
                 if (ribbon != null) {
@@ -3027,7 +3027,7 @@ public class GiftSheet extends BottomSheetWithRecyclerListView implements Notifi
                 if (BatchParticlesDrawHelper.isAvailable()) {
                     final Bitmap pBitmap = getStableBitmapFromPattern(pattern);
                     if (pBitmap != null) {
-                        // color = 0xFF00FF00;
+                        // color = 0xFF737B8C;
 
                         boolean paintChanged = false;
                         if (lastDrawnBitmap != pBitmap || lastDrawnBitmapPaint == null) {

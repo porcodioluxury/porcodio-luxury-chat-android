@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 final class WalletSendParticles {
-    private static final int[] COLORS = {0xFF0A3CE0, 0xFF0057FF, 0xFF1E7BFF, 0xFF34A8FF, 0xFF63D2FF, 0xFF9BE9FF};
+    private static final int[] COLORS = {0xFF697181, 0xFF737B8C, 0xFF838B9A, 0xFF8F96A4, 0xFFA9AEB9, 0xFFC8CBD2};
     private final ArrayList<Spark> sparks = new ArrayList<>();
     private final Random random = new Random();
     private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -84,7 +84,7 @@ final class WalletSendParticles {
                 float angle = (direction < 0 ? (float) Math.PI : 0f) + pick(-.6f, .6f);
                 Spark spark = add(x, y + pick(-3f, 3f) * d, angle, pick(150f, 310f) * d,
                         pick(1.3f, 3.2f) * d, pick(.65f, 1.05f), 1.8f);
-                spark.color = 0xFF9BDEFF;
+                spark.color = 0xFFC8CBD2;
                 spark.opacity = pick(.3f, 1f);
                 spark.age = -i * .006f;
             }

@@ -62,7 +62,7 @@ final class WalletCard2DMaterial {
     private final boolean[] surfaceGifts = new boolean[2];
     private final int[][] faceColors = new int[2][];
     private final PorterDuffColorFilter[][] faceFilters = new PorterDuffColorFilter[2][8];
-    private static final int[] STOCK_FACE_COLORS = {0xff006edb,0xff0072df,0xff0076e3,0xff007ae6,0xff007ee8,0xff0081ed,0xff0084f1,0xff0087f4,0xff008af5};
+    private static final int[] STOCK_FACE_COLORS = {0xFF636A78,0xFF646C7B,0xFF666E7D,0xFF676F7F,0xFF687080,0xFF6B7382,0xFF6C7485,0xFF6E7686,0xFF6E7687};
     private final int[] darks = {0, 0}, lights = {0, 0};
     private final float[][] stars = new float[22][6];
     private final RectF qr;
@@ -76,7 +76,7 @@ final class WalletCard2DMaterial {
     private final SweepGradient qrBrushMask;
     private Shader qrBrush;
     private int iconRes;
-    private int rimDark = 0xff2368d5, rimLight = 0xff278ff7;
+    private int rimDark = 0xFF707888, rimLight = 0xFF848B9A;
     private boolean hasRotation;
     private static final android.util.LruCache<Integer, Bitmap[]> ICON_CACHE = new android.util.LruCache<>(2);
 
@@ -230,15 +230,15 @@ final class WalletCard2DMaterial {
 
     void drawSurface(Canvas canvas, float[] style) {
         for (int pass = 0; pass < (style == null ? 1 : 2); pass++) {
-            int d = 0xff2368d5, l = 0xff278ff7;
+            int d = 0xFF707888, l = 0xFF848B9A;
             if (style != null) {
                 int offset = 10 + pass * 4;
                 if (style.length >= 18 && style[offset] >= 0) {
-                    d = WalletGiftPalette.surface2DEdge(0xff088fee, (int)style[offset], (int)style[offset + 1]);
-                    l = WalletGiftPalette.surface2DEdge(0xff16abf9, (int)style[offset], (int)style[offset + 1]);
+                    d = WalletGiftPalette.surface2DEdge(0xFF6F7787, (int)style[offset], (int)style[offset + 1]);
+                    l = WalletGiftPalette.surface2DEdge(0xFF7C8493, (int)style[offset], (int)style[offset + 1]);
                 } else {
-                    d = WalletGiftPalette.tint(0xff2368d5, style, pass * 3);
-                    l = WalletGiftPalette.tint(0xff278ff7, style, pass * 3);
+                    d = WalletGiftPalette.tint(0xFF707888, style, pass * 3);
+                    l = WalletGiftPalette.tint(0xFF848B9A, style, pass * 3);
                 }
             }
             boolean gift = style != null && style.length >= 18 && style[10 + pass * 4] >= 0;
@@ -278,8 +278,8 @@ final class WalletCard2DMaterial {
         boolean gift0 = style != null && style.length >= 18 && style[10] >= 0;
         boolean gift1 = style != null && style.length >= 18 && style[14] >= 0;
         float progress = style == null || style.length < 18 ? 0 : clamp(style[8]);
-        int tint0 = gift0 ? reflectionTints[0] : 0xff54acff;
-        int tint1 = gift1 ? reflectionTints[1] : 0xff54acff;
+        int tint0 = gift0 ? reflectionTints[0] : 0xFFA1A7B2;
+        int tint1 = gift1 ? reflectionTints[1] : 0xFFA1A7B2;
         int reflectionColor = ColorUtils.blendARGB(tint0, tint1, progress);
         if (reflectionColorFilter == null || reflectionTint != reflectionColor) {
             reflectionTint = reflectionColor;
@@ -309,7 +309,7 @@ final class WalletCard2DMaterial {
             }
             paint.setShader(null); paint.setAlpha(255);
         }
-        int tint = style == null ? 0xff3995ff : Color.rgb(
+        int tint = style == null ? 0xFF9299A6 : Color.rgb(
                 Math.min(255, Math.round(Color.red(rimLight) * 1.12f)),
                 Math.min(255, Math.round(Color.green(rimLight) * 1.12f)),
                 Math.min(255, Math.round(Color.blue(rimLight) * 1.12f)));
@@ -421,7 +421,7 @@ final class WalletCard2DMaterial {
         }
         float ux = (float)Math.cos(shine - .7), uy = (float)Math.sin(shine - .7);
         stroke.setShader(new LinearGradient(qr.centerX()-ux*24,qr.centerY()-uy*18,qr.centerX()+ux*24,qr.centerY()+uy*18,
-                new int[]{0x6c101926,0x0fffffff,0xa6ffffff},new float[]{0,.45f,1},Shader.TileMode.CLAMP));
+                new int[]{0x6C181A1E,0x0fffffff,0xa6ffffff},new float[]{0,.45f,1},Shader.TileMode.CLAMP));
         stroke.setStrokeWidth(.7f); inset.set(qr); inset.inset(.35f,.35f); canvas.drawRoundRect(inset,7.65f,7.65f,stroke);
         canvas.restoreToCount(save);
     }
@@ -470,8 +470,8 @@ final class WalletCard2DMaterial {
         if (depthScale == 0) return;
         // A face-on card exposes no edge; strokes would only leave a subpixel outline around the face.
         if (Math.abs(Math.sin(Math.toRadians(pitch))) < FLAT_DEPTH_SIN && Math.abs(Math.sin(Math.toRadians(yaw))) < FLAT_DEPTH_SIN) return;
-        int dark = WalletGiftPalette.card2DEdgeTone(0xff088fee, style);
-        int light = WalletGiftPalette.card2DEdgeTone(0xff16abf9, style);
+        int dark = WalletGiftPalette.card2DEdgeTone(0xFF6F7787, style);
+        int light = WalletGiftPalette.card2DEdgeTone(0xFF7C8493, style);
         paint.setShader(null); paint.setAlpha(255);
         paint.setColor(depthColor(dark, light, .55f * EDGE_BRIGHTNESS, 0, 0));
         depthPath.rewind(); depthPath.moveTo(depthBack[0], depthBack[1]);

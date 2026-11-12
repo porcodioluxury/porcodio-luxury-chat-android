@@ -79,6 +79,21 @@ def light_transform(argb):
         return (a << 24) | out
     return argb
 
+# Palette avatar generati: grigi e grigio-blu PORCODIO (sfondo con gradiente + nome nei messaggi)
+AV_BG = {'Red': (0x5A5F6B, 0x3C404A), 'Orange': (0x6B717D, 0x484D59), 'Violet': (0x3A3F4D, 0x242833),
+         'Green': (0x555B68, 0x383D49), 'Cyan': (0x2F3442, 0x1F232E), 'Blue': (0x4D5463, 0x343947), 'Pink': (0x7C828E, 0x555B68)}
+AV_NAME_DARK = {'Red': 0xBFC3CC, 'Orange': 0xA9AEB9, 'Violet': 0xD8DAE0, 'Green': 0x9AA0AC, 'Cyan': 0xCBCFD6, 'Blue': 0xB4B9C4, 'Pink': 0xE6E8EC}
+AV_NAME_LIGHT = {'Red': 0x4A4F5B, 'Orange': 0x5B616D, 'Violet': 0x2F3442, 'Green': 0x3E4350, 'Cyan': 0x242833, 'Blue': 0x353A47, 'Pink': 0x666C78}
+
+def avatar_overrides(dark):
+    d = {}
+    for c, (b1, b2) in AV_BG.items():
+        d['avatar_background' + c] = b1; d['avatar_background2' + c] = b2
+        d['avatar_nameInMessage' + c] = (AV_NAME_DARK if dark else AV_NAME_LIGHT)[c]
+    d['avatar_backgroundGray'] = 0x5A5F6B
+    d['avatar_backgroundArchived'] = 0x3A3F4D
+    return d
+
 for name in DARK_ASSETS + LIGHT_ASSETS:
     SRC = os.path.join(ROOT, 'tools/porcodio/upstream/%s.attheme' % name)
     DST = os.path.join(ROOT, 'TMessagesProj/src/main/assets/%s.attheme' % name)
@@ -108,5 +123,14 @@ for name in DARK_ASSETS + LIGHT_ASSETS:
     if dark:
         for k, v in OVERRIDE.items():
             if k not in seen: res.append('%s=%s' % (k, fmt(0xFF000000 | (v & 0xFFFFFF), 'int')))
+    av = avatar_overrides(dark); done = set(); res2 = []
+    for ln in res:
+        m = re.match(r'^(\w+)=', ln)
+        if m and m.group(1) in av:
+            res2.append('%s=%s' % (m.group(1), fmt(0xFF000000 | av[m.group(1)], 'int'))); done.add(m.group(1))
+        else: res2.append(ln)
+    for k, v in av.items():
+        if k not in done: res2.append('%s=%s' % (k, fmt(0xFF000000 | v, 'int')))
+    res = res2
     open(DST, 'w', encoding='utf-8').write('\n'.join(res) + '\n')
     print(name, 'chiavi:', len(seen))

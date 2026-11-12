@@ -76,7 +76,7 @@ public class BoostTypeCell extends BaseCell {
             }
             ThemeBind.textColor(subtitleTextView, Theme.key_dialogTextBlue2, resourcesProvider);
             avatarDrawable.setAvatarType(AvatarDrawable.AVATAR_TYPE_FILTER_GROUPS);
-            avatarDrawable.setColor(0xFFC468F2, 0xFFF3F3F3);
+            avatarDrawable.setColor(0xFFA5AAB5, 0xFFF3F3F3);
             setDivider(false);
             ThemeBind.themedBackground(this, getContext(), R.drawable.greydivider_top, Theme.key_windowBackgroundGrayShadow);
         } else if (type == TYPE_PREMIUM) {
@@ -92,7 +92,7 @@ public class BoostTypeCell extends BaseCell {
             }
             ThemeBind.textColor(subtitleTextView, Theme.key_dialogTextBlue2, resourcesProvider);
             avatarDrawable.setAvatarType(AvatarDrawable.AVATAR_TYPE_PREMIUM);
-            avatarDrawable.setColor(0xFFC468F2, 0xFFF3F3F3);
+            avatarDrawable.setColor(0xFFA5AAB5, 0xFFF3F3F3);
             setDivider(true);
             ThemeBind.themedBackground(this, getContext(), R.drawable.greydivider_bottom, Theme.key_windowBackgroundGrayShadow);
         } else if (type == TYPE_STARS) {
@@ -100,7 +100,7 @@ public class BoostTypeCell extends BaseCell {
             setSubtitle(getString(R.string.BoostingWinnersRandomly));
             ThemeBind.textColor(subtitleTextView, Theme.key_dialogTextGray3, resourcesProvider);
             avatarDrawable.setAvatarType(AvatarDrawable.AVATAR_TYPE_STARS);
-            avatarDrawable.setColor(0xFFFDC21B, 0xFFF67447);
+            avatarDrawable.setColor(0xFF818898, 0xFF959BA8);
             setDivider(false);
             ThemeBind.themedBackground(this, getContext(), R.drawable.greydivider_top, Theme.key_windowBackgroundGrayShadow);
         }

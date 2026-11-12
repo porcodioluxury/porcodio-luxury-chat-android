@@ -248,8 +248,8 @@ public class HeaderCell extends FrameLayout {
     private void updatePaints(float golden) {
         final int premiumColor1 = Theme.getColor(Theme.key_premiumGradient1, resourcesProvider);
         final int premiumColor2 = Theme.getColor(Theme.key_premiumGradient2, resourcesProvider);
-        final int color1 = ColorUtils.blendARGB(premiumColor1, 0xFFFA5416, golden);
-        final int color2 = ColorUtils.blendARGB(premiumColor2, 0xFFFFC837, golden);
+        final int color1 = ColorUtils.blendARGB(premiumColor1, 0xFF7C8494, golden);
+        final int color2 = ColorUtils.blendARGB(premiumColor2, 0xFF9198A5, golden);
         for (int i = 0; i < paints.length; ++i) {
             paints[i] = new Paint(Paint.ANTI_ALIAS_FLAG);
             paints[i].setColorFilter(new PorterDuffColorFilter(

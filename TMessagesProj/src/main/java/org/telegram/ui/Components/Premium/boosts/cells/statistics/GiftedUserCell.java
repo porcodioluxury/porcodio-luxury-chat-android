@@ -80,11 +80,11 @@ public class GiftedUserCell extends UserCell {
 
     private void setAvatarColorByMonths(int months) {
         if (months == 12) {
-            avatarDrawable.setColor(0xFFff8560, 0xFFd55246);
+            avatarDrawable.setColor(0xFFA8ADB7, 0xFFd55246);
         } else if (months == 6) {
             avatarDrawable.setColor(0xFFF3F3F3, 0xFFF3F3F3);
         } else {
-            avatarDrawable.setColor(0xFF9ad164, 0xFF49ba44);
+            avatarDrawable.setColor(0xFF9097A5, 0xFF727B8C);
         }
     }
 
@@ -122,13 +122,13 @@ public class GiftedUserCell extends UserCell {
             if (boost.gift) {
                 if (giftDrawable == null) {
                     giftDrawable = getResources().getDrawable(R.drawable.mini_gift);
-                    giftDrawable.setColorFilter(new PorterDuffColorFilter(0xFFce8e1f, PorterDuff.Mode.MULTIPLY));
+                    giftDrawable.setColorFilter(new PorterDuffColorFilter(0xFF6B7382, PorterDuff.Mode.MULTIPLY));
                 }
-                badgeTextView.setTextColor(0xFFce8e1f);
+                badgeTextView.setTextColor(0xFF6B7382);
                 badgeTextView.setCompoundDrawablesWithIntrinsicBounds(giftDrawable, null, null, null);
                 badgeTextView.setCompoundDrawablePadding(AndroidUtilities.dp(4));
                 badgeTextView.setText(LocaleController.getString(R.string.BoostingGift));
-                badgeLayout.setBackground(Theme.createRoundRectDrawable(AndroidUtilities.dp(12), AndroidUtilities.dp(12), Theme.multAlpha(0xFFce8e1f, 0.2f)));
+                badgeLayout.setBackground(Theme.createRoundRectDrawable(AndroidUtilities.dp(12), AndroidUtilities.dp(12), Theme.multAlpha(0xFF6B7382, 0.2f)));
             }
             if (boost.giveaway) {
                 if (giveawayDrawable == null) {

@@ -150,29 +150,29 @@ public class ThemeColors {
         defaultColors[key_pollCreateIcons] = 0xff909599;
         defaultColors[key_wallet_comment] = 0xfff5f5f5;
         defaultColors[key_wallet_out_commentBorder] = 0xffd9d9d9;
-        defaultColors[key_wallet_inputCurrency] = 0xff219949;
+        defaultColors[key_wallet_inputCurrency] = 0xFF545A66;
 
         defaultColors[key_avatar_text] = 0xffffffff;
 
         defaultColors[key_avatar_backgroundSaved] = 0xff242833;
         defaultColors[key_avatar_background2Saved] = 0xff242833;
-        defaultColors[key_avatar_backgroundArchived] = 0xffB8C2CC;
+        defaultColors[key_avatar_backgroundArchived] = 0xff3A3F4D;
         defaultColors[key_avatar_backgroundArchivedHidden] = TELEGRAM_COLOR;
-        defaultColors[key_avatar_backgroundRed] = 0xffFF845E;
-        defaultColors[key_avatar_background2Red] = 0xffD45246;
-        defaultColors[key_avatar_backgroundOrange] = 0xffFEBB5B;
-        defaultColors[key_avatar_background2Orange] = 0xffF68136;
-        defaultColors[key_avatar_backgroundViolet] = 0xff242833;
+        defaultColors[key_avatar_backgroundRed] = 0xff5A5F6B;
+        defaultColors[key_avatar_background2Red] = 0xff3C404A;
+        defaultColors[key_avatar_backgroundOrange] = 0xff6B717D;
+        defaultColors[key_avatar_background2Orange] = 0xff484D59;
+        defaultColors[key_avatar_backgroundViolet] = 0xff3A3F4D;
         defaultColors[key_avatar_background2Violet] = 0xff242833;
-        defaultColors[key_avatar_backgroundGreen] = 0xff9AD164;
-        defaultColors[key_avatar_background2Green] = 0xff46BA43;
-        defaultColors[key_avatar_backgroundCyan] = 0xff242833;
-        defaultColors[key_avatar_background2Cyan] = 0xff242833;
-        defaultColors[key_avatar_backgroundBlue] = 0xff242833;
-        defaultColors[key_avatar_background2Blue] = 0xff242833;
-        defaultColors[key_avatar_backgroundPink] = 0xffFF8AAC;
-        defaultColors[key_avatar_background2Pink] = 0xffD95574;
-        defaultColors[key_avatar_backgroundGray] = 0xffA1ABB5;
+        defaultColors[key_avatar_backgroundGreen] = 0xff555B68;
+        defaultColors[key_avatar_background2Green] = 0xff383D49;
+        defaultColors[key_avatar_backgroundCyan] = 0xff2F3442;
+        defaultColors[key_avatar_background2Cyan] = 0xff1F232E;
+        defaultColors[key_avatar_backgroundBlue] = 0xff4D5463;
+        defaultColors[key_avatar_background2Blue] = 0xff343947;
+        defaultColors[key_avatar_backgroundPink] = 0xff7C828E;
+        defaultColors[key_avatar_background2Pink] = 0xff555B68;
+        defaultColors[key_avatar_backgroundGray] = 0xff5A5F6B;
 
 
         defaultColors[key_avatar_backgroundInProfileBlue] = 0xffffffff;
@@ -181,13 +181,13 @@ public class ThemeColors {
         defaultColors[key_avatar_actionBarSelectorBlue] = 0x121a1d21;
         defaultColors[key_avatar_actionBarIconBlue] = DEFAULT_BLACK_TEXT;
 
-        defaultColors[key_avatar_nameInMessageRed] = 0xffCC5049;
-        defaultColors[key_avatar_nameInMessageOrange] = 0xffD67722;
-        defaultColors[key_avatar_nameInMessageViolet] = 0xff242833;
-        defaultColors[key_avatar_nameInMessageGreen] = 0xff40A920;
+        defaultColors[key_avatar_nameInMessageRed] = 0xff4A4F5B;
+        defaultColors[key_avatar_nameInMessageOrange] = 0xff5B616D;
+        defaultColors[key_avatar_nameInMessageViolet] = 0xff2F3442;
+        defaultColors[key_avatar_nameInMessageGreen] = 0xff3E4350;
         defaultColors[key_avatar_nameInMessageCyan] = 0xff242833;
-        defaultColors[key_avatar_nameInMessageBlue] = 0xff242833;
-        defaultColors[key_avatar_nameInMessagePink] = 0xffC7508B;
+        defaultColors[key_avatar_nameInMessageBlue] = 0xff353A47;
+        defaultColors[key_avatar_nameInMessagePink] = 0xff666C78;
 
         defaultColors[key_actionBarDefault] = 0xffffffff;
         defaultColors[key_actionBarDefaultIcon] = DEFAULT_BLACK_TEXT;
@@ -843,30 +843,30 @@ public class ThemeColors {
         defaultColors[key_chat_reactionServiceButtonBackgroundSelected] = 0xffffffff;
         defaultColors[key_chat_reactionServiceButtonTextSelected] = 0xFF000000;
 
-        defaultColors[key_premiumGradient0] = 0xff4ACD43;
+        defaultColors[key_premiumGradient0] = 0xFF7C8494;
         defaultColors[key_premiumGradient1] = 0xff242833;
         defaultColors[key_premiumGradient2] = 0xff242833;
-        defaultColors[key_premiumGradient3] = 0xffDB5C9D;
-        defaultColors[key_premiumGradient4] = 0xffF38926;
+        defaultColors[key_premiumGradient3] = 0xFF9298A5;
+        defaultColors[key_premiumGradient4] = 0xFF818998;
 
         defaultColors[key_premiumGradientBackground1] = 0xff242833;
         defaultColors[key_premiumGradientBackground2] = 0xff242833;
-        defaultColors[key_premiumGradientBackground3] = 0xffDB5C9D;
-        defaultColors[key_premiumGradientBackground4] = 0xffF38926;
+        defaultColors[key_premiumGradientBackground3] = 0xFF9298A5;
+        defaultColors[key_premiumGradientBackground4] = 0xFF818998;
         defaultColors[key_premiumGradientBackgroundOverlay] = Color.WHITE;
         defaultColors[key_premiumStarGradient1] = 0xffFFFFFF;
         defaultColors[key_premiumStarGradient2] = 0xffe6e7eb;
-        defaultColors[key_premiumCoinGradient1] = -15436801;
-        defaultColors[key_premiumCoinGradient2] = -4167942;
+        defaultColors[key_premiumCoinGradient1] = 0xFF7E8695;
+        defaultColors[key_premiumCoinGradient2] = 0xFFA8ADB8;
         defaultColors[key_premiumStartSmallStarsColor] = ColorUtils.setAlphaComponent(Color.WHITE, 90);
         defaultColors[key_premiumStartSmallStarsColor2] = ColorUtils.setAlphaComponent(Color.WHITE, 90);
         defaultColors[key_premiumGradientBottomSheet1] = 0xff242833;
         defaultColors[key_premiumGradientBottomSheet2] = 0xff242833;
-        defaultColors[key_premiumGradientBottomSheet3] = 0xffE794BE;
+        defaultColors[key_premiumGradientBottomSheet3] = 0xFFB7BBC4;
         defaultColors[key_topics_unreadCounter] = 0xff4ecc5e;
         defaultColors[key_topics_unreadCounterMuted] = 0xff8b8d8f;
-        defaultColors[key_starsGradient1] = 0xffFEC846;
-        defaultColors[key_starsGradient2] = 0xffEC920A;
+        defaultColors[key_starsGradient1] = 0xFF999FAB;
+        defaultColors[key_starsGradient2] = 0xFF6F7787;
 
         defaultColors[key_stories_circle1] = 0xFF242833; // 0xFF39DF3C;
         defaultColors[key_stories_circle2] = 0xFF2fc183; // 0xFF242833;

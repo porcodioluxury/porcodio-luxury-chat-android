@@ -97,7 +97,7 @@ public class WalletActionLayout {
     private SpringAnimation diamondSpring;
     private ValueAnimator diamondReturn;
     private boolean gramAnimationStarted;
-    private static final int RIBBON_SENT_COLOR = 0xFF15BE00;
+    private static final int RIBBON_SENT_COLOR = 0xFF565C69;
 
     private final GiftSheet.RibbonDrawable ribbon;
     private final AnimatedFloat ribbonColorAnimation;
@@ -140,8 +140,8 @@ public class WalletActionLayout {
     private boolean touchCaptured;
     private Runnable onClick;
 
-    private static final int CARD_NUMBER_COLOR = 0xFF0145D0;
-    private static final int NAME_COLOR = 0xFF5DE3FF;
+    private static final int CARD_NUMBER_COLOR = 0xFF5E6573;
+    private static final int NAME_COLOR = 0xFFA6ABB6;
     private static final int BACKDROP_BITMAP_SIZE = 96;
     private final Matrix backdropShaderMatrix = new Matrix();
     private int textColor = NAME_COLOR;
@@ -199,7 +199,7 @@ public class WalletActionLayout {
             }
         });
 
-        sendingClockPaint.setColor(0xFF66E6FF);
+        sendingClockPaint.setColor(0xFFABB0BA);
         sendingClockPaint.setStyle(Paint.Style.STROKE);
         sendingClockPaint.setStrokeWidth(dpf2(1));
         sendingClockReveal = new AnimatedFloat(1f, parentView::invalidate, 0, 180, CubicBezierInterpolator.EASE_OUT_QUINT);
@@ -306,8 +306,8 @@ public class WalletActionLayout {
 
     private static Shader createBackdropShader(TL_stars.starGiftAttributeBackdrop backdrop) {
         // The 2D wallet card's backdrop surface, centered on the card.
-        final int dark = WalletGiftPalette.surface(0xFF088FEE, backdrop.center_color, backdrop.edge_color);
-        final int light = WalletGiftPalette.surface(0xFF16ABF9, backdrop.center_color, backdrop.edge_color);
+        final int dark = WalletGiftPalette.surface(0xFF6F7787, backdrop.center_color, backdrop.edge_color);
+        final int light = WalletGiftPalette.surface(0xFF7C8493, backdrop.center_color, backdrop.edge_color);
         final Shader sweep = new SweepGradient(0, 0, new int[]{ dark, light, dark, light, dark }, new float[]{ 0f, .25f, .5f, .75f, 1f });
         if (SharedConfig.getDevicePerformanceClass() == SharedConfig.PERFORMANCE_CLASS_LOW) {
             return sweep;
@@ -413,7 +413,7 @@ public class WalletActionLayout {
             parentView.invalidate();
         }
         final int newRibbonColor = failed ? Theme.getColor(Theme.key_text_RedBold, resourcesProvider)
-            : out ? RIBBON_SENT_COLOR : 0xFF4BB9FE;
+            : out ? RIBBON_SENT_COLOR : 0xFF9BA1AE;
         ribbonFailed = failed;
         if (ribbonColorTo == 0) {
             ribbonColorFrom = ribbonColorTo = ribbonColorCurrent = newRibbonColor;
@@ -859,7 +859,7 @@ public class WalletActionLayout {
                 parentView.invalidate();
             }
         };
-        loadingDrawable.setColors(0x004BD5F9, Theme.multAlpha(0xFF4BD5F9, .125f), 0x004BD5F9, Theme.multAlpha(0xFF4BD5F9, .75f));
+        loadingDrawable.setColors(0x00999FAB, Theme.multAlpha(0xFF999FAB, .125f), 0x00999FAB, Theme.multAlpha(0xFF999FAB, .75f));
         loadingDrawable.strokePaint.setStrokeWidth(dpf2(2));
         loadingDrawable.setGradientScale(2f);
         loadingDrawable.usePath(loadingPath);

@@ -162,9 +162,9 @@ public class WalletActivity extends UniversalFragment implements NotificationCen
     private static final int TAB_COLLECTIBLES = 1;
     private static final int CAMERA_PERMISSION_REQUEST_CODE = 44;
 
-    private static final int WALLET_BLUE = 0xFF129EEA;
-    private static final int WALLET_SHEET_BLUE = 0xFF088FEE;
-    private static final int WALLET_BLUE_LIGHT = 0xFF45B8F7;
+    private static final int WALLET_BLUE = 0xFF717A8B;
+    private static final int WALLET_SHEET_BLUE = 0xFF6F7787;
+    private static final int WALLET_BLUE_LIGHT = 0xFF949BA8;
     private static Typeface walletAddressTypeface;
 
     private WalletCardComponent card;
@@ -1865,7 +1865,7 @@ public class WalletActivity extends UniversalFragment implements NotificationCen
                 progress
         ));
         usdBalanceView.setTextColor(AndroidUtilities.lerpColor(
-                card.stickerColor(0xFF87EFFF),
+                card.stickerColor(0xFFBDC1C9),
                 ColorUtils.setAlphaComponent(actionBarTextColor, Math.round(255 * 0.56f)),
                 progress
         ));
@@ -1878,7 +1878,7 @@ public class WalletActivity extends UniversalFragment implements NotificationCen
         }
         if (balanceGramLabelSpan != null) {
             balanceGramLabelSpan.setColor(ColorUtils.setAlphaComponent(
-                    card.stickerColor(0xFF6DDCFF),
+                    card.stickerColor(0xFFAFB4BD),
                     Math.round(255 * (1.0f - progress))
             ));
         }
@@ -3522,7 +3522,7 @@ public class WalletActivity extends UniversalFragment implements NotificationCen
         int from = sb.length();
         sb.append(LocaleController.getString(R.string.GramCurrency));
         if (balanceGramLabelSpan == null) {
-            balanceGramLabelSpan = new BalanceLabelSpan(0xFF6DDCFF);
+            balanceGramLabelSpan = new BalanceLabelSpan(0xFFAFB4BD);
         }
         sb.setSpan(balanceGramLabelSpan, from, sb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         balanceView.setText(sb);
@@ -4038,8 +4038,8 @@ public class WalletActivity extends UniversalFragment implements NotificationCen
             copyButton.setPadding(dp(10), 0, dp(12), 0);
             copyButton.setBackground(Theme.createSimpleSelectorRoundRectDrawable(
                     dp(18),
-                    0xFFF0F9FE,
-                    0xFFE2F3FC
+                    0xFFF6F7F8,
+                    0xFFEDEEF1
             ));
             final Drawable copyIcon = context.getResources().getDrawable(R.drawable.wallet_copy).mutate();
             copyIcon.setColorFilter(new PorterDuffColorFilter(WALLET_BLUE, PorterDuff.Mode.SRC_IN));
@@ -4106,8 +4106,8 @@ public class WalletActivity extends UniversalFragment implements NotificationCen
             showQrButton.setPadding(dp(12), 0, dp(12), 0);
             showQrButton.setBackground(Theme.createSimpleSelectorRoundRectDrawable(
                     dp(18),
-                    0xFFF0F9FE,
-                    0xFFE2F3FC
+                    0xFFF6F7F8,
+                    0xFFEDEEF1
             ));
             ScaleStateListAnimator.apply(showQrButton);
             backFace.addView(showQrButton, LayoutHelper.createFrame(
@@ -4213,7 +4213,7 @@ public class WalletActivity extends UniversalFragment implements NotificationCen
                             .replace('_', ' ')
                             .replace('-', ' ')
             ) + "   ·   ";
-            paint.setColor(0xFF0072CE);
+            paint.setColor(0xFF5D6471);
             paint.setTextSize(dp(12));
             paint.setTypeface(AndroidUtilities.getTypeface("fonts/rmono.ttf"));
         }

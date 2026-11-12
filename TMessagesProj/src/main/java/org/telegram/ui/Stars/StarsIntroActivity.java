@@ -750,8 +750,8 @@ public class StarsIntroActivity extends GradientHeaderActivity implements Notifi
                 for (int i = 0; i < paints.length; ++i) {
                     paints[i] = new Paint(Paint.ANTI_ALIAS_FLAG);
                     final int col = type == 2
-                        ? (i >= 20 ? ColorUtils.blendARGB(0xFFF0A800, 0xFFE08800, (i - 20) / 19f) : i % 5 == 0 ? 0xFFFFF6DC : ColorUtils.blendARGB(0xFFFFD66B, 0xFFFFB13B, i / 19f))
-                        : ColorUtils.blendARGB(0xFFFA5416, 0xFFFFC837, i / (float) (paints.length - 1));
+                        ? (i >= 20 ? ColorUtils.blendARGB(0xFF6C7484, 0xFF656C7B, (i - 20) / 19f) : i % 5 == 0 ? 0xFFECEDEF : ColorUtils.blendARGB(0xFFAEB3BC, 0xFF939AA7, i / 19f))
+                        : ColorUtils.blendARGB(0xFF7C8494, 0xFF9198A5, i / (float) (paints.length - 1));
                     paints[i].setColorFilter(new PorterDuffColorFilter(col, PorterDuff.Mode.SRC_IN));
                 }
                 drawable.getPaint = i -> paints[i % paints.length];
@@ -2407,7 +2407,7 @@ public class StarsIntroActivity extends GradientHeaderActivity implements Notifi
             priceView.setTextColor(0xFFFFFFFF);
             priceView.setText(replaceStars("XTR " + LocaleController.formatNumber((int) stars, ','), .85f));
             priceView.setPadding(dp(5.33f), 0, dp(5.33f), 0);
-            priceView.setBackground(Theme.createRoundRectDrawable(dp(16), 0xFFEEB402));
+            priceView.setBackground(Theme.createRoundRectDrawable(dp(16), 0xFF6C7484));
             FrameLayout backgroundLayout = new FrameLayout(context);
             ThemeBind.fillBackground(backgroundLayout, Theme.createRoundRectDrawable(dp(20), Theme.getColor(Theme.key_dialogBackground, resourcesProvider)), ThemeBind.of(Theme.key_dialogBackground), resourcesProvider);
             backgroundLayout.setPadding(dp(1.33f), dp(1.33f), dp(1.33f), dp(1.33f));
