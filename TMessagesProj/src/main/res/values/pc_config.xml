@@ -3,4 +3,7 @@
     <!-- ID utente Telegram degli account ufficiali (separati da virgola), per esempio PORCODIO LUXURY / Mario Ribecco.
          Vuoto = nessun account fissato in evidenza. Vedi docs/ALGORITMO.md -->
     <string name="pc_official_user_ids" translatable="false"></string>
+    <!-- In alternativa (o in aggiunta) lo username dell'account ufficiale, con o senza @. Si risolve una volta con
+         contacts.resolveUsername e l'ID resta in cache. Esempio: mario_ribecco -->
+    <string name="pc_official_username" translatable="false"></string>
 </resources>

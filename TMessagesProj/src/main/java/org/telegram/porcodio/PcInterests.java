@@ -191,6 +191,22 @@ public class PcInterests {
         save();
     }
 
+    /** Segnale unico per post e tipo (salvataggio, condivisione, commento, visita profilo): non si somma a ogni tocco. */
+    public static synchronized boolean recordOnce(PcBoard.Post p, String kind, double signal) {
+        String key = kind + ":" + p.chatId + ":" + p.msgId;
+        if (onceDone.contains(key)) {
+            return false;
+        }
+        if (onceDone.size() > 2000) {
+            onceDone.clear();
+        }
+        onceDone.add(key);
+        record(p, signal);
+        return true;
+    }
+
+    private static final Set<String> onceDone = new HashSet<>();
+
     public static synchronized void recordDwell(PcBoard.Post p, long millis, boolean video) {
         if (millis < 1000) {
             record(p, W_SWIPE_AWAY);

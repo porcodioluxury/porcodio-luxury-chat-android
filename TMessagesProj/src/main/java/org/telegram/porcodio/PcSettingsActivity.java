@@ -102,6 +102,7 @@ public class PcSettingsActivity extends PcListFragment implements MainTabsActivi
             row(R.string.PcSetPrivacy, R.string.PcSetPrivacyInfo, R.drawable.ic_pc_shield, () -> presentFragment(new PrivacySettingsActivity()));
             row(R.string.PcSetPrivateTools, R.string.PcSetPrivateToolsInfo, R.drawable.ic_pc_lock, this::explainPrivateTools);
             row(R.string.PcSetSecretChats, R.string.PcSetSecretChatsInfo, R.drawable.ic_pc_lock, () -> presentFragment(new PcSecretActivity()));
+            row(R.string.PcSecTitle, R.string.PcSecRowInfo, R.drawable.ic_pc_shield, () -> presentFragment(new PcSecurityActivity()));
             row(R.string.PcSetDevices, R.string.PcSetDevicesInfo, R.drawable.ic_pc_device, () -> presentFragment(new SessionsActivity(0)));
 
             section(R.string.PcSetLook);
@@ -115,6 +116,7 @@ public class PcSettingsActivity extends PcListFragment implements MainTabsActivi
             section(R.string.PcSetSpace);
             row(R.string.PcSetData, R.string.PcSetDataInfo, R.drawable.ic_pc_data, () -> presentFragment(new DataSettingsActivity()));
             row(R.string.PcQuickCleanup, R.string.PcQuickCleanupInfo, R.drawable.ic_pc_folder, () -> presentFragment(new PcCleanupActivity()));
+            row(R.string.PcBulkSettingsRow, R.string.PcBulkSettingsSub, R.drawable.ic_pc_folder, () -> presentFragment(new PcBulkActivity()));
             row(R.string.PcSetPower, R.string.PcSetPowerInfo, R.drawable.ic_pc_spark, () -> presentFragment(new LiteModeSettingsActivity()));
 
             section(R.string.PcSetSocial);
@@ -135,6 +137,8 @@ public class PcSettingsActivity extends PcListFragment implements MainTabsActivi
         row(R.string.PcAntispamMenu, R.string.PcSetAntispamInfo, R.drawable.ic_pc_shield, () -> PcAntispam.showMenu(this, currentAccount, null));
         row(R.string.PcMuteAllGroups, R.string.PcMuteAllGroupsInfo, R.drawable.ic_pc_bell, () -> PcAntispam.muteAllGroups(this, currentAccount, null));
         if (featuresOnly) {
+            row(R.string.PcSecTitle, R.string.PcSecRowInfo, R.drawable.ic_pc_shield, () -> presentFragment(new PcSecurityActivity()));
+            row(R.string.PcBulkSettingsRow, R.string.PcBulkSettingsSub, R.drawable.ic_pc_folder, () -> presentFragment(new PcBulkActivity()));
             row(R.string.PcSetPrivateTools, R.string.PcSetPrivateToolsInfo, R.drawable.ic_pc_lock, this::explainPrivateTools);
             row(R.string.PcUpdSettings, R.string.PcUpdSettingsInfo, R.drawable.ic_pc_refresh, () -> PcUpdater.checkNow(getParentActivity()));
             items.add(new Item(T_FOOT, null, null, 0, null));

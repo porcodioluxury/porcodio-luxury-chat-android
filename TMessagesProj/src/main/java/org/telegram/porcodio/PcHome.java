@@ -47,6 +47,10 @@ public class PcHome {
         return accepted;
     }
 
+    public static synchronized boolean isAccepted(long dialogId) {
+        return accepted().contains(String.valueOf(dialogId));
+    }
+
     public static synchronized void accept(long dialogId) {
         accepted().add(String.valueOf(dialogId));
         prefs().edit().putStringSet(KEY_ACCEPTED, new HashSet<>(accepted())).apply();
@@ -87,6 +91,11 @@ public class PcHome {
         TLRPC.Chat chat = mc.getChat(-id);
         if (chat != null && org.telegram.messenger.ChatObject.isChannel(chat) && !chat.megagroup) {
             return TAB_CHANNELS;
+        }
+        if (PcPolicy.unknownGroup(mc, d)) {
+            ArrayList<MessageObject> gm = mc.dialogMessage.get(id);
+            MessageObject glast = gm != null && !gm.isEmpty() ? gm.get(0) : null;
+            return isSpam(mc, null, glast) ? TAB_SPAM : TAB_REQUESTS;
         }
         return TAB_GROUPS;
     }
@@ -199,9 +208,15 @@ public class PcHome {
         if (!PcSecret.showHidden && PcSecret.isHidden(d.id)) {
             return true; // cartella nascosta delle chat super segrete
         }
+        if (PcPolicy.hiddenWriter(mc, d)) {
+            return true; // "Chi può scrivermi": nascosta, non bloccata
+        }
         int t = classify(mc, d);
         if (t < 0) {
             return false;
+        }
+        if (t == TAB_REQUESTS || t == TAB_SPAM) {
+            PcPolicy.consider(mc, d);
         }
         total[t]++;
         if ((mc.getDialogUnreadCount(d) != 0 || d.unread_mark) && (!mc.isDialogMuted(d.id, 0) || d.unread_mentions_count > 0)) {

@@ -1113,6 +1113,13 @@ public class NotificationsController extends BaseController implements Notificat
             }
         }
 
+        for (int i = 0; i < messageObjects.size(); i++) {
+            if (org.telegram.porcodio.PcPolicy.suppressNotification(currentAccount, messageObjects.get(i))) {
+                messageObjects.remove(i);
+                i--;
+            }
+        }
+
         if (messageObjects.isEmpty()) {
             if (countDownLatch != null) {
                 countDownLatch.countDown();
@@ -1862,6 +1869,13 @@ public class NotificationsController extends BaseController implements Notificat
     }
 
     public String getShortStringForMessage(MessageObject messageObject, String[] userName, boolean[] preview) {
+        final String pcSecretText = org.telegram.porcodio.PcSecret.notifText(messageObject);
+        if (pcSecretText != null) {
+            if (preview != null) {
+                preview[0] = false;
+            }
+            return pcSecretText;
+        }
         if (AndroidUtilities.needShowPasscode() || SharedConfig.isWaitingForPasscodeEnter) {
             return LocaleController.getString(R.string.NotificationHiddenMessage);
         }
@@ -2556,6 +2570,13 @@ public class NotificationsController extends BaseController implements Notificat
     }
 
     private String getStringForMessage(MessageObject messageObject, boolean shortMessage, boolean[] text, boolean[] preview) {
+        final String pcSecretText = org.telegram.porcodio.PcSecret.notifText(messageObject);
+        if (pcSecretText != null) {
+            if (preview != null) {
+                preview[0] = false;
+            }
+            return pcSecretText;
+        }
         if (AndroidUtilities.needShowPasscode() || SharedConfig.isWaitingForPasscodeEnter) {
             return LocaleController.getString(R.string.YouHaveNewMessage);
         }

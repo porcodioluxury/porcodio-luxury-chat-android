@@ -495,6 +495,53 @@ public class PcBoard {
         }));
     }
 
+    /** Salva il post nei "Messaggi salvati" (inoltro a se stessi). Esito vero solo se il server lo accetta. */
+    public static void saveToSaved(int account, Post post, Result result) {
+        final long me = UserConfig.getInstance(account).getClientUserId();
+        TLRPC.TL_messages_forwardMessages req = new TLRPC.TL_messages_forwardMessages();
+        req.from_peer = MessagesController.getInstance(account).getInputPeer(-post.chatId);
+        req.to_peer = MessagesController.getInstance(account).getInputPeer(me);
+        if (req.from_peer == null || req.to_peer == null) {
+            result.done(false);
+            return;
+        }
+        req.id.add(post.msgId);
+        req.random_id.add(Utilities.random.nextLong());
+        ConnectionsManager.getInstance(account).sendRequest(req, (response, error) -> AndroidUtilities.runOnUIThread(() -> {
+            if (response instanceof TLRPC.Updates) {
+                MessagesController.getInstance(account).processUpdates((TLRPC.Updates) response, false);
+                result.done(true);
+            } else {
+                result.done(false);
+            }
+        }));
+    }
+
+    /** Vero se tra i commenti del post c'e' un mio commento piu' recente di sinceDate (secondi). Usato per il segnale "commento". */
+    public static void hasMyCommentSince(int account, Post post, int sinceDate, Result result) {
+        final long me = UserConfig.getInstance(account).getClientUserId();
+        TLRPC.TL_messages_getReplies req = new TLRPC.TL_messages_getReplies();
+        req.peer = MessagesController.getInstance(account).getInputPeer(-post.chatId);
+        if (req.peer == null) {
+            result.done(false);
+            return;
+        }
+        req.msg_id = post.msgId;
+        req.limit = 30;
+        ConnectionsManager.getInstance(account).sendRequest(req, (response, error) -> AndroidUtilities.runOnUIThread(() -> {
+            boolean mine = false;
+            if (response instanceof TLRPC.messages_Messages) {
+                for (TLRPC.Message m : ((TLRPC.messages_Messages) response).messages) {
+                    if (m != null && m.date >= sinceDate && m.from_id != null && m.from_id.user_id == me) {
+                        mine = true;
+                        break;
+                    }
+                }
+            }
+            result.done(mine);
+        }));
+    }
+
     public static void publish(int account, String text) {
         long chat = myBoardChat(account);
         if (chat == 0 || text == null || text.trim().isEmpty()) {
