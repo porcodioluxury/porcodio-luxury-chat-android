@@ -327,12 +327,12 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
         tabsView.setMaxWidth(dp(328 + DialogsActivity.MAIN_TABS_MARGIN * 2));
 
         tabs = new GlassTabView[5];
-        tabs[INDEX_CHATS] = GlassTabView.createMainTab(context, resourceProvider, GlassTabView.TabAnimation.CHATS, R.string.MainTabsChats);
-        tabs[INDEX_CONTACTS] = GlassTabView.createMainTab(context, resourceProvider, GlassTabView.TabAnimation.CONTACTS, R.string.PcTabSocial);
-        tabs[INDEX_SETTINGS] = GlassTabView.createMainTab(context, resourceProvider, GlassTabView.TabAnimation.SETTINGS, R.string.Settings);
-        tabs[INDEX_CALLS] = GlassTabView.createMainTab(context, resourceProvider, GlassTabView.TabAnimation.GIFT, R.string.PcTabShop);
+        tabs[INDEX_CHATS] = GlassTabView.createMainTab(context, resourceProvider, GlassTabView.TabAnimation.PC_CHAT, R.string.MainTabsChats);
+        tabs[INDEX_CONTACTS] = GlassTabView.createMainTab(context, resourceProvider, GlassTabView.TabAnimation.PC_SOCIAL, R.string.PcTabSocial);
+        tabs[INDEX_SETTINGS] = GlassTabView.createMainTab(context, resourceProvider, GlassTabView.TabAnimation.PC_SETTINGS, R.string.Settings);
+        tabs[INDEX_CALLS] = GlassTabView.createMainTab(context, resourceProvider, GlassTabView.TabAnimation.PC_SHOP, R.string.PcTabShop);
         // Porcodio: barra in basso Chat / Contatti / Chiamate / Impostazioni (la scheda profilo diventa Impostazioni)
-        tabs[INDEX_PROFILE] = GlassTabView.createMainTab(context, resourceProvider, GlassTabView.TabAnimation.SETTINGS, R.string.Settings);
+        tabs[INDEX_PROFILE] = GlassTabView.createMainTab(context, resourceProvider, GlassTabView.TabAnimation.PC_SETTINGS, R.string.Settings);
         tabs[INDEX_CHATS].setOnLongClickListener(this::openFoldersSelector);
         tabs[INDEX_CONTACTS].setOnLongClickListener(this::openContactsSelector);
         tabs[INDEX_PROFILE].setOnLongClickListener(this::openAccountSelector);
