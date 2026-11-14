@@ -282,7 +282,7 @@ public class ChatAvatarContainer extends FrameLayout implements FactorAnimator.T
         ThemeBind.textColor(titleTextView, Theme.key_actionBarDefaultTitle, resourcesProvider);
         titleTextView.setTextSize(18);
         titleTextView.setGravity(Gravity.LEFT);
-        titleTextView.setTypeface(AndroidUtilities.bold());
+        titleTextView.setTypeface(org.telegram.porcodio.PcUi.serif(true, false));
         titleTextView.setLeftDrawableTopPadding(-dp(1.3f));
         titleTextView.setCanHideRightDrawable(false);
         titleTextView.setRightDrawableOutside(true);

@@ -16,6 +16,9 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.telegram.messenger.AndroidUtilities;
+import org.telegram.messenger.FileLoader;
+import org.telegram.messenger.ImageLocation;
+import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.R;
 import org.telegram.messenger.UserConfig;
@@ -34,8 +37,17 @@ import java.util.ArrayList;
  * Feed interno (solo per chi usa l'app): post delle Bacheche degli amici e la tua, come righe di un social.
  * Con l'argomento "author" mostra solo la Bacheca di quella persona.
  */
-public class PcFeedActivity extends PcListFragment implements org.telegram.ui.MainTabsActivity.TabFragmentDelegate {
-    private static final int T_BOARD = 0, T_POST = 1, T_NOTE = 2, T_CHIPS = 3;
+public class PcFeedActivity extends PcListFragment implements org.telegram.ui.MainTabsActivity.TabFragmentDelegate, NotificationCenter.NotificationCenterDelegate {
+    private static final int T_BOARD = 0, T_POST = 1, T_NOTE = 2, T_CHIPS = 3, T_STORIES = 4, T_GRID = 5;
+    private static final int REQ_PHOTO = 7101, REQ_VIDEO = 7102;
+    private static boolean following() {
+        return org.telegram.messenger.ApplicationLoader.applicationContext.getSharedPreferences("pc_social", Context.MODE_PRIVATE).getBoolean("following", false);
+    }
+
+    private static void setFollowing(boolean v) {
+        org.telegram.messenger.ApplicationLoader.applicationContext.getSharedPreferences("pc_social", Context.MODE_PRIVATE).edit().putBoolean("following", v).apply();
+    }
+
     private int section; // 0 feed, 1 storie, 2 reel, 3 esplora, 4 attività (solo nella scheda Social)
 
     private final long onlyAuthor;
@@ -48,19 +60,22 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
         onlyAuthor = args != null ? args.getLong("author", 0) : 0;
     }
 
-    @Override
-    public boolean onFragmentCreate() {
-        reload();
-        return super.onFragmentCreate();
+    {
+        // il primo caricamento parte alla creazione del frammento
     }
 
     private void reload() {
         loading = true;
+        for (long oid : PcRanking.officialIds()) {
+            if (PcBoard.knownBoard(currentAccount, oid) == 0) {
+                PcBoard.discover(currentAccount, oid, null);
+            }
+        }
         PcBoard.loadFeed(currentAccount, list -> {
             loading = false;
             posts.clear();
             for (PcBoard.Post p : list) {
-                if (onlyAuthor == 0 || p.authorId == onlyAuthor) {
+                if ((onlyAuthor == 0 || p.authorId == onlyAuthor) && !PcBoard.isSpecial(p)) {
                     posts.add(p);
                 }
             }
@@ -116,28 +131,124 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
         return onlyAuthor == 0;
     }
 
+    private static class Row {
+        int type;
+        PcBoard.Post post;
+        ArrayList<PcBoard.Post> grid;
+
+        Row(int type) {
+            this.type = type;
+        }
+    }
+
+    private final ArrayList<Row> rows = new ArrayList<>();
+
+    private static boolean isVideo(PcBoard.Post p) {
+        return p.message != null && p.message.media instanceof TLRPC.TL_messageMediaDocument && p.message.media.document != null
+            && org.telegram.messenger.MessageObject.isVideoDocument(p.message.media.document);
+    }
+
+    private static boolean isPhoto(PcBoard.Post p) {
+        return p.message != null && p.message.media instanceof TLRPC.TL_messageMediaPhoto && p.message.media.photo != null;
+    }
+
+    private void rebuild() {
+        rows.clear();
+        if (tabMode()) {
+            rows.add(new Row(T_STORIES));
+            rows.add(new Row(T_CHIPS));
+        }
+        if (showBoardCard()) {
+            rows.add(new Row(T_BOARD));
+        }
+        final long me = UserConfig.getInstance(currentAccount).getClientUserId();
+        if (!tabMode() || section == 0) {
+            for (PcBoard.Post p : PcRanking.rankFeed(currentAccount, posts, following())) {
+                Row r = new Row(T_POST);
+                r.post = p;
+                rows.add(r);
+            }
+        } else if (section == 2) {
+            ArrayList<PcBoard.Post> vids = new ArrayList<>();
+            for (PcBoard.Post p : posts) {
+                if (isVideo(p)) {
+                    vids.add(p);
+                }
+            }
+            for (PcBoard.Post p : PcRanking.rankFeed(currentAccount, vids, following())) {
+                Row r = new Row(T_POST);
+                r.post = p;
+                rows.add(r);
+            }
+        } else if (section == 3) {
+            ArrayList<PcBoard.Post> media = new ArrayList<>();
+            for (PcBoard.Post p : posts) {
+                if (isPhoto(p) || isVideo(p)) {
+                    media.add(p);
+                }
+            }
+            Row g = null;
+            for (PcBoard.Post p : PcRanking.rankExplore(currentAccount, media)) {
+                if (g == null || g.grid.size() == 3) {
+                    g = new Row(T_GRID);
+                    g.grid = new ArrayList<>();
+                    rows.add(g);
+                }
+                g.grid.add(p);
+            }
+        } else if (section == 4) {
+            for (PcBoard.Post p : posts) {
+                if (p.authorId == me) {
+                    Row r = new Row(T_POST);
+                    r.post = p;
+                    rows.add(r);
+                }
+            }
+        }
+        rows.add(new Row(T_NOTE));
+    }
+
+    @Override
+    protected void notifyData() {
+        rebuild();
+        super.notifyData();
+    }
+
+    @Override
+    public boolean onFragmentCreate() {
+        reload();
+        getNotificationCenter().addObserver(this, NotificationCenter.storiesUpdated);
+        try {
+            getMessagesController().getStoriesController().loadStories();
+        } catch (Throwable ignore) {
+        }
+        return super.onFragmentCreate();
+    }
+
+    @Override
+    public void onFragmentDestroy() {
+        getNotificationCenter().removeObserver(this, NotificationCenter.storiesUpdated);
+        super.onFragmentDestroy();
+    }
+
+    @Override
+    public void didReceivedNotification(int id, int account, Object... args) {
+        if (id == NotificationCenter.storiesUpdated && tabMode()) {
+            notifyData();
+        }
+    }
+
     @Override
     protected int itemCount() {
-        return (tabMode() ? 1 : 0) + (showBoardCard() ? 1 : 0) + shownPosts() + 1;
-    }
-
-    private int shownPosts() {
-        return section == 0 ? posts.size() : 0;
-    }
-
-    private int shift() {
-        return (tabMode() ? 1 : 0) + (showBoardCard() ? 1 : 0);
+        if (rows.isEmpty()) {
+            rebuild();
+        }
+        return rows.size();
     }
 
     @Override
     protected int itemViewType(int position) {
-        if (tabMode() && position == 0) {
-            return T_CHIPS;
-        }
-        if (showBoardCard() && position == (tabMode() ? 1 : 0)) {
-            return T_BOARD;
-        }
-        return position - shift() < shownPosts() ? T_POST : T_NOTE;
+        return rows.get(position).type;
     }
 
     @Override
@@ -147,6 +258,12 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
 
     @Override
     protected View createRow(Context context, int viewType) {
+        if (viewType == T_STORIES) {
+            return new StoriesRow(context);
+        }
+        if (viewType == T_GRID) {
+            return new GridRow(context);
+        }
         if (viewType == T_CHIPS) {
             ChipsRow c = new ChipsRow(context);
             c.setLayoutParams(new RecyclerView.LayoutParams(-1, -2));
@@ -159,6 +276,7 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
             return new PostRow(context);
         }
         TextView t = PcUi.label(context, "", 14, false, Theme.key_windowBackgroundWhiteGrayText);
+        t.setTypeface(PcUi.serif(false, true));
         t.setGravity(Gravity.CENTER);
         t.setPadding(dp(24), dp(24), dp(24), dp(tabMode() ? org.telegram.ui.DialogsActivity.MAIN_TABS_HEIGHT_WITH_MARGINS + 24 : 96));
         t.setLayoutParams(new RecyclerView.LayoutParams(-1, -2));
@@ -167,24 +285,146 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
 
     @Override
     protected void bindRow(View row, int viewType, int position) {
-        if (viewType == T_CHIPS) {
+        Row r = rows.get(position);
+        if (viewType == T_STORIES) {
+            ((StoriesRow) row).bind();
+        } else if (viewType == T_GRID) {
+            ((GridRow) row).bind(r.grid);
+        } else if (viewType == T_CHIPS) {
             ((ChipsRow) row).bind();
         } else if (viewType == T_BOARD) {
             ((BoardRow) row).bind();
         } else if (viewType == T_POST) {
-            ((PostRow) row).bind(posts.get(position - shift()));
+            ((PostRow) row).bind(r.post);
         } else {
             TextView t = (TextView) row;
-            if (section != 0) {
-                t.setText(LocaleController.getString(R.string.PcSocialSoon));
+            boolean emptySection = true;
+            for (Row x : rows) {
+                if (x.type == T_POST || x.type == T_GRID) {
+                    emptySection = false;
+                    break;
+                }
+            }
+            if (tabMode() && section == 1) {
+                t.setText(LocaleController.getString(R.string.PcSocialStoriesNote));
             } else if (loading) {
                 t.setText(LocaleController.getString(R.string.PcFeedLoading));
-            } else if (posts.isEmpty()) {
+            } else if (emptySection && tabMode() && section != 0) {
+                t.setText(LocaleController.getString(R.string.PcSocialSectionEmpty));
+            } else if (emptySection) {
                 t.setText(LocaleController.getString(R.string.PcFeedEmpty));
             } else {
                 t.setText("");
             }
         }
+    }
+
+    // ---- pubblicazione: post con foto, reel (video), storia
+    private String pendingCaption;
+
+    private void onPlus() {
+        if (getParentActivity() == null) {
+            return;
+        }
+        if (!PcBoard.isEnabled(currentAccount)) {
+            activate();
+            return;
+        }
+        CharSequence[] items = {
+            LocaleController.getString(R.string.PcPlusPhoto),
+            LocaleController.getString(R.string.PcPlusReel),
+            LocaleController.getString(R.string.PcPlusStory),
+            LocaleController.getString(R.string.PcPlusText)};
+        AlertDialog.Builder b = new AlertDialog.Builder(getParentActivity());
+        b.setTitle(LocaleController.getString(R.string.PcPlusTitle));
+        b.setItems(items, (d, which) -> {
+            if (which == 0 || which == 1) {
+                android.content.Intent i = new android.content.Intent(android.content.Intent.ACTION_GET_CONTENT);
+                i.setType(which == 0 ? "image/*" : "video/*");
+                i.addCategory(android.content.Intent.CATEGORY_OPENABLE);
+                startActivityForResult(i, which == 0 ? REQ_PHOTO : REQ_VIDEO);
+            } else if (which == 2) {
+                try {
+                    org.telegram.ui.Stories.recorder.StoryRecorder.getInstance(getParentActivity(), currentAccount).open(null);
+                } catch (Throwable t) {
+                    PcUi.toast(getParentActivity(), LocaleController.getString(R.string.PcBoardFailed));
+                }
+            } else {
+                write();
+            }
+        });
+        showDialog(b.create());
+    }
+
+    @Override
+    public void onActivityResultFragment(int requestCode, int resultCode, android.content.Intent data) {
+        super.onActivityResultFragment(requestCode, resultCode, data);
+        if ((requestCode != REQ_PHOTO && requestCode != REQ_VIDEO) || resultCode != android.app.Activity.RESULT_OK || data == null || data.getData() == null) {
+            return;
+        }
+        final boolean video = requestCode == REQ_VIDEO;
+        final android.net.Uri uri = data.getData();
+        PcUi.toast(getParentActivity(), LocaleController.getString(R.string.PcPlusPreparing));
+        org.telegram.messenger.Utilities.globalQueue.postRunnable(() -> {
+            final String path = copyToCache(uri, video);
+            AndroidUtilities.runOnUIThread(() -> {
+                if (path == null) {
+                    PcUi.toast(getParentActivity(), LocaleController.getString(R.string.PcBoardFailed));
+                } else {
+                    askCaption(path, video);
+                }
+            });
+        });
+    }
+
+    private String copyToCache(android.net.Uri uri, boolean video) {
+        try (java.io.InputStream in = org.telegram.messenger.ApplicationLoader.applicationContext.getContentResolver().openInputStream(uri)) {
+            java.io.File f = new java.io.File(org.telegram.messenger.ApplicationLoader.applicationContext.getCacheDir(), "pc_post_" + System.currentTimeMillis() + (video ? ".mp4" : ".jpg"));
+            try (java.io.FileOutputStream out = new java.io.FileOutputStream(f)) {
+                byte[] buf = new byte[64 * 1024];
+                int n;
+                while ((n = in.read(buf)) > 0) {
+                    out.write(buf, 0, n);
+                }
+            }
+            return f.getAbsolutePath();
+        } catch (Throwable t) {
+            return null;
+        }
+    }
+
+    private void askCaption(final String path, final boolean video) {
+        if (getParentActivity() == null) {
+            return;
+        }
+        final EditText edit = new EditText(getParentActivity());
+        edit.setHint(LocaleController.getString(R.string.PcPlusCaption));
+        edit.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+        edit.setMinLines(2);
+        edit.setGravity(Gravity.TOP | Gravity.START);
+        edit.setTextColor(Theme.getColor(Theme.key_dialogTextBlack));
+        edit.setHintTextColor(Theme.getColor(Theme.key_dialogTextGray2));
+        FrameLayout holder = new FrameLayout(getParentActivity());
+        holder.setPadding(dp(20), dp(4), dp(20), 0);
+        holder.addView(edit, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+        AlertDialog.Builder b = new AlertDialog.Builder(getParentActivity());
+        b.setTitle(LocaleController.getString(video ? R.string.PcPlusReel : R.string.PcPlusPhoto));
+        b.setView(holder);
+        b.setPositiveButton(LocaleController.getString(R.string.PcBoardPublish), (d, w) -> {
+            org.telegram.messenger.SendMessagesHelper.SendingMediaInfo info = new org.telegram.messenger.SendMessagesHelper.SendingMediaInfo();
+            info.path = path;
+            info.isVideo = video;
+            info.caption = edit.getText().toString().trim();
+            ArrayList<org.telegram.messenger.SendMessagesHelper.SendingMediaInfo> list = new ArrayList<>();
+            list.add(info);
+            long chat = PcBoard.myBoardChat(currentAccount);
+            org.telegram.messenger.SendMessagesHelper.prepareSendingMedia(org.telegram.messenger.AccountInstance.getInstance(currentAccount), list, -chat, null, null, null, null,
+                false, false, null, true, 0, 0, 0, false, null, org.telegram.messenger.SendMessageChatArguments.EMPTY, 0, false, 0, 0, null);
+            PcUi.toast(getParentActivity(), LocaleController.getString(R.string.PcBoardPublished));
+            AndroidUtilities.runOnUIThread(this::reload, 6000);
+        });
+        b.setNegativeButton(LocaleController.getString(R.string.Cancel), null);
+        showDialog(b.create());
     }
 
     // ---- azioni Bacheca
@@ -289,7 +529,41 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
         });
     }
 
+    private void showPostMenu(final PcBoard.Post p) {
+        if (getParentActivity() == null) {
+            return;
+        }
+        CharSequence[] items = {
+            LocaleController.getString(R.string.PcWhyTitle),
+            LocaleController.getString(R.string.PcNotInterested),
+            LocaleController.getString(R.string.PcHideAuthor),
+            LocaleController.getString(R.string.PcReportPost)};
+        AlertDialog.Builder b = new AlertDialog.Builder(getParentActivity());
+        b.setItems(items, (d, which) -> {
+            if (which == 0) {
+                AlertDialog.Builder w = new AlertDialog.Builder(getParentActivity());
+                w.setTitle(LocaleController.getString(R.string.PcWhyTitle));
+                w.setMessage(PcRanking.whyText(currentAccount, p, tabMode() && section == 3));
+                w.setPositiveButton(LocaleController.getString(R.string.OK), null);
+                w.setNeutralButton(LocaleController.getString(R.string.PcInterestsManage), (dd, ww) -> presentFragment(new PcInterestsActivity()));
+                showDialog(w.create());
+            } else if (which == 1) {
+                PcInterests.hidePost(p);
+                notifyData();
+            } else if (which == 2) {
+                PcInterests.hideAuthor(p.authorId);
+                notifyData();
+            } else {
+                PcInterests.report(p);
+                notifyData();
+                PcUi.toast(getParentActivity(), LocaleController.getString(R.string.PcReportedThanks));
+            }
+        });
+        showDialog(b.create());
+    }
+
     private void openPost(PcBoard.Post p) {
+        PcInterests.record(p, PcInterests.W_OPEN);
         Bundle b = new Bundle();
         b.putLong("chat_id", p.chatId);
         b.putInt("message_id", p.msgId);
@@ -307,6 +581,14 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
             android.widget.HorizontalScrollView sv = new android.widget.HorizontalScrollView(context);
             sv.setHorizontalScrollBarEnabled(false);
             LinearLayout r = new LinearLayout(context);
+            TextView plus = PcUi.button(context, "+", true, v -> onPlus());
+            plus.setTextSize(20);
+            r.addView(plus, LayoutHelper.createLinear(44, 38, 0, 0, 10, 0));
+            TextView mode = PcUi.button(context, LocaleController.getString(following() ? R.string.PcModeFollowing : R.string.PcModeForYou), false, v -> {
+                setFollowing(!following());
+                notifyData();
+            });
+            r.addView(mode, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, 38, 0, 0, 10, 0));
             final int[] names = {R.string.PcSocialFeed, R.string.PcSocialStories, R.string.PcSocialReels, R.string.PcSocialExplore, R.string.PcSocialActivity};
             for (int i = 0; i < names.length; i++) {
                 final int idx = i;
@@ -318,6 +600,146 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
             }
             sv.addView(r);
             addView(sv, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.TOP, 12, 8, 12, 4));
+        }
+    }
+
+    /** Riga delle storie: "La mia storia" con + e i contatti con storie (viewer nativo dell'API). */
+    private class StoriesRow extends FrameLayout {
+        StoriesRow(Context context) {
+            super(context);
+            setLayoutParams(new RecyclerView.LayoutParams(-1, -2));
+        }
+
+        private View item(Context context, String label, TLRPC.User user, boolean plus, boolean unread, View.OnClickListener click) {
+            LinearLayout col = new LinearLayout(context);
+            col.setOrientation(LinearLayout.VERTICAL);
+            col.setGravity(Gravity.CENTER_HORIZONTAL);
+            FrameLayout holder = new FrameLayout(context);
+            holder.setBackground(ring(unread));
+            BackupImageView img = new BackupImageView(context);
+            img.setRoundRadius(dp(30));
+            if (plus) {
+                TextView p = PcUi.label(context, "+", 30, false, Theme.key_windowBackgroundWhiteBlackText);
+                p.setGravity(Gravity.CENTER);
+                p.setBackground(PcUi.filled(0xFF1A1A1A));
+                android.graphics.drawable.GradientDrawable g = new android.graphics.drawable.GradientDrawable();
+                g.setShape(android.graphics.drawable.GradientDrawable.OVAL);
+                g.setColor(0xFF1A1A1A);
+                p.setBackground(g);
+                holder.addView(p, LayoutHelper.createFrame(60, 60, Gravity.CENTER));
+            } else {
+                AvatarDrawable ad = new AvatarDrawable();
+                if (user != null) {
+                    ad.setInfo(currentAccount, user);
+                    img.setForUserOrChat(user, ad);
+                }
+                holder.addView(img, LayoutHelper.createFrame(60, 60, Gravity.CENTER));
+            }
+            col.addView(holder, LayoutHelper.createLinear(68, 68));
+            TextView t = PcUi.label(context, label, 12, false, Theme.key_windowBackgroundWhiteBlackText);
+            t.setTypeface(PcUi.serif(false, false));
+            t.setSingleLine(true);
+            t.setEllipsize(TextUtils.TruncateAt.END);
+            t.setGravity(Gravity.CENTER);
+            col.addView(t, LayoutHelper.createLinear(72, LayoutHelper.WRAP_CONTENT, 0, 4, 0, 0));
+            col.setOnClickListener(click);
+            return col;
+        }
+
+        private android.graphics.drawable.Drawable ring(boolean unread) {
+            android.graphics.drawable.GradientDrawable g = new android.graphics.drawable.GradientDrawable();
+            g.setShape(android.graphics.drawable.GradientDrawable.OVAL);
+            g.setColor(0);
+            g.setStroke(Math.max(2, dp(1.5f)), unread ? 0xFFF3EEE6 : 0x55F3EEE6);
+            return g;
+        }
+
+        void bind() {
+            removeAllViews();
+            final Context context = getContext();
+            android.widget.HorizontalScrollView sv = new android.widget.HorizontalScrollView(context);
+            sv.setHorizontalScrollBarEnabled(false);
+            LinearLayout r = new LinearLayout(context);
+            r.addView(item(context, LocaleController.getString(R.string.PcMyStory), null, true, false, v -> {
+                try {
+                    org.telegram.ui.Stories.recorder.StoryRecorder.getInstance(getParentActivity(), currentAccount).open(null);
+                } catch (Throwable t) {
+                    PcUi.toast(getParentActivity(), LocaleController.getString(R.string.PcBoardFailed));
+                }
+            }), LayoutHelper.createLinear(76, LayoutHelper.WRAP_CONTENT, 0, 0, 6, 0));
+            try {
+                ArrayList<org.telegram.tgnet.tl.TL_stories.PeerStories> list = getMessagesController().getStoriesController().getDialogListStories();
+                final long me = UserConfig.getInstance(currentAccount).getClientUserId();
+                ArrayList<org.telegram.tgnet.tl.TL_stories.PeerStories> sorted = new ArrayList<>(list);
+                java.util.Collections.sort(sorted, (a, b) -> Boolean.compare(
+                    PcRanking.isOfficial(org.telegram.messenger.DialogObject.getPeerDialogId(b.peer)),
+                    PcRanking.isOfficial(org.telegram.messenger.DialogObject.getPeerDialogId(a.peer))));
+                for (org.telegram.tgnet.tl.TL_stories.PeerStories ps : sorted) {
+                    final long did = org.telegram.messenger.DialogObject.getPeerDialogId(ps.peer);
+                    if (did <= 0 || did == me) {
+                        continue;
+                    }
+                    TLRPC.User u = getMessagesController().getUser(did);
+                    if (u == null) {
+                        continue;
+                    }
+                    boolean unread = getMessagesController().getStoriesController().hasUnreadStories(did);
+                    final boolean off = PcRanking.isOfficial(did);
+                    r.addView(item(context, off ? LocaleController.getString(R.string.PcOfficial) : UserObject.getFirstName(u), u, false, unread, v -> {
+                        if (getParentActivity() != null) {
+                            getOrCreateStoryViewer().open(getParentActivity(), did, org.telegram.ui.Stories.StoriesListPlaceProvider.of(listView));
+                        }
+                    }), LayoutHelper.createLinear(76, LayoutHelper.WRAP_CONTENT, 0, 0, 6, 0));
+                }
+            } catch (Throwable ignore) {
+            }
+            sv.addView(r);
+            addView(sv, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.TOP, 14, 10, 8, 2));
+        }
+    }
+
+    /** Tre miniature per riga (Esplora / griglia). */
+    private class GridRow extends LinearLayout {
+        GridRow(Context context) {
+            super(context);
+            setOrientation(HORIZONTAL);
+            setLayoutParams(new RecyclerView.LayoutParams(-1, -2));
+            setPadding(dp(1), dp(1), dp(1), dp(1));
+        }
+
+        void bind(ArrayList<PcBoard.Post> items) {
+            removeAllViews();
+            final int size = (AndroidUtilities.displaySize.x - dp(2)) / 3 - dp(2);
+            for (int i = 0; i < 3; i++) {
+                BackupImageView img = new BackupImageView(getContext());
+                img.setBackgroundColor(0xFF1A1A1A);
+                if (i < items.size()) {
+                    final PcBoard.Post p = items.get(i);
+                    setMedia(img, p, 400);
+                    img.setOnClickListener(v -> openPost(p));
+                }
+                addView(img, LayoutHelper.createLinear(0, 0));
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(size, size);
+                lp.setMargins(dp(1), dp(1), dp(1), dp(1));
+                img.setLayoutParams(lp);
+            }
+        }
+    }
+
+    private static void setMedia(BackupImageView img, PcBoard.Post p, int side) {
+        try {
+            if (isPhoto(p)) {
+                TLRPC.Photo photo = p.message.media.photo;
+                TLRPC.PhotoSize sz = FileLoader.getClosestPhotoSizeWithSize(photo.sizes, side);
+                img.setImage(ImageLocation.getForPhoto(sz, photo), side + "_" + side, (android.graphics.drawable.Drawable) null, p.message);
+            } else if (isVideo(p)) {
+                TLRPC.Document doc = p.message.media.document;
+                TLRPC.PhotoSize sz = FileLoader.getClosestPhotoSizeWithSize(doc.thumbs, side);
+                if (sz != null) {
+                    img.setImage(ImageLocation.getForDocument(sz, doc), side + "_" + side, (android.graphics.drawable.Drawable) null, p.message);
+                }
+            }
+        } catch (Throwable ignore) {
         }
     }
 
@@ -362,6 +784,10 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
         private final BackupImageView avatar;
         private final TextView name, date, text, stats;
         private final TextView likeBtn;
+        private final BackupImageView media;
+        private final TextView playBadge;
+        private final TextView officialBadge;
+        private long shownSince;
         private final AvatarDrawable avatarDrawable = new AvatarDrawable();
         private PcBoard.Post post;
 
@@ -386,7 +812,29 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
             col.addView(name);
             col.addView(date);
             head.addView(col, LayoutHelper.createLinear(0, LayoutHelper.WRAP_CONTENT, 1f, 10, 0, 0, 0));
+            officialBadge = PcUi.badge(context, LocaleController.getString(R.string.PcOfficial).toUpperCase());
+            officialBadge.setVisibility(GONE);
+            head.addView(officialBadge, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER_VERTICAL, 0, 0, 6, 0));
+            TextView more = PcUi.label(context, "\u22EF", 22, false, Theme.key_windowBackgroundWhiteGrayText);
+            more.setPadding(dp(10), dp(2), dp(6), dp(2));
+            more.setOnClickListener(v -> {
+                if (post != null) showPostMenu(post);
+            });
+            head.addView(more, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER_VERTICAL));
             box.addView(head, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+            FrameLayout mediaBox = new FrameLayout(context);
+            media = new BackupImageView(context);
+            media.setBackgroundColor(0xFF1A1A1A);
+            media.setOnClickListener(v -> {
+                if (post != null) openPost(post);
+            });
+            mediaBox.addView(media, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
+            playBadge = PcUi.label(context, "\u25B6", 28, false, Theme.key_windowBackgroundWhiteBlackText);
+            playBadge.setTextColor(0xFFF3EEE6);
+            playBadge.setGravity(Gravity.CENTER);
+            mediaBox.addView(playBadge, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER));
+            mediaBox.setTag("mediabox");
+            box.addView(mediaBox, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 300, 0, 10, 0, 0));
             text = PcUi.label(context, "", 15, false, Theme.key_windowBackgroundWhiteBlackText);
             text.setMaxLines(12);
             text.setEllipsize(TextUtils.TruncateAt.END);
@@ -413,6 +861,7 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
             final PcBoard.Post p = post;
             PcBoard.like(currentAccount, p, ok -> {
                 if (ok) {
+                    PcInterests.record(p, PcInterests.W_LIKE);
                     p.likes++;
                     if (post == p) {
                         bind(p);
@@ -423,8 +872,25 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
             });
         }
 
+        @Override
+        protected void onAttachedToWindow() {
+            super.onAttachedToWindow();
+            shownSince = android.os.SystemClock.elapsedRealtime();
+        }
+
+        @Override
+        protected void onDetachedFromWindow() {
+            super.onDetachedFromWindow();
+            if (post != null && shownSince > 0) {
+                // tempo di visione: sotto 1 secondo = scorso via (segnale negativo), sopra = interesse
+                PcInterests.recordDwell(post, android.os.SystemClock.elapsedRealtime() - shownSince, isVideo(post));
+            }
+            shownSince = 0;
+        }
+
         void bind(PcBoard.Post p) {
             post = p;
+            officialBadge.setVisibility(PcRanking.isOfficial(p.authorId) ? VISIBLE : GONE);
             TLRPC.User u = getMessagesController().getUser(p.authorId);
             if (u != null) {
                 avatarDrawable.setInfo(currentAccount, u);
@@ -434,6 +900,15 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
                 name.setText("");
             }
             date.setText(LocaleController.formatShortDateTime(p.date));
+            View mb = findViewWithTag("mediabox");
+            boolean hasMedia = isPhoto(p) || isVideo(p);
+            if (mb != null) {
+                mb.setVisibility(hasMedia ? VISIBLE : GONE);
+                if (hasMedia) {
+                    setMedia(media, p, 800);
+                    playBadge.setVisibility(isVideo(p) ? VISIBLE : GONE);
+                }
+            }
             text.setText(p.text);
             text.setVisibility(TextUtils.isEmpty(p.text) ? GONE : VISIBLE);
             stats.setText((p.likes > 0 ? "\u2764 " + p.likes + "   " : "") + (p.views > 0 ? LocaleController.formatString(R.string.PcViews, p.views) : ""));

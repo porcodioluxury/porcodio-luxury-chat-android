@@ -196,6 +196,9 @@ public class PcHome {
         if (!active) {
             return false;
         }
+        if (!PcSecret.showHidden && PcSecret.isHidden(d.id)) {
+            return true; // cartella nascosta delle chat super segrete
+        }
         int t = classify(mc, d);
         if (t < 0) {
             return false;
@@ -221,7 +224,7 @@ public class PcHome {
         ArrayList<TLRPC.Dialog> res = new ArrayList<>();
         ArrayList<TLRPC.Dialog> all = new ArrayList<>(mc.getAllDialogs());
         for (TLRPC.Dialog d : all) {
-            if (d.folder_id == 0 && classify(mc, d) == tabIndex) {
+            if (d.folder_id == 0 && classify(mc, d) == tabIndex && (PcSecret.showHidden || !PcSecret.isHidden(d.id))) {
                 res.add(d);
             }
         }

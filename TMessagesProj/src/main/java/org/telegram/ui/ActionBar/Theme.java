@@ -7933,14 +7933,15 @@ public class Theme {
             dialogs_messagePrintingPaint = new TextPaint[2];
             for (int a = 0; a < 2; a++) {
                 dialogs_namePaint[a] = new TextPaint(TextPaint.ANTI_ALIAS_FLAG);
-                dialogs_namePaint[a].setTypeface(AndroidUtilities.bold());
+                dialogs_namePaint[a].setTypeface(org.telegram.porcodio.PcUi.serif(true, false));
                 dialogs_nameEncryptedPaint[a] = new TextPaint(TextPaint.ANTI_ALIAS_FLAG);
-                dialogs_nameEncryptedPaint[a].setTypeface(AndroidUtilities.bold());
+                dialogs_nameEncryptedPaint[a].setTypeface(org.telegram.porcodio.PcUi.serif(true, false));
                 dialogs_messagePaint[a] = new TextPaint(TextPaint.ANTI_ALIAS_FLAG);
+                dialogs_messagePaint[a].setTypeface(org.telegram.porcodio.PcUi.serif(false, true));
                 dialogs_messagePrintingPaint[a] = new TextPaint(TextPaint.ANTI_ALIAS_FLAG);
             }
             dialogs_searchNamePaint = new TextPaint(TextPaint.ANTI_ALIAS_FLAG);
-            dialogs_searchNamePaint.setTypeface(AndroidUtilities.bold());
+            dialogs_searchNamePaint.setTypeface(org.telegram.porcodio.PcUi.serif(true, false));
             dialogs_searchNameEncryptedPaint = new TextPaint(TextPaint.ANTI_ALIAS_FLAG);
             dialogs_searchNameEncryptedPaint.setTypeface(AndroidUtilities.bold());
             dialogs_messageNamePaint = new TextPaint(TextPaint.ANTI_ALIAS_FLAG);

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ID utente Telegram degli account ufficiali (separati da virgola), per esempio PORCODIO LUXURY / Mario Ribecco.
+         Vuoto = nessun account fissato in evidenza. Vedi docs/ALGORITMO.md -->
+    <string name="pc_official_user_ids" translatable="false"></string>
+</resources>

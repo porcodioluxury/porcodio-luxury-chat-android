@@ -101,7 +101,7 @@ public class PcSettingsActivity extends PcListFragment implements MainTabsActivi
             section(R.string.PcSetSecurity);
             row(R.string.PcSetPrivacy, R.string.PcSetPrivacyInfo, R.drawable.ic_pc_shield, () -> presentFragment(new PrivacySettingsActivity()));
             row(R.string.PcSetPrivateTools, R.string.PcSetPrivateToolsInfo, R.drawable.ic_pc_lock, this::explainPrivateTools);
-            row(R.string.PcSetSecretChats, R.string.PcSetSecretChatsInfo, R.drawable.ic_pc_lock, this::explainSecretChats);
+            row(R.string.PcSetSecretChats, R.string.PcSetSecretChatsInfo, R.drawable.ic_pc_lock, () -> presentFragment(new PcSecretActivity()));
             row(R.string.PcSetDevices, R.string.PcSetDevicesInfo, R.drawable.ic_pc_device, () -> presentFragment(new SessionsActivity(0)));
 
             section(R.string.PcSetLook);
@@ -123,6 +123,7 @@ public class PcSettingsActivity extends PcListFragment implements MainTabsActivi
             section(R.string.PcSetFeatures);
         }
         row(R.string.PcFeedInfo, R.string.PcFeedInfoSub, R.drawable.ic_pc_grid, () -> presentFragment(new PcFeedActivity(new Bundle())));
+        row(R.string.PcInterestsTitle, R.string.PcInterestsRowInfo, R.drawable.ic_pc_spark, () -> presentFragment(new PcInterestsActivity()));
         if (!featuresOnly) {
             section(R.string.PcSetShopOrders);
         }
@@ -288,7 +289,7 @@ public class PcSettingsActivity extends PcListFragment implements MainTabsActivi
             top.addView(col, LayoutHelper.createLinear(0, LayoutHelper.WRAP_CONTENT, 1f, 14, 0, 0, 0));
             box.addView(top, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
             LinearLayout buttons = new LinearLayout(context);
-            buttons.addView(PcUi.button(context, s(R.string.PcSetEditProfile), true, v -> presentFragment(new UserInfoActivity())), LayoutHelper.createLinear(0, 42, 1f, 0, 0, 4, 0));
+            buttons.addView(PcUi.button(context, s(R.string.PcSetEditProfile), true, v -> presentFragment(new PcProfileEditActivity())), LayoutHelper.createLinear(0, 42, 1f, 0, 0, 4, 0));
             buttons.addView(PcUi.button(context, s(R.string.PcProfileBoard), false, v -> presentFragment(new PcFeedActivity(new Bundle()))), LayoutHelper.createLinear(0, 42, 1f, 4, 0, 0, 0));
             box.addView(buttons, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, 12, 0, 0));
             addView(box, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.TOP, 12, 8, 12, 4));

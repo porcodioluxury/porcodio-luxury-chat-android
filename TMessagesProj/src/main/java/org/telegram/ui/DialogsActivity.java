@@ -3445,7 +3445,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                 statusDrawable = new AnimatedEmojiDrawable.SwapAnimatedEmojiDrawable(null, dp(26));
                 statusDrawable.center = true;
                 logoDrawable = context.getResources().getDrawable(R.drawable.telegram_logo_2).mutate();
-                logoDrawable.setBounds(0, dp(1), dp(24), dp(25)); // Porcodio Luxury Chat: logo piccolo accanto al titolo
+                logoDrawable = new org.telegram.porcodio.PcHeaderDrawable(context); // Porcodio Luxury Chat: stemma + divisore sottile
                 // a new drawable (also when the view is recreated after a theme switch made elsewhere): remember its tint, the
                 // theme hook only recolors when the color differs from the last one applied
                 logoDrawable.setColorFilter(lastLogoDrawableColor = getThemedColor(Theme.key_telegram_color_dialogsLogo), PorterDuff.Mode.MULTIPLY);
@@ -3459,6 +3459,10 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                 SpannableStringBuilder ssb = new SpannableStringBuilder(pcKicker);
                 ssb.setSpan(new ImageSpan(logoDrawable), 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 actionBar.setTitle(ssb, statusDrawable);
+                if (actionBar.getTitleTextView() != null) {
+                    actionBar.getTitleTextView().setTypeface(org.telegram.porcodio.PcUi.serif(false, false));
+                    actionBar.getTitleTextView().setTextColor(0xFFF3EEE6);
+                }
                 updateStatus(UserConfig.getInstance(currentAccount).getCurrentUser(), false);
             }
             if (folderId == 0) {

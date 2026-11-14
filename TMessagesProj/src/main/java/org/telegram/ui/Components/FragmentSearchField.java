@@ -95,7 +95,8 @@ public class FragmentSearchField extends FrameLayout implements FactorAnimator.T
                 return super.onKeyDown(keyCode, event);
             }
         };
-        editText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 15);
+        editText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
+        editText.setTypeface(org.telegram.porcodio.PcUi.serif(false, false));
         editText.setCursorWidth(1.5f);
         editText.setInputType(editText.getInputType() | InputType.TYPE_TEXT_VARIATION_FILTER);
         editText.setSingleLine(true);

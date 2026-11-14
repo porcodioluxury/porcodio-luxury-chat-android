@@ -35,9 +35,57 @@ public class PcBoard {
     public static final int DAILY_LIMIT = 20;
     private static final long MIN_GAP_MS = 2500;
 
+    public static final String TAG_COVER = "#cover";
+    public static final String TAG_LINKS = "#links";
+
+    public static boolean isTagged(Post p, String tag) {
+        return p != null && p.text != null && p.text.trim().toLowerCase().startsWith(tag);
+    }
+
+    public static boolean isSpecial(Post p) {
+        return isTagged(p, TAG_COVER) || isTagged(p, TAG_LINKS);
+    }
+
+    public static String linksOf(Post p) {
+        if (p == null || p.text == null) {
+            return "";
+        }
+        return p.text.trim().substring(TAG_LINKS.length()).trim();
+    }
+
+    public static boolean isVideoPost(Post p) {
+        return p.message != null && p.message.media instanceof TLRPC.TL_messageMediaDocument && p.message.media.document != null
+            && org.telegram.messenger.MessageObject.isVideoDocument(p.message.media.document);
+    }
+
+    public static boolean isPhotoPost(Post p) {
+        return p.message != null && p.message.media instanceof TLRPC.TL_messageMediaPhoto && p.message.media.photo != null;
+    }
+
+    public static boolean hasMedia(Post p) {
+        return isPhotoPost(p) || isVideoPost(p);
+    }
+
+    public static void setMedia(org.telegram.ui.Components.BackupImageView img, Post p, int side) {
+        try {
+            if (isPhotoPost(p)) {
+                TLRPC.Photo photo = p.message.media.photo;
+                TLRPC.PhotoSize sz = org.telegram.messenger.FileLoader.getClosestPhotoSizeWithSize(photo.sizes, side);
+                img.setImage(org.telegram.messenger.ImageLocation.getForPhoto(sz, photo), side + "_" + side, (android.graphics.drawable.Drawable) null, p.message);
+            } else if (isVideoPost(p)) {
+                TLRPC.Document doc = p.message.media.document;
+                TLRPC.PhotoSize sz = org.telegram.messenger.FileLoader.getClosestPhotoSizeWithSize(doc.thumbs, side);
+                if (sz != null) {
+                    img.setImage(org.telegram.messenger.ImageLocation.getForDocument(sz, doc), side + "_" + side, (android.graphics.drawable.Drawable) null, p.message);
+                }
+            }
+        } catch (Throwable ignore) {
+        }
+    }
+
     public static class Post {
         public long authorId, chatId;
-        public int msgId, date, views, likes;
+        public int msgId, date, views, likes, comments, shares;
         public String text;
         public TLRPC.Message message;
     }
@@ -394,6 +442,8 @@ public class PcBoard {
                             p.msgId = m.id;
                             p.date = m.date;
                             p.views = m.views;
+                            p.shares = m.forwards;
+                            p.comments = m.replies != null ? m.replies.replies : 0;
                             p.text = m.message == null ? "" : m.message;
                             p.message = m;
                             if (m.reactions != null && m.reactions.results != null) {
