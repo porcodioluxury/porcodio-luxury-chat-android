@@ -82,7 +82,7 @@ public class PcHome {
             if (last == null && d.top_message == 0) {
                 return TAB_PRIVATE;
             }
-            return isSpam(user, last) ? TAB_SPAM : TAB_REQUESTS;
+            return isSpam(mc, user, last) ? TAB_SPAM : TAB_REQUESTS;
         }
         TLRPC.Chat chat = mc.getChat(-id);
         if (chat != null && org.telegram.messenger.ChatObject.isChannel(chat) && !chat.megagroup) {
@@ -99,33 +99,96 @@ public class PcHome {
         "porn", "18+", "onlyfans", "escort", "prestito", "loan"
     };
 
-    /** Euristica antispam: sconosciuto + link / invito / parole chiave crypto-ads, oppure flag scam/fake. */
-    public static boolean isSpam(TLRPC.User user, MessageObject last) {
-        if (user != null && (user.scam || user.fake)) {
-            return true;
+    // ---- antispam a punteggio: non basta un solo indizio (un link da uno sconosciuto con foto va in Richieste, non in Spam)
+    private static final java.util.HashMap<String, Integer> repeats = new java.util.HashMap<>();
+    private static long repeatsStamp;
+    private static MessagesController repeatsOwner;
+
+    private static String norm(String t) {
+        return t.toLowerCase(Locale.ROOT).replaceAll("\\s+", " ").trim();
+    }
+
+    /** Quante altre chat di sconosciuti hanno ricevuto lo stesso identico testo (campagne di spam). */
+    private static synchronized int repeatsOf(MessagesController mc, String text) {
+        if (text.length() < 12) {
+            return 0;
+        }
+        long now = android.os.SystemClock.elapsedRealtime();
+        if (repeatsOwner != mc || now - repeatsStamp > 15000) {
+            repeats.clear();
+            repeatsOwner = mc;
+            repeatsStamp = now;
+            try {
+                for (TLRPC.Dialog d : new ArrayList<>(mc.getAllDialogs())) {
+                    if (d.id <= 0 || d instanceof TLRPC.TL_dialogFolder) {
+                        continue;
+                    }
+                    ArrayList<MessageObject> msgs = mc.dialogMessage.get(d.id);
+                    MessageObject m = msgs != null && !msgs.isEmpty() ? msgs.get(0) : null;
+                    if (m == null || m.isOutOwner() || m.messageOwner == null || m.messageOwner.message == null || m.messageOwner.message.length() < 12) {
+                        continue;
+                    }
+                    String k = norm(m.messageOwner.message);
+                    Integer c = repeats.get(k);
+                    repeats.put(k, c == null ? 1 : c + 1);
+                }
+            } catch (Throwable ignore) {
+            }
+        }
+        Integer c = repeats.get(norm(text));
+        return c == null ? 0 : Math.max(0, c - 1);
+    }
+
+    public static int spamScore(TLRPC.User user, MessageObject last, MessagesController mc) {
+        int score = 0;
+        if (user != null) {
+            if (user.scam || user.fake) {
+                return 10;
+            }
+            if (user.restricted) {
+                score += 1;
+            }
+            if (user.photo == null || user.photo instanceof TLRPC.TL_userProfilePhotoEmpty) {
+                score += 1;
+                if (user.id > 7_000_000_000L) {
+                    score += 1; // account recente e senza foto
+                }
+            }
         }
         if (last == null || last.messageOwner == null) {
-            return false;
+            return score;
         }
         TLRPC.Message m = last.messageOwner;
+        boolean links = false;
         if (m.entities != null) {
             for (int i = 0; i < m.entities.size(); i++) {
                 TLRPC.MessageEntity e = m.entities.get(i);
                 if (e instanceof TLRPC.TL_messageEntityUrl || e instanceof TLRPC.TL_messageEntityTextUrl) {
-                    return true;
+                    links = true;
+                    break;
                 }
             }
         }
         String text = m.message != null ? m.message.toLowerCase(Locale.ROOT) : "";
-        if (text.contains("http://") || text.contains("https://") || text.contains("www.") || text.contains("t.me/")) {
-            return true;
+        if (links || text.contains("http://") || text.contains("https://") || text.contains("www.") || text.contains("t.me/")) {
+            score += 2;
         }
+        int kw = 0;
         for (String k : KEYWORDS) {
             if (text.contains(k)) {
-                return true;
+                kw++;
             }
         }
-        return false;
+        score += kw >= 2 ? 3 : kw == 1 ? 2 : 0;
+        if (mc != null && !text.isEmpty() && repeatsOf(mc, text) >= 1) {
+            score += 3;
+        }
+        return score;
+    }
+
+    /** Spam vero (cartella Spam): punteggio >= 3. Con meno indizi la chat resta tra le Richieste. */
+    public static boolean isSpam(MessagesController mc, TLRPC.User user, MessageObject last) {
+        return spamScore(user, last, mc) >= 3;
     }
 
     /** Conta la chat nella scheda e dice se va nascosta dalla lista corrente. */

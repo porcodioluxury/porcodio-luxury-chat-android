@@ -570,6 +570,7 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
     public boolean useSeparator;
     /** Porcodio: la riga è disegnata come card scura con bordo 1px e angoli 4dp. */
     public boolean pcCard;
+    private float pcShiftApplied;
     private Paint pcCardFill, pcCardStroke;
     public boolean fullSeparator;
     public boolean fullSeparator2;
@@ -1070,8 +1071,17 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
         return height;
     }
 
+    /** Porcodio: le chat fissate sono card più alte (solo lista principale, cartella 0, non forum). */
+    private boolean pcBigCard() {
+        return pcCard && getIsPinned() && currentDialogFolderId == 0 && !isTopic && customDialog == null && !isDialogFolder() && !isForumCell();
+    }
+
+    private int pcExtraHeight() {
+        return pcBigCard() ? dp(16) : 0;
+    }
+
     private int getCollapsedHeight() {
-        int height = dp(useForceThreeLines || SharedConfig.useThreeLinesLayout ? heightThreeLines : heightDefault);
+        int height = dp(useForceThreeLines || SharedConfig.useThreeLinesLayout ? heightThreeLines : heightDefault) + pcExtraHeight();
         if (useSeparator || true) {
             height += 1;
         }
@@ -4120,10 +4130,11 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
 
         updateHelper.updateAnimationValues();
 
-        if (collapseOffset != 0) {
+        pcShiftApplied = pcExtraHeight() / 2f;
+        if (collapseOffset != 0 || pcShiftApplied != 0) {
             canvas.save();
-            canvas.translate(0, collapseOffset);
-            gty += collapseOffset;
+            canvas.translate(0, collapseOffset + pcShiftApplied);
+            gty += collapseOffset + pcShiftApplied;
         }
 
         if (rightFragmentOpenedProgress != 1) {
@@ -4879,7 +4890,7 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
             drawCounter(canvas, drawCounterMuted, countTop, countLeftLocal, countLeftOld, rightFragmentOpenedProgress, true);
         }
 
-        if (collapseOffset != 0) {
+        if (collapseOffset != 0 || pcShiftApplied != 0) {
             canvas.restore();
         }
 
