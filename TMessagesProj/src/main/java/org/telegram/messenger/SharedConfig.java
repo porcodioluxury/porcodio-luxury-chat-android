@@ -1754,6 +1754,9 @@ public class SharedConfig {
     }
 
     public static boolean canBlurChat() {
+        if (true) {
+            return false; // Porcodio: niente sfondi sfocati/trasparenti (barre, menu, pannelli): sempre opachi
+        }
         return getDevicePerformanceClass() >= (Build.VERSION.SDK_INT >= 31 ? PERFORMANCE_CLASS_AVERAGE : PERFORMANCE_CLASS_HIGH) || BuildVars.DEBUG_PRIVATE_VERSION;
     }
 
