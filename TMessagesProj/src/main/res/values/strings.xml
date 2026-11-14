@@ -11823,5 +11823,18 @@
     <string name="PcAntispamReasonKeywords">Promotional keywords</string>
     <string name="PcOn">On</string>
     <string name="PcOff">Off</string>
+    <string name="PcUpdTitle">Update available</string>
+    <string name="PcUpdMessage">Version %1$s is ready to install.</string>
+    <string name="PcUpdNow">Update</string>
+    <string name="PcUpdLater">Later</string>
+    <string name="PcUpdChecking">Checking for updates...</string>
+    <string name="PcUpdUpToDate">You are up to date (%1$s).</string>
+    <string name="PcUpdFailed">Could not check or download the update. Try again later.</string>
+    <string name="PcUpdDownloading">Downloading... %1$d%%</string>
+    <string name="PcUpdVerifying">Checking the file...</string>
+    <string name="PcUpdBadHash">The downloaded file does not match and was discarded.</string>
+    <string name="PcUpdAllow">Allow installing from this app, then tap Update again.</string>
+    <string name="PcUpdSettings">Check for updates</string>
+    <string name="PcUpdSettingsInfo">Automatic updates for Porcodio Luxury Chat</string>
     <!-- /PORCODIO PHASE3 -->
 </resources>

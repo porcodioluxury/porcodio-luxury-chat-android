@@ -1682,5 +1682,18 @@
     <string name="PcAntispamReasonKeywords">Parole promozionali</string>
     <string name="PcOn">Attivo</string>
     <string name="PcOff">Spento</string>
+    <string name="PcUpdTitle">Aggiornamento disponibile</string>
+    <string name="PcUpdMessage">La versione %1$s è pronta da installare.</string>
+    <string name="PcUpdNow">Aggiorna</string>
+    <string name="PcUpdLater">Più tardi</string>
+    <string name="PcUpdChecking">Controllo aggiornamenti...</string>
+    <string name="PcUpdUpToDate">Sei aggiornato (%1$s).</string>
+    <string name="PcUpdFailed">Impossibile controllare o scaricare l\'aggiornamento. Riprova più tardi.</string>
+    <string name="PcUpdDownloading">Scaricamento... %1$d%%</string>
+    <string name="PcUpdVerifying">Verifico il file...</string>
+    <string name="PcUpdBadHash">Il file scaricato non corrisponde ed è stato scartato.</string>
+    <string name="PcUpdAllow">Consenti l\'installazione da quest\'app, poi tocca di nuovo Aggiorna.</string>
+    <string name="PcUpdSettings">Controlla aggiornamenti</string>
+    <string name="PcUpdSettingsInfo">Aggiornamenti automatici di Porcodio Luxury Chat</string>
     <!-- /PORCODIO PHASE3 -->
 </resources>

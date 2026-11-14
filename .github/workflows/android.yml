@@ -9,10 +9,20 @@ on:
       build_type:
         description: "release (firmata) oppure debug"
         default: "release"
+      publish:
+        description: "Pubblica una GitHub Release con l'APK e update.json (solo release)"
+        type: boolean
+        default: false
+      notes:
+        description: "Note di versione (mostrate nel dialogo di aggiornamento)"
+        default: ""
 
 concurrency:
   group: android-${{ github.ref }}
   cancel-in-progress: true
+
+permissions:
+  contents: write
 
 jobs:
   build:
@@ -100,3 +110,27 @@ jobs:
           path: out/*.apk
           if-no-files-found: error
           retention-days: 30
+
+      - name: Pubblica GitHub Release con update.json
+        if: github.event.inputs.publish == 'true' && env.BUILD_TYPE == 'release'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NOTES: ${{ github.event.inputs.notes }}
+        run: |
+          set -e
+          VCODE=$(grep '^APP_VERSION_CODE=' gradle.properties | cut -d= -f2)
+          VNAME=$(grep '^APP_VERSION_NAME=' gradle.properties | cut -d= -f2)
+          TAG="v${VNAME}"
+          APK="porcodio-luxury-chat-${VNAME}.apk"
+          cp out/porcodio-luxury-chat-release.apk "$APK"
+          SHA=$(sha256sum "$APK" | cut -d' ' -f1)
+          SIZE=$(stat -c%s "$APK")
+          URL="https://github.com/${GITHUB_REPOSITORY}/releases/download/${TAG}/${APK}"
+          [ -n "$NOTES" ] || NOTES="Porcodio Luxury Chat ${VNAME}"
+          python3 - "$VCODE" "$VNAME" "$URL" "$SHA" "$SIZE" "$NOTES" <<'PY'
+          import json, sys
+          c, n, u, h, s, notes = sys.argv[1:7]
+          json.dump({"versionCode": int(c), "versionName": n, "apkUrl": u, "sha256": h, "size": int(s), "changelog": notes}, open("update.json", "w"), ensure_ascii=False, indent=2)
+          PY
+          cat update.json
+          gh release create "$TAG" "$APK" update.json --title "Porcodio Luxury Chat ${VNAME}" --notes "$NOTES" --latest

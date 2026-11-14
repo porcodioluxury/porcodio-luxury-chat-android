@@ -808,6 +808,7 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
         items.add(SettingCell.Factory.of(41, IconBackgroundColors.RED.top, IconBackgroundColors.RED.bottom, R.drawable.settings_sounds, getString(R.string.PcMuteAllGroups), getString(R.string.PcMuteAllGroupsInfo)));
         items.add(SettingCell.Factory.of(42, IconBackgroundColors.GREEN.top, IconBackgroundColors.GREEN.bottom, R.drawable.settings_channel, getString(R.string.PcFeedInfo), getString(R.string.PcFeedInfoSub)));
         items.add(SettingCell.Factory.of(43, IconBackgroundColors.ORANGE_DEEP.top, IconBackgroundColors.ORANGE_DEEP.bottom, R.drawable.settings_chat, getString(R.string.PcQuickReplies), getString(R.string.PcQuickRepliesInfo)));
+        items.add(SettingCell.Factory.of(44, IconBackgroundColors.CYAN.top, IconBackgroundColors.CYAN.bottom, R.drawable.settings_data, getString(R.string.PcUpdSettings), getString(R.string.PcUpdSettingsInfo)));
 
         items.add(UItem.asShadow(null));
         if (!walletAbove && getMessagesController().config.walletAvailable.get()) {
@@ -959,6 +960,9 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
                 break;
             case 43:
                 presentSettingFragment(new org.telegram.porcodio.PcQuickActivity());
+                break;
+            case 44:
+                org.telegram.porcodio.PcUpdater.checkNow(getParentActivity());
                 break;
 
             case 11:
