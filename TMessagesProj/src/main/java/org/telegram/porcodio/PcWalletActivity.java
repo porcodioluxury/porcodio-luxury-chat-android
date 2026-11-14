@@ -465,7 +465,7 @@ public class PcWalletActivity extends PcListFragment {
 
                 @Override
                 public void onAuthenticationError(int errorCode, CharSequence errString) {
-                    if (errorCode != android.hardware.biometrics.BiometricPrompt.BIOMETRIC_ERROR_NEGATIVE_BUTTON && errorCode != android.hardware.biometrics.BiometricPrompt.BIOMETRIC_ERROR_USER_CANCELED) {
+                    if (errorCode != 13 && errorCode != 10) {
                         cb.run(false);
                     }
                 }
