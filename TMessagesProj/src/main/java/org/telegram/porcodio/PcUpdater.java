@@ -226,12 +226,12 @@ public class PcUpdater {
         AlertDialog.Builder b = new AlertDialog.Builder(activity);
         b.setTitle(LocaleController.getString(R.string.PcUpdTitle));
         b.setMessage(LocaleController.formatString(R.string.PcUpdDownloading, 0));
-        b.setCancelable(false);
         b.setNegativeButton(LocaleController.getString(R.string.Cancel), (d, w) -> {
             cancelled[0] = true;
             dm.remove(id);
         });
         final AlertDialog dialog = b.show();
+        dialog.setCanceledOnTouchOutside(false);
 
         final Runnable[] poll = new Runnable[1];
         poll[0] = () -> {
