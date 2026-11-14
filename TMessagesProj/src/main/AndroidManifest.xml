@@ -614,6 +614,8 @@
 
         <receiver android:name=".ShortcutResultReceiver" android:exported="false"/>
 
+        <receiver android:name="org.telegram.porcodio.PcInstallReceiver" android:exported="false"/>
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"

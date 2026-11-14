@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <paths>
     <external-path name="media" path="."/>
+    <external-files-path name="pc_updates" path="Download/"/>
     <files-path name="logs" path="/logs/"/>
+    <files-path name="pc_updates_internal" path="updates/"/>
     <files-path name="cache" path="/cache/"/>
     <root-path name="external_files" path="/storage/" />
 </paths>

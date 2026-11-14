@@ -962,7 +962,7 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
                 presentSettingFragment(new org.telegram.porcodio.PcQuickActivity());
                 break;
             case 44:
-                org.telegram.porcodio.PcUpdater.checkNow(getParentActivity());
+                presentFragment(new org.telegram.porcodio.PcUpdateActivity());
                 break;
 
             case 11:

@@ -140,13 +140,13 @@ public class PcSettingsActivity extends PcListFragment implements MainTabsActivi
             row(R.string.PcSecTitle, R.string.PcSecRowInfo, R.drawable.ic_pc_shield, () -> presentFragment(new PcSecurityActivity()));
             row(R.string.PcBulkSettingsRow, R.string.PcBulkSettingsSub, R.drawable.ic_pc_folder, () -> presentFragment(new PcBulkActivity()));
             row(R.string.PcSetPrivateTools, R.string.PcSetPrivateToolsInfo, R.drawable.ic_pc_lock, this::explainPrivateTools);
-            row(R.string.PcUpdSettings, R.string.PcUpdSettingsInfo, R.drawable.ic_pc_refresh, () -> PcUpdater.checkNow(getParentActivity()));
+            row(R.string.PcUpdSettings, R.string.PcUpdSettingsInfo, R.drawable.ic_pc_refresh, () -> presentFragment(new PcUpdateActivity()));
             items.add(new Item(T_FOOT, null, null, 0, null));
             return;
         }
 
         section(R.string.PcSetSupport);
-        row(R.string.PcUpdSettings, R.string.PcUpdSettingsInfo, R.drawable.ic_pc_refresh, () -> PcUpdater.checkNow(getParentActivity()));
+        row(R.string.PcUpdSettings, R.string.PcUpdSettingsInfo, R.drawable.ic_pc_refresh, () -> presentFragment(new PcUpdateActivity()));
         items.add(new Item(T_ROW, s(R.string.PcSetAbout), versionLine(), R.drawable.ic_pc_info, null));
 
         section(R.string.PcSetAdvanced);
