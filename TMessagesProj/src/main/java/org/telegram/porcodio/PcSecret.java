@@ -185,6 +185,19 @@ public class PcSecret {
         }
     }
 
+    /** Chiave per i file (derivata dalla stessa intesa X25519 del testo, con etichetta diversa). null se lo scambio non e' avvenuto. */
+    public static byte[] mediaKey(int account, long dialogId) {
+        byte[] k = sharedKey(account, dialogId);
+        if (k == null) {
+            return null;
+        }
+        try {
+            return PcCrypto.hkdf(k, new byte[0], "porcodio-luxury-chat-pcsm1".getBytes(StandardCharsets.UTF_8), 32);
+        } catch (Throwable t) {
+            return null;
+        }
+    }
+
     private static byte[][] sortedPair(byte[] a, byte[] b) {
         return Arrays.compareUnsigned(a, b) <= 0 ? new byte[][]{a, b} : new byte[][]{b, a};
     }

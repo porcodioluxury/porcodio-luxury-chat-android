@@ -44,6 +44,10 @@ public final class PcWalletRpc {
         }
     }
 
+    public static String porcoName() {
+        return res(R.string.pc_porco_name);
+    }
+
     public static String porcoSymbol() {
         return res(R.string.pc_porco_symbol);
     }

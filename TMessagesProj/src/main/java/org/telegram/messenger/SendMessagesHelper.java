@@ -10157,6 +10157,23 @@ public class SendMessagesHelper extends BaseController implements NotificationCe
 
     @UiThread
     public static void prepareSendingDocuments(AccountInstance accountInstance, ArrayList<String> paths, ArrayList<String> originalPaths, ArrayList<Uri> uris, String caption, ArrayList<TLRPC.MessageEntity> captionEntities, String mime, long dialogId, MessageObject replyToMsg, MessageObject replyToTopMsg, TL_stories.StoryItem storyItem, ChatActivity.ReplyQuote quote, MessageObject editingMessageObject, boolean notify, int scheduleDate, int scheduleRepeatPeriod, InputContentInfoCompat inputContent, SendMessageChatArguments sendMessageChatArguments, long effectId, boolean invertMedia, long payStars, long monoForumPeerId, MessageSuggestionParams suggestionParams, PollSendParams pollSendParams, ArrayList<Integer> pollSendIndexes, ArrayList<Integer> pollSendUriIndexes, boolean forcedPollDoNotSendFinal) {
+        // Porcodio v11: chat super segrete, i file escono sempre cifrati (o non escono)
+        if (org.telegram.porcodio.PcSecretMedia.active(accountInstance.getCurrentAccount(), dialogId) && pollSendParams == null) {
+            ArrayList<String> pcEnc = org.telegram.porcodio.PcSecretMedia.encryptAll(accountInstance.getCurrentAccount(), dialogId, paths, uris);
+            if (pcEnc == null) {
+                return;
+            }
+            boolean pcAllEnc = true;
+            for (int pcI = 0; pcI < pcEnc.size(); pcI++) {
+                if (!(paths != null && pcI < paths.size() && pcEnc.get(pcI).equals(paths.get(pcI)))) {
+                    pcAllEnc = false;
+                }
+            }
+            if (!pcAllEnc) {
+                prepareSendingDocuments(accountInstance, pcEnc, null, null, null, null, "application/octet-stream", dialogId, replyToMsg, replyToTopMsg, storyItem, quote, editingMessageObject, notify, scheduleDate, scheduleRepeatPeriod, inputContent, sendMessageChatArguments, effectId, invertMedia, payStars, monoForumPeerId, suggestionParams, pollSendParams, pollSendIndexes, pollSendUriIndexes, forcedPollDoNotSendFinal);
+                return;
+            }
+        }
         if (paths == null && originalPaths == null && uris == null || paths != null && originalPaths != null && paths.size() != originalPaths.size()) {
             return;
         }
@@ -10919,6 +10936,29 @@ public class SendMessagesHelper extends BaseController implements NotificationCe
 
     @UiThread
     public static void prepareSendingMedia(AccountInstance accountInstance, ArrayList<SendingMediaInfo> media, long dialogId, MessageObject replyToMsg, MessageObject replyToTopMsg, TL_stories.StoryItem storyItem, ChatActivity.ReplyQuote quote, boolean forceDocument, boolean groupMedia, MessageObject editingMessageObject, TLRPC.TL_inputPollAnswer pollToAddOptionMessageObject, boolean notify, int scheduleDate, int scheduleRepeatPeriod, int mode, boolean updateStikcersOrder, InputContentInfoCompat inputContent, SendMessageChatArguments sendMessageChatArguments, long effectId, boolean invertMedia, long payStars, long monoForumPeerId, MessageSuggestionParams suggestionParams, PollSendParams pollSendParams, boolean forcedPollDoNotSendFinal) {
+        // Porcodio v11: chat super segrete, foto e video escono come allegato cifrato
+        if (pollSendParams == null && !media.isEmpty() && org.telegram.porcodio.PcSecretMedia.active(accountInstance.getCurrentAccount(), dialogId)) {
+            ArrayList<String> pcPaths = new ArrayList<>();
+            ArrayList<Uri> pcUris = new ArrayList<>();
+            for (int pcI = 0; pcI < media.size(); pcI++) {
+                SendingMediaInfo pcInfo = media.get(pcI);
+                String pcP = pcInfo.path != null ? pcInfo.path : pcInfo.imagePath;
+                if (pcP != null) {
+                    pcPaths.add(pcP);
+                } else if (pcInfo.uri != null) {
+                    pcUris.add(pcInfo.uri);
+                } else {
+                    org.telegram.messenger.AndroidUtilities.runOnUIThread(() -> org.telegram.porcodio.PcUi.toast(ApplicationLoader.applicationContext, "Chat segreta: allegato non supportato, non inviato."));
+                    return;
+                }
+            }
+            ArrayList<String> pcEnc = org.telegram.porcodio.PcSecretMedia.encryptAll(accountInstance.getCurrentAccount(), dialogId, pcPaths, pcUris);
+            if (pcEnc == null) {
+                return;
+            }
+            prepareSendingDocuments(accountInstance, pcEnc, null, null, null, null, "application/octet-stream", dialogId, replyToMsg, replyToTopMsg, storyItem, quote, editingMessageObject, notify, scheduleDate, scheduleRepeatPeriod, inputContent, sendMessageChatArguments, effectId, invertMedia, payStars, monoForumPeerId, suggestionParams, null, null, null, false);
+            return;
+        }
         if (media.isEmpty()) {
             return;
         }

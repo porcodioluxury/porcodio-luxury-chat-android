@@ -6120,6 +6120,8 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
     public void checkAppUpdate(boolean force, Browser.Progress progress) {
         // Porcodio Luxury Chat: gli aggiornamenti del progetto originale sono disattivati; si usa solo PcUpdater (GitHub Releases).
         if (!force) {
+            org.telegram.porcodio.PcSecretMedia.clearViewCache();
+            org.telegram.porcodio.PcVerified.install();
             org.telegram.porcodio.PcUpdater.autoCheck(this);
         }
         if (true) {

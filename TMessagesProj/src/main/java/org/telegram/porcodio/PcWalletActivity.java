@@ -166,7 +166,7 @@ public class PcWalletActivity extends PcListFragment {
             String eth = ethWei == null ? (balanceError != null ? "-" : "...") : PcWalletCore.formatUnits(ethWei, 18, 6);
             String porco;
             if (PcWalletRpc.porcoContract().isEmpty()) {
-                porco = PcWalletRpc.porcoSymbol() + " · " + t("in arrivo", "coming soon");
+                porco = PcWalletRpc.porcoName() + " (" + PcWalletRpc.porcoSymbol() + ") · " + t("in arrivo", "coming soon");
             } else {
                 porco = (porcoUnits == null ? "..." : PcWalletCore.formatUnits(porcoUnits, PcWalletRpc.porcoDecimals(), 4)) + " " + PcWalletRpc.porcoSymbol();
             }
