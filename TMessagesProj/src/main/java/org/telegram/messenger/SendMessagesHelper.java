@@ -4439,6 +4439,21 @@ public class SendMessagesHelper extends BaseController implements NotificationCe
     }
 
     public void sendMessage(SendMessageParams sendMessageParams) {
+        if (sendMessageParams.message != null && sendMessageParams.photo == null && sendMessageParams.document == null && sendMessageParams.location == null
+                && sendMessageParams.user == null && sendMessageParams.poll == null && sendMessageParams.game == null && sendMessageParams.invoice == null
+                && sendMessageParams.todo == null && sendMessageParams.peer != 0) {
+            // Porcodio: chat super segrete, cifratura di secondo livello lato client
+            String pcText = org.telegram.porcodio.PcSecret.encryptOutgoing(currentAccount, sendMessageParams.peer, sendMessageParams.message);
+            if (pcText == null) {
+                return;
+            }
+            if (!pcText.equals(sendMessageParams.message)) {
+                sendMessageParams.message = pcText;
+                sendMessageParams.entities = null;
+                sendMessageParams.searchLinks = false;
+                sendMessageParams.webPage = null;
+            }
+        }
         final SendMessageChatArguments sendMessageChatArguments = sendMessageParams.sendMessageChatArguments != null ?
                 sendMessageParams.sendMessageChatArguments : SendMessageChatArguments.EMPTY;
         String message = sendMessageParams.message;

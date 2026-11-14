@@ -101,7 +101,7 @@ public class PcSettingsActivity extends PcListFragment implements MainTabsActivi
             section(R.string.PcSetSecurity);
             row(R.string.PcSetPrivacy, R.string.PcSetPrivacyInfo, R.drawable.ic_pc_shield, () -> presentFragment(new PrivacySettingsActivity()));
             row(R.string.PcSetPrivateTools, R.string.PcSetPrivateToolsInfo, R.drawable.ic_pc_lock, this::explainPrivateTools);
-            row(R.string.PcSetSecretChats, R.string.PcSetSecretChatsInfo, R.drawable.ic_pc_lock, this::explainSecretChats);
+            row(R.string.PcSetSecretChats, R.string.PcSetSecretChatsInfo, R.drawable.ic_pc_lock, () -> presentFragment(new PcSecretActivity()));
             row(R.string.PcSetDevices, R.string.PcSetDevicesInfo, R.drawable.ic_pc_device, () -> presentFragment(new SessionsActivity(0)));
 
             section(R.string.PcSetLook);

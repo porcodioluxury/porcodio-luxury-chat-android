@@ -1709,6 +1709,7 @@ public class ChatActivity extends BaseFragment implements
     private final static int search = 40;
     private final static int pc_quick = 9001;
     private final static int pc_lock = 9002;
+    private final static int pc_secret = 9003;
 
     private final static int topic_close = 60;
     private final static int open_forum = 61;
@@ -3990,6 +3991,8 @@ public class ChatActivity extends BaseFragment implements
                     getSendMessagesHelper().sendMessage(SendMessagesHelper.SendMessageParams.of("/help", dialog_id, null, null, null, false, null, null, null, true, 0, 0, null, false));
                 } else if (id == bot_settings) {
                     getSendMessagesHelper().sendMessage(SendMessagesHelper.SendMessageParams.of("/settings", dialog_id, null, null, null, false, null, null, null, true, 0, 0, null, false));
+                } else if (id == pc_secret) {
+                    org.telegram.porcodio.PcSecret.showMenu(ChatActivity.this, currentAccount, dialog_id, () -> AndroidUtilities.runOnUIThread(this::pcApplySecure, 300));
                 } else if (id == pc_lock) {
                     org.telegram.porcodio.PcLock.toggleWithAuth(dialog_id, null);
                 } else if (id == pc_quick) {
@@ -4414,6 +4417,7 @@ public class ChatActivity extends BaseFragment implements
                 headerItem.lazilyAddSubItem(pc_quick, R.drawable.msg_edit, LocaleController.getString(R.string.PcQuickReplies));
                 if (currentUser != null && !UserObject.isUserSelf(currentUser)) {
                     headerItem.lazilyAddSubItem(pc_lock, R.drawable.msg_secret, LocaleController.getString(R.string.PcProfileLock));
+            headerItem.lazilyAddSubItem(pc_secret, R.drawable.msg_secret, LocaleController.getString(R.string.PcSecretTitle));
                 }
             }
             if (ChatObject.isBoostSupported(currentChat) && (getUserConfig().isPremium() || ChatObject.isBoosted(chatInfo) || ChatObject.hasAdminRights(currentChat))) {
@@ -30674,9 +30678,33 @@ public class ChatActivity extends BaseFragment implements
 
     Bulletin.Delegate bulletinDelegate;
 
+    private boolean pcSecureSet;
+
+    private void pcApplySecure() {
+        // Porcodio: blocco screenshot e anteprima app recenti nelle chat super segrete
+        try {
+            if (getParentActivity() != null && org.telegram.porcodio.PcSecret.isOn(currentAccount, dialog_id)) {
+                getParentActivity().getWindow().setFlags(android.view.WindowManager.LayoutParams.FLAG_SECURE, android.view.WindowManager.LayoutParams.FLAG_SECURE);
+                pcSecureSet = true;
+            }
+        } catch (Throwable ignore) {
+        }
+    }
+
+    private void pcClearSecure() {
+        try {
+            if (pcSecureSet && getParentActivity() != null) {
+                getParentActivity().getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_SECURE);
+            }
+        } catch (Throwable ignore) {
+        }
+        pcSecureSet = false;
+    }
+
     @Override
     public void onResume() {
         super.onResume();
+        pcApplySecure();
         checkShowBlur(false);
         activityResumeTime = System.currentTimeMillis();
         if (openImport && getSendMessagesHelper().getImportingHistory(dialog_id) != null) {
@@ -30892,6 +30920,7 @@ public class ChatActivity extends BaseFragment implements
 
     @Override
     public void onPause() {
+        pcClearSecure();
         super.onPause();
         scrolling = false;
         if (scrimPopupWindow != null) {

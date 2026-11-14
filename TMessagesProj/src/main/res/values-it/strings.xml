@@ -1730,7 +1730,7 @@
     <string name="PcSetPrivacyInfo">Chi ti vede e chi può scriverti</string>
     <string name="PcSetSecretChats">Chat super segrete</string>
     <string name="PcSetSecretChatsInfo">Conversazioni private extra protette</string>
-    <string name="PcSetSecretChatsHow">Le chat super segrete arrivano con un prossimo aggiornamento automatico: un secondo livello di cifratura tra due persone che usano l\'app, timer di autodistruzione, blocco degli screenshot e blocco con impronta.</string>
+    <string name="PcSetSecretChatsHow">Secondo livello di cifratura tra due persone che usano l\'app: chiavi solo sul tuo dispositivo, timer di autodistruzione, blocco screenshot, blocco con impronta e cartella nascosta. Si attiva dal menu di una chat.</string>
     <string name="PcSetDevicesInfo">Dove il tuo account è connesso</string>
     <string name="PcSetThemeInfo">Colori, sfondi, dimensione del testo</string>
     <string name="PcSetFoldersInfo">Organizza le tue chat</string>
@@ -1750,5 +1750,30 @@
     <string name="PcSocialActivity">Attività</string>
     <string name="PcSocialSoon">In arrivo con un prossimo aggiornamento automatico.</string>
     <string name="PcChipContacts">RUBRICA</string>
+    <string name="PcSecretTitle">Chat super segreta</string>
+    <string name="PcSecretTurnOn">Attiva super segreta</string>
+    <string name="PcSecretTurnOff">Disattiva super segreta</string>
+    <string name="PcSecretTimer">Timer di autodistruzione</string>
+    <string name="PcSecretTtl10s">10 secondi</string>
+    <string name="PcSecretTtl1m">1 minuto</string>
+    <string name="PcSecretTtl1h">1 ora</string>
+    <string name="PcSecretTtl1d">1 giorno</string>
+    <string name="PcSecretLockFp">Blocca con impronta</string>
+    <string name="PcSecretUnlockFp">Togli il blocco con impronta</string>
+    <string name="PcSecretHide">Sposta nella cartella nascosta</string>
+    <string name="PcSecretUnhide">Togli dalla cartella nascosta</string>
+    <string name="PcSecretSafety">Codice di sicurezza</string>
+    <string name="PcSecretSafetyHow">Confronta questo codice, di persona o a voce, con l altra persona: se è uguale, nessuno si è messo in mezzo.</string>
+    <string name="PcSecretWaitKey">In attesa della chiave dell altra persona. Deve avere Porcodio Luxury Chat aperta.</string>
+    <string name="PcSecretNoKey">Messaggio cifrato (chiave non disponibile)</string>
+    <string name="PcSecretExpired">Messaggio autodistrutto</string>
+    <string name="PcSecretHandshake">Scambio chiavi</string>
+    <string name="PcSecretActivated">Chat super segreta attivata</string>
+    <string name="PcSecretStarted">Super segreta attiva: scambio chiavi in corso</string>
+    <string name="PcSecretEmpty">Nessuna chat super segreta. Apri una chat, menu, Chat super segreta.</string>
+    <string name="PcSecretKeyReady">Cifrata, chiavi scambiate</string>
+    <string name="PcSecretShowHidden">Mostra cartella nascosta (impronta)</string>
+    <string name="PcSecretHiddenShown">Cartella nascosta visibile</string>
+    <string name="PcSecretHiddenTag">nascosta</string>
     <!-- /PORCODIO PHASE3 -->
 </resources>

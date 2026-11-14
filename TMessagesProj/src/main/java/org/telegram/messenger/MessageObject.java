@@ -6313,14 +6313,15 @@ public class MessageObject {
                 }
             } else {
                 if (messageOwner.message != null) {
+                    final String pcShown = org.telegram.porcodio.PcSecret.display(currentAccount, this, messageOwner.message);
                     try {
-                        if (messageOwner.message.length() > 200) {
-                            messageText = AndroidUtilities.BAD_CHARS_MESSAGE_LONG_PATTERN.matcher(messageOwner.message).replaceAll("\u200C");
+                        if (pcShown.length() > 200) {
+                            messageText = AndroidUtilities.BAD_CHARS_MESSAGE_LONG_PATTERN.matcher(pcShown).replaceAll("\u200C");
                         } else {
-                            messageText = AndroidUtilities.BAD_CHARS_MESSAGE_PATTERN.matcher(messageOwner.message).replaceAll("\u200C");
+                            messageText = AndroidUtilities.BAD_CHARS_MESSAGE_PATTERN.matcher(pcShown).replaceAll("\u200C");
                         }
                     } catch (Throwable e) {
-                        messageText = messageOwner.message;
+                        messageText = pcShown;
                     }
                 } else {
                     messageText = messageOwner.message;

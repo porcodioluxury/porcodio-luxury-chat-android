@@ -11871,7 +11871,7 @@
     <string name="PcSetPrivacyInfo">Who can see you and contact you</string>
     <string name="PcSetSecretChats">Super secret chats</string>
     <string name="PcSetSecretChatsInfo">Extra-protected private conversations</string>
-    <string name="PcSetSecretChatsHow">Super secret chats arrive in an upcoming update through automatic updates: a second layer of encryption between two people who use the app, self-destruct timer, screenshot block and fingerprint lock.</string>
+    <string name="PcSetSecretChatsHow">A second encryption layer between two app users: keys stay on your device, self-destruct timer, screenshot block, fingerprint lock and hidden folder. Turn it on from a chat menu.</string>
     <string name="PcSetDevicesInfo">Where your account is signed in</string>
     <string name="PcSetThemeInfo">Colours, backgrounds, text size</string>
     <string name="PcSetFoldersInfo">Organise your chats</string>
@@ -11891,5 +11891,30 @@
     <string name="PcSocialActivity">Activity</string>
     <string name="PcSocialSoon">Coming soon, with an automatic update.</string>
     <string name="PcChipContacts">CONTACTS</string>
+    <string name="PcSecretTitle">Super secret chat</string>
+    <string name="PcSecretTurnOn">Turn on super secret</string>
+    <string name="PcSecretTurnOff">Turn off super secret</string>
+    <string name="PcSecretTimer">Self-destruct timer</string>
+    <string name="PcSecretTtl10s">10 seconds</string>
+    <string name="PcSecretTtl1m">1 minute</string>
+    <string name="PcSecretTtl1h">1 hour</string>
+    <string name="PcSecretTtl1d">1 day</string>
+    <string name="PcSecretLockFp">Lock with fingerprint</string>
+    <string name="PcSecretUnlockFp">Remove fingerprint lock</string>
+    <string name="PcSecretHide">Move to hidden folder</string>
+    <string name="PcSecretUnhide">Remove from hidden folder</string>
+    <string name="PcSecretSafety">Security code</string>
+    <string name="PcSecretSafetyHow">Compare this code, in person or by voice, with the other person: if it is the same, nobody is in the middle.</string>
+    <string name="PcSecretWaitKey">Waiting for the other person key. They need Porcodio Luxury Chat open.</string>
+    <string name="PcSecretNoKey">Encrypted message (key not available)</string>
+    <string name="PcSecretExpired">Message self-destructed</string>
+    <string name="PcSecretHandshake">Key exchange completed</string>
+    <string name="PcSecretActivated">Super secret chat activated</string>
+    <string name="PcSecretStarted">Super secret chat on: waiting for keys</string>
+    <string name="PcSecretEmpty">No super secret chats yet. Open a chat, menu, Super secret chat.</string>
+    <string name="PcSecretKeyReady">Encrypted, keys exchanged</string>
+    <string name="PcSecretShowHidden">Show hidden folder (fingerprint)</string>
+    <string name="PcSecretHiddenShown">Hidden folder shown</string>
+    <string name="PcSecretHiddenTag">hidden</string>
     <!-- /PORCODIO PHASE3 -->
 </resources>
