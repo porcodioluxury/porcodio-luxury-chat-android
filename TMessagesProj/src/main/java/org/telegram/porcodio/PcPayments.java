@@ -52,6 +52,22 @@ public final class PcPayments {
         return BLUE_MONTH_CENTS * 12 - BLUE_YEAR_CENTS;
     }
 
+    /**
+     * URL del Payment Link Stripe della spunta blu con client_reference_id = uid (numerico), cosi' il pagamento e' riconducibile
+     * all'account. Vuoto se il link non e' configurato o l'uid non e' valido.
+     */
+    public static String paymentLinkUrl(Kind kind, String monthLink, String yearLink, long uid) {
+        String base = kind == Kind.BLUE_YEAR ? yearLink : monthLink;
+        if (base == null || uid <= 0) {
+            return "";
+        }
+        base = base.trim();
+        if (!base.startsWith("https://buy.stripe.com/")) {
+            return "";
+        }
+        return base + (base.indexOf('?') >= 0 ? "&" : "?") + "client_reference_id=" + uid;
+    }
+
     public interface Callback {
         void done(boolean paid, String error);
     }

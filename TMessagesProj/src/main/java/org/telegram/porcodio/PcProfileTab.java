@@ -272,7 +272,7 @@ public class PcProfileTab extends PcListFragment implements org.telegram.ui.Main
             } else if (loading) {
                 t.setText(LocaleController.getString(R.string.PcFeedLoading));
             } else if (grid.isEmpty()) {
-                t.setText(LocaleController.getString(PcBoard.isEnabled(currentAccount) ? R.string.PcProfileNoPosts : R.string.PcProfileBoardOff));
+                t.setText(LocaleController.getString(R.string.PcProfileNoPosts));
             } else {
                 t.setText("");
             }
@@ -319,18 +319,23 @@ public class PcProfileTab extends PcListFragment implements org.telegram.ui.Main
             TLRPC.UserFull full = me != null ? getMessagesController().getUserFull(me.id) : null;
             String about = full != null && full.about != null ? full.about.replace(PcBoard.MARKER, "").trim() : "";
             if (!about.isEmpty()) {
-                box.addView(text(context, about, 14, false, 0xFFF2F2F2), LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, 0, 2, 0, 0));
+                TextView aboutView = text(context, about, 14, false, 0xFFF2F2F2);
+                PcLinks.linkify(aboutView);
+                box.addView(aboutView, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, 0, 2, 0, 0));
             }
             String lk = PcBoard.linksOf(links);
             if (!lk.isEmpty()) {
                 TextView l = text(context, lk, 14, true, 0xFF9DAAC8);
-                l.setMaxLines(2);
+                l.setMaxLines(4);
+                PcLinks.linkify(l);
                 box.addView(l, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, 0, 4, 0, 0));
             }
             // chip: Wallet / Shop / Aggiungi
             android.widget.HorizontalScrollView sv = new android.widget.HorizontalScrollView(context);
             sv.setHorizontalScrollBarEnabled(false);
             LinearLayout chips = new LinearLayout(context);
+            chips.addView(PcFeedActivity.chip(context, "Wallet", false, v -> presentFragment(new PcWalletActivity(new Bundle()))), LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, 34, 0, 0, 8, 0));
+            chips.addView(PcFeedActivity.chip(context, LocaleController.getString(R.string.PcVerifyTitle), false, v -> presentFragment(new PcVerifyActivity())), LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, 34, 0, 0, 8, 0));
             chips.addView(PcFeedActivity.chip(context, "Shop porcodioluxury.com", false, v -> presentFragment(new PcShopActivity(new Bundle()))), LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, 34, 0, 0, 8, 0));
             chips.addView(PcFeedActivity.chip(context, "+ " + LocaleController.getString(R.string.PcProfileAddLink), false, v -> presentFragment(new PcProfileEditActivity())), LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, 34, 0, 0, 8, 0));
             sv.addView(chips);

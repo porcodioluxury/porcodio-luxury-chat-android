@@ -6122,6 +6122,8 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
         if (!force) {
             org.telegram.porcodio.PcSecretMedia.clearViewCache();
             org.telegram.porcodio.PcVerified.install();
+            org.telegram.porcodio.PcBadge.init();
+            org.telegram.porcodio.PcBoard.ensureMarker(currentAccount);
             org.telegram.porcodio.PcUpdater.autoCheck(this);
         }
         if (true) {

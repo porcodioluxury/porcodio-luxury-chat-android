@@ -206,7 +206,7 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
     }
 
     private boolean showBoardCard() {
-        return onlyAuthor == 0;
+        return false; // v12: nessuna scheda "Bacheca": il canale e' invisibile e automatico
     }
 
     private static class Row {
@@ -309,6 +309,9 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
         } catch (Throwable ignore) {
         }
         PcRanking.resolveOfficialUsername(currentAccount);
+        if (homeMode() && PcBoard.autoFindDue()) {
+            AndroidUtilities.runOnUIThread(this::findFriends, 4000);
+        }
         return super.onFragmentCreate();
     }
 
@@ -438,10 +441,6 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
         if (getParentActivity() == null) {
             return;
         }
-        if (!PcBoard.isEnabled(currentAccount)) {
-            activate();
-            return;
-        }
         CharSequence[] items = {
             LocaleController.getString(R.string.PcPlusPhoto),
             LocaleController.getString(R.string.PcPlusReel),
@@ -456,11 +455,7 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
                 i.addCategory(android.content.Intent.CATEGORY_OPENABLE);
                 startActivityForResult(i, which == 0 ? REQ_PHOTO : REQ_VIDEO);
             } else if (which == 2) {
-                try {
-                    org.telegram.ui.Stories.recorder.StoryRecorder.getInstance(getParentActivity(), currentAccount).open(null);
-                } catch (Throwable t) {
-                    PcUi.toast(getParentActivity(), LocaleController.getString(R.string.PcBoardFailed));
-                }
+                PcStories.openRecorder(this);
             } else {
                 write();
             }
@@ -543,6 +538,10 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
         info.caption = cap;
         final ArrayList<org.telegram.messenger.SendMessagesHelper.SendingMediaInfo> list = new ArrayList<>();
         list.add(info);
+        PcBoard.ensure(this, () -> sendMediaNow(list, asDocument), ok -> PcUi.toast(getParentActivity(), "Pubblicazione non riuscita: " + PcBoard.lastError));
+    }
+
+    private void sendMediaNow(final ArrayList<org.telegram.messenger.SendMessagesHelper.SendingMediaInfo> list, final boolean asDocument) {
         final long chat = PcBoard.myBoardChat(currentAccount);
         PcBoard.withBoard(currentAccount, () -> {
             watchSend();
@@ -617,7 +616,7 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
         b.setPositiveButton(LocaleController.getString(R.string.PcBoardPublish), (d, w) -> {
             String text = edit.getText().toString();
             if (!text.trim().isEmpty()) {
-                PcBoard.publish(currentAccount, text, ok -> {
+                PcBoard.ensure(this, () -> PcBoard.publish(currentAccount, text, ok -> {
                     if (ok) {
                         PcUi.toast(getParentActivity(), LocaleController.getString(R.string.PcBoardPublished));
                         retryPath = null;
@@ -628,7 +627,7 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
                     } else {
                         PcUi.toast(getParentActivity(), "Pubblicazione non riuscita: " + PcBoard.lastError);
                     }
-                });
+                }), ok -> PcUi.toast(getParentActivity(), "Pubblicazione non riuscita: " + PcBoard.lastError));
             }
         });
         b.setNegativeButton(LocaleController.getString(R.string.Cancel), null);
@@ -949,13 +948,19 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
             android.widget.HorizontalScrollView sv = new android.widget.HorizontalScrollView(context);
             sv.setHorizontalScrollBarEnabled(false);
             LinearLayout r = new LinearLayout(context);
-            r.addView(item(context, LocaleController.getString(R.string.PcMyStory), null, true, false, v -> {
-                try {
-                    org.telegram.ui.Stories.recorder.StoryRecorder.getInstance(getParentActivity(), currentAccount).open(null);
-                } catch (Throwable t) {
-                    PcUi.toast(getParentActivity(), LocaleController.getString(R.string.PcBoardFailed));
+            r.addView(item(context, LocaleController.getString(R.string.PcMyStory), null, true, false, v -> PcStories.openRecorder(PcFeedActivity.this)), LayoutHelper.createLinear(76, LayoutHelper.WRAP_CONTENT, 0, 0, 6, 0));
+            try {
+                final long me0 = UserConfig.getInstance(currentAccount).getClientUserId();
+                if (getMessagesController().getStoriesController().hasStories(me0)) {
+                    final TLRPC.User meUser = getMessagesController().getUser(me0);
+                    r.addView(item(context, LocaleController.getString(R.string.PcMyStory), meUser, false, false, v -> {
+                        if (getParentActivity() != null) {
+                            getOrCreateStoryViewer().open(getParentActivity(), me0, org.telegram.ui.Stories.StoriesListPlaceProvider.of(listView));
+                        }
+                    }), LayoutHelper.createLinear(76, LayoutHelper.WRAP_CONTENT, 0, 0, 6, 0));
                 }
-            }), LayoutHelper.createLinear(76, LayoutHelper.WRAP_CONTENT, 0, 0, 6, 0));
+            } catch (Throwable ignore) {
+            }
             try {
                 ArrayList<org.telegram.tgnet.tl.TL_stories.PeerStories> list = getMessagesController().getStoriesController().getDialogListStories();
                 final long me = UserConfig.getInstance(currentAccount).getClientUserId();
@@ -1090,7 +1095,7 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
             LinearLayout head = new LinearLayout(context);
             head.setGravity(Gravity.CENTER_VERTICAL);
             avatar = new BackupImageView(context);
-            avatar.setRoundRadius(dp(4));
+            avatar.setRoundRadius(dp(40));
             head.addView(avatar, LayoutHelper.createLinear(40, 40));
             avatar.setOnClickListener(v -> openAuthorProfile(post));
             LinearLayout col = new LinearLayout(context);
@@ -1201,6 +1206,7 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
                 }
             }
             text.setText(p.text);
+            PcLinks.linkify(text);
             text.setVisibility(TextUtils.isEmpty(p.text) ? GONE : VISIBLE);
             stats.setText((p.likes > 0 ? "\u2764 " + p.likes + "   " : "") + (p.views > 0 ? LocaleController.formatString(R.string.PcViews, p.views) : ""));
             stats.setVisibility(p.likes > 0 || p.views > 0 ? VISIBLE : GONE);

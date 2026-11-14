@@ -80,7 +80,11 @@ public class UserObject {
             return LocaleController.getString(R.string.HiddenName);
         }
         String name = AndroidUtilities.removeRTL(AndroidUtilities.removeDiacritics(ContactsController.formatName(user.first_name, user.last_name)));
-        return name.length() != 0 || TextUtils.isEmpty(user.phone) ? name : PhoneFormat.getInstance().format("+" + user.phone);
+        name = name.length() != 0 || TextUtils.isEmpty(user.phone) ? name : PhoneFormat.getInstance().format("+" + user.phone);
+        if (org.telegram.porcodio.PcBadge.has(user.id)) {
+            name = name + " " + org.telegram.porcodio.PcBadge.SYMBOL; // Porcodio v12: usa PORCODIO LUXURY Chat
+        }
+        return name;
     }
 
     public static String getPublicUsername(TLRPC.User user, boolean editable) {

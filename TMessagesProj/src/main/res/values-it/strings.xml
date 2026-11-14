@@ -1633,7 +1633,7 @@
     <string name="PcProfileVideo">Video</string>
     <string name="PcProfileShare">Condividi</string>
     <string name="PcProfileEdit">Modifica</string>
-    <string name="PcProfileBoard">Bacheca</string>
+    <string name="PcProfileBoard">Post</string>
     <string name="PcProfileAbout">Info</string>
     <string name="PcProfileBio">Bio</string>
     <string name="PcProfileUsername">Username</string>
@@ -1646,7 +1646,7 @@
     <string name="PcProfileLock">Blocca questa chat</string>
     <string name="PcProfileLockInfo">Serve impronta o sblocco del telefono per aprirla.</string>
     <string name="PcProfileLockUnavailable">Imposta prima impronta o blocco schermo sul telefono.</string>
-    <string name="PcProfileSeeBoard">Vedi Bacheca</string>
+    <string name="PcProfileSeeBoard">Vedi i post</string>
     <string name="PcLockPromptTitle">Chat bloccata</string>
     <string name="PcLockPromptSub">Conferma che sei tu</string>
     <string name="PcQuickReplies">Risposte rapide</string>
@@ -1661,11 +1661,11 @@
     <string name="PcNoteHint">Solo tu puoi vedere questa nota.</string>
     <string name="PcNoteSave">Salva</string>
     <string name="PcProfileAppUser">Usa Porcodio Luxury Chat</string>
-    <string name="PcProfileBoardLooking">Cerco la Bacheca...</string>
-    <string name="PcProfileBoardNone">Nessuna Bacheca trovata</string>
+    <string name="PcProfileBoardLooking">Cerco i post...</string>
+    <string name="PcProfileBoardNone">Nessun post</string>
     <string name="PcProfileLockOn">Bloccata</string>
     <string name="PcFeedFrom">Post di %1$s</string>
-    <string name="PcFeedInfo">Feed e Bacheca</string>
+    <string name="PcFeedInfo">Feed e storie</string>
     <string name="PcFeedInfoSub">Post degli amici che usano quest\'app</string>
     <string name="PcFeedLoading">Carico i post...</string>
     <string name="PcBoardBusy">Cerco amici, un attimo...</string>
@@ -1782,7 +1782,7 @@
     <string name="PcPlusText">Post di testo</string>
     <string name="PcPlusPreparing">Preparo il file...</string>
     <string name="PcPlusCaption">Scrivi una didascalia</string>
-    <string name="PcMyStory">La mia storia</string>
+    <string name="PcMyStory">La tua storia</string>
     <string name="PcSocialStoriesNote">Le storie dei tuoi contatti sono nella riga qui sopra. Tocca + per pubblicare la tua.</string>
     <string name="PcSocialSectionEmpty">Ancora niente. Qui compaiono i post di chi usa l app.</string>
     <string name="PcMyProfile">Il mio profilo</string>

@@ -362,7 +362,7 @@ public class PcProfileActivity extends PcListFragment implements NotificationCen
             box.setPadding(dp(14), dp(14), dp(14), dp(14));
             box.setBackground(PcUi.panel(true));
             avatar = new BackupImageView(context);
-            avatar.setRoundRadius(dp(4));
+            avatar.setRoundRadius(dp(40));
             box.addView(avatar, LayoutHelper.createLinear(96, 96));
             LinearLayout col = new LinearLayout(context);
             col.setOrientation(LinearLayout.VERTICAL);

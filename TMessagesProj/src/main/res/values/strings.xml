@@ -11774,7 +11774,7 @@
     <string name="PcProfileVideo">Video</string>
     <string name="PcProfileShare">Share</string>
     <string name="PcProfileEdit">Edit</string>
-    <string name="PcProfileBoard">Board</string>
+    <string name="PcProfileBoard">Posts</string>
     <string name="PcProfileAbout">About</string>
     <string name="PcProfileBio">Bio</string>
     <string name="PcProfileUsername">Username</string>
@@ -11787,7 +11787,7 @@
     <string name="PcProfileLock">Lock this chat</string>
     <string name="PcProfileLockInfo">Fingerprint or phone unlock needed to open it.</string>
     <string name="PcProfileLockUnavailable">Set up a fingerprint or screen lock on your phone first.</string>
-    <string name="PcProfileSeeBoard">See Board</string>
+    <string name="PcProfileSeeBoard">See posts</string>
     <string name="PcLockPromptTitle">Locked chat</string>
     <string name="PcLockPromptSub">Confirm it is you</string>
     <string name="PcQuickReplies">Quick replies</string>
@@ -11802,11 +11802,11 @@
     <string name="PcNoteHint">Only you can see this note.</string>
     <string name="PcNoteSave">Save</string>
     <string name="PcProfileAppUser">Uses Porcodio Luxury Chat</string>
-    <string name="PcProfileBoardLooking">Looking for the Board...</string>
-    <string name="PcProfileBoardNone">No Board found</string>
+    <string name="PcProfileBoardLooking">Looking for posts...</string>
+    <string name="PcProfileBoardNone">No posts</string>
     <string name="PcProfileLockOn">Locked</string>
     <string name="PcFeedFrom">Posts from %1$s</string>
-    <string name="PcFeedInfo">Feed and Board</string>
+    <string name="PcFeedInfo">Feed and stories</string>
     <string name="PcFeedInfoSub">Posts from friends who use this app</string>
     <string name="PcFeedLoading">Loading posts...</string>
     <string name="PcBoardBusy">Looking for friends, wait a moment...</string>
@@ -11923,7 +11923,7 @@
     <string name="PcPlusText">Text post</string>
     <string name="PcPlusPreparing">Preparing the file...</string>
     <string name="PcPlusCaption">Write a caption</string>
-    <string name="PcMyStory">My story</string>
+    <string name="PcMyStory">Your story</string>
     <string name="PcSocialStoriesNote">Stories of your contacts are in the row above. Tap + to publish yours.</string>
     <string name="PcSocialSectionEmpty">Nothing here yet. Posts of app users appear here.</string>
     <string name="PcMyProfile">My profile</string>

@@ -546,7 +546,7 @@ public class PcBulkActivity extends PcListFragment {
             setLayoutParams(new androidx.recyclerview.widget.RecyclerView.LayoutParams(-1, dp(64)));
             setBackground(Theme.getSelectorDrawable(false));
             avatar = new BackupImageView(context);
-            avatar.setRoundRadius(dp(4));
+            avatar.setRoundRadius(dp(40));
             addView(avatar, LayoutHelper.createFrame(44, 44, Gravity.LEFT | Gravity.CENTER_VERTICAL, 16, 0, 0, 0));
             title = new TextView(context);
             title.setSingleLine(true);

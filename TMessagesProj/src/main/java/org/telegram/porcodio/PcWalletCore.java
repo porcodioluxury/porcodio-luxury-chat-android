@@ -189,6 +189,99 @@ public final class PcWalletCore {
         return checksum(body).equals(s);
     }
 
+    /** Pagamento letto da un QR: indirizzo semplice 0x... oppure URI EIP-681 (ethereum:...). */
+    public static final class Payment {
+        public String address;      // destinatario
+        public String contract;     // contratto token (se /transfer), altrimenti null
+        public BigInteger value;    // unita' minime (wei o unita' del token), puo' essere null
+        public Integer chainId;     // null se non indicato
+    }
+
+    /** @return il pagamento, oppure null se il testo non e' un indirizzo o un URI EIP-681 valido. */
+    public static Payment parsePayment(String raw) {
+        if (raw == null) {
+            return null;
+        }
+        String s = raw.trim();
+        Payment p = new Payment();
+        if (isValidAddress(s)) {
+            p.address = s;
+            return p;
+        }
+        if (!s.regionMatches(true, 0, "ethereum:", 0, 9)) {
+            return null;
+        }
+        s = s.substring(9);
+        if (s.startsWith("//")) {
+            s = s.substring(2);
+        }
+        if (s.regionMatches(true, 0, "pay-", 0, 4)) {
+            s = s.substring(4);
+        }
+        String query = "";
+        int q = s.indexOf('?');
+        if (q >= 0) {
+            query = s.substring(q + 1);
+            s = s.substring(0, q);
+        }
+        String function = null;
+        int sl = s.indexOf('/');
+        if (sl >= 0) {
+            function = s.substring(sl + 1);
+            s = s.substring(0, sl);
+        }
+        int at = s.indexOf('@');
+        if (at >= 0) {
+            try {
+                p.chainId = Integer.parseInt(s.substring(at + 1));
+            } catch (NumberFormatException e) {
+                return null;
+            }
+            s = s.substring(0, at);
+        }
+        if (!isValidAddress(s)) {
+            return null;
+        }
+        java.util.HashMap<String, String> params = new java.util.HashMap<>();
+        for (String kv : query.split("&")) {
+            int eq = kv.indexOf('=');
+            if (eq > 0) {
+                params.put(kv.substring(0, eq).toLowerCase(), kv.substring(eq + 1));
+            }
+        }
+        try {
+            if (function != null && !function.isEmpty()) {
+                if (!function.equals("transfer")) {
+                    return null;
+                }
+                p.contract = s;
+                String to = params.get("address");
+                if (to == null || !isValidAddress(to)) {
+                    return null;
+                }
+                p.address = to;
+                String v = params.get("uint256");
+                if (v != null) {
+                    p.value = parseScientific(v);
+                }
+            } else {
+                p.address = s;
+                String v = params.get("value");
+                if (v != null) {
+                    p.value = parseScientific(v);
+                }
+            }
+        } catch (RuntimeException e) {
+            return null;
+        }
+        return p;
+    }
+
+    /** "123", "1e18", "2.5e18" -> intero (senza perdita; errore se non intero). */
+    static BigInteger parseScientific(String v) {
+        return new java.math.BigDecimal(v.trim()).toBigIntegerExact();
+    }
+
     private static byte[] hmac(String alg, byte[] key, byte[]... parts) {
         try {
             Mac m = Mac.getInstance(alg);

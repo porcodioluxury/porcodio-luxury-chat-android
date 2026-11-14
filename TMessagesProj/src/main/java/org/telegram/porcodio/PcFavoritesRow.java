@@ -97,7 +97,7 @@ public class PcFavoritesRow extends FrameLayout {
         cell.setGravity(Gravity.CENTER_HORIZONTAL);
         cell.setBackground(Theme.createSelectorDrawable(Theme.getColor(Theme.key_listSelector), Theme.RIPPLE_MASK_ALL));
         BackupImageView avatar = new BackupImageView(context);
-        avatar.setRoundRadius(dp(4));
+        avatar.setRoundRadius(dp(40));
         AvatarDrawable ad = new AvatarDrawable();
         ad.setInfo(currentAccount, user);
         avatar.setForUserOrChat(user, ad);

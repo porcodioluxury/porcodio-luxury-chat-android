@@ -282,7 +282,7 @@ public class PcSettingsActivity extends PcListFragment implements MainTabsActivi
             LinearLayout top = new LinearLayout(context);
             top.setGravity(Gravity.CENTER_VERTICAL);
             avatar = new BackupImageView(context);
-            avatar.setRoundRadius(dp(4));
+            avatar.setRoundRadius(dp(40));
             top.addView(avatar, LayoutHelper.createLinear(72, 72));
             LinearLayout col = new LinearLayout(context);
             col.setOrientation(LinearLayout.VERTICAL);

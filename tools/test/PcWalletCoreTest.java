@@ -61,6 +61,19 @@ public class PcWalletCoreTest {
             PcWalletCore.hex(PcWalletCore.erc20TransferData("0x70997970C51812dc3A010C7d01b50e0d17dc79C8", BigInteger.TEN)));
         eq("units", "1500000000000000", PcWalletCore.parseUnits("0.0015", 18).toString());
         eq("format", "0.0015", PcWalletCore.formatUnits(new BigInteger("1500000000000000"), 18, 6));
+        // EIP-681
+        String A = "0x52908400098527886E0F7030069857D2E4169EE7";
+        PcWalletCore.Payment p1 = PcWalletCore.parsePayment(A);
+        eq("eip681 plain", A, p1 == null ? "null" : p1.address);
+        PcWalletCore.Payment p2 = PcWalletCore.parsePayment("ethereum:" + A + "@8453?value=2.5e18");
+        eq("eip681 value", "2500000000000000000", p2 == null || p2.value == null ? "null" : p2.value.toString());
+        eq("eip681 chain", "8453", p2 == null || p2.chainId == null ? "null" : p2.chainId.toString());
+        PcWalletCore.Payment p3 = PcWalletCore.parsePayment("ethereum:0x8e23ee67d1332ad560396262c48ffbb01f93d052/transfer?address=" + A + "&uint256=1");
+        eq("eip681 token to", A, p3 == null ? "null" : p3.address);
+        eq("eip681 token contract", "0x8e23ee67d1332ad560396262c48ffbb01f93d052", p3 == null ? "null" : p3.contract);
+        eq("eip681 pay-", A, PcWalletCore.parsePayment("ethereum:pay-" + A).address);
+        eq("eip681 bad", "null", PcWalletCore.parsePayment("ethereum:0x123") == null ? "null" : "x");
+        eq("eip681 not eth", "null", PcWalletCore.parsePayment("https://example.com") == null ? "null" : "x");
         if (fails > 0) {
             System.out.println(fails + " TEST FALLITI");
             System.exit(1);

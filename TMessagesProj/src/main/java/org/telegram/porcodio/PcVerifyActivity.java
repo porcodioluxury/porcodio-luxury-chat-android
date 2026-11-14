@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.LocaleController;
+import org.telegram.messenger.R;
 import org.telegram.messenger.UserConfig;
 
 import java.util.ArrayList;
@@ -58,8 +59,8 @@ public class PcVerifyActivity extends PcListFragment {
         row(2, t("Priorita' nella Home e in Esplora", "Priority in Home and Explore"), null, null);
         row(2, t("Passi il filtro \"Solo verificati\" di chi puo' scriverti", "Pass the \"Verified only\" filter of who can write to you"), null, null);
         row(2, t("Dashboard professionale con le visualizzazioni", "Professional dashboard with views"), null, null);
-        row(3, PcFlags.STRIPE_PAYMENTS ? t("Continua", "Continue") : t("In arrivo", "Coming soon"), null, null);
-        row(4, t("Come funziona: prima si paga l'abbonamento, poi parte la verifica d'identita'. I pagamenti non sono ancora attivi: nessun addebito e nessuna chiamata a servizi di pagamento.", "How it works: you pay the subscription first, then the identity check starts. Payments are not active yet: no charge and no call to any payment service."), null, null);
+        row(3, PcFlags.BLUE_CHECK_PAYMENT_LINKS ? t("Continua al pagamento", "Continue to payment") : t("In arrivo", "Coming soon"), null, null);
+        row(4, t("Come funziona: paghi l'abbonamento sulla pagina sicura di Stripe (si apre nel browser), poi verifichiamo la tua identita' e attiviamo la spunta sul tuo account. Disdici quando vuoi.", "How it works: you pay the subscription on Stripe's secure page (opens in your browser), then we verify your identity and turn the check on for your account. Cancel anytime."), null, null);
         notifyData();
         return v;
     }
@@ -88,15 +89,18 @@ public class PcVerifyActivity extends PcListFragment {
             selected = r.kind;
             notifyData();
         } else if (r.type == 3) {
-            if (!PcFlags.STRIPE_PAYMENTS) {
+            if (!PcFlags.BLUE_CHECK_PAYMENT_LINKS) {
                 PcUi.toast(getParentActivity(), t("I pagamenti non sono ancora attivi", "Payments are not active yet"));
                 return;
             }
-            PcPayments.startPaymentSheet(selected, 0, (paid, err) -> {
-                if (!paid) {
-                    PcUi.toast(getParentActivity(), t("Pagamento non completato", "Payment not completed"));
-                }
-            });
+            String url = PcPayments.paymentLinkUrl(selected,
+                getParentActivity().getString(R.string.pc_pay_link_month), getParentActivity().getString(R.string.pc_pay_link_year),
+                UserConfig.getInstance(currentAccount).getClientUserId());
+            if (url.isEmpty()) {
+                PcUi.toast(getParentActivity(), t("Link di pagamento non disponibile", "Payment link not available"));
+                return;
+            }
+            PcLinks.open(getParentActivity(), url);
         }
     }
 
@@ -152,7 +156,7 @@ public class PcVerifyActivity extends PcListFragment {
             cta.setPadding(0, dp(14), 0, dp(14));
             GradientDrawable g = new GradientDrawable();
             g.setCornerRadius(dp(26));
-            g.setColor(PcFlags.STRIPE_PAYMENTS ? 0xFF3797F0 : 0xFF2F3442);
+            g.setColor(PcFlags.BLUE_CHECK_PAYMENT_LINKS ? 0xFF3797F0 : 0xFF2F3442);
             cta.setBackground(g);
             b.addView(cta);
         } else {

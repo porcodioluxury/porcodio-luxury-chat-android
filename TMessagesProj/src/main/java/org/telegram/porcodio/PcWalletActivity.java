@@ -690,10 +690,10 @@ public class PcWalletActivity extends PcListFragment {
         holder.setGravity(Gravity.CENTER_HORIZONTAL);
         holder.setPadding(dp(24), dp(8), dp(24), 0);
         ImageView qr = new ImageView(getParentActivity());
-        qr.setImageBitmap(qr(addr, dp(220)));
+        qr.setImageBitmap(qr(addr, dp(280)));
         qr.setBackgroundColor(Color.WHITE);
         qr.setPadding(dp(8), dp(8), dp(8), dp(8));
-        holder.addView(qr, new LinearLayout.LayoutParams(dp(236), dp(236)));
+        holder.addView(qr, new LinearLayout.LayoutParams(dp(296), dp(296)));
         TextView a = text(getParentActivity(), addr, 13, false, 0xFFF2F2F2);
         a.setGravity(Gravity.CENTER);
         holder.addView(a, lp(0, 10, 0, 0));
@@ -702,6 +702,15 @@ public class PcWalletActivity extends PcListFragment {
         b.setTitle(t("Ricevi", "Receive"));
         b.setView(holder);
         b.setPositiveButton(t("Copia indirizzo", "Copy address"), (d, w) -> copy(addr));
+        b.setNeutralButton(t("Condividi", "Share"), (d, w) -> {
+            try {
+                android.content.Intent i = new android.content.Intent(android.content.Intent.ACTION_SEND);
+                i.setType("text/plain");
+                i.putExtra(android.content.Intent.EXTRA_TEXT, addr);
+                getParentActivity().startActivity(android.content.Intent.createChooser(i, t("Condividi indirizzo", "Share address")));
+            } catch (Throwable ignore) {
+            }
+        });
         b.setNegativeButton(LocaleController.getString(R.string.Close), null);
         showDialog(b.create());
     }
@@ -723,6 +732,60 @@ public class PcWalletActivity extends PcListFragment {
 
     // ---------- invia ----------
     private void sendDialog() {
+        sendDialog("", "", false);
+    }
+
+    private void scanQr(final String keepTo, final String keepAmt, final boolean keepPorco) {
+        final boolean[] found = {false};
+        org.telegram.ui.CameraScanActivity.showAsSheet(this, true, org.telegram.ui.CameraScanActivity.TYPE_QR, new org.telegram.ui.CameraScanActivity.CameraScanActivityDelegate() {
+            @Override
+            public void didFindQr(String text) {
+                found[0] = true;
+                org.telegram.messenger.AndroidUtilities.runOnUIThread(() -> {
+                    PcWalletCore.Payment pay = PcWalletCore.parsePayment(text);
+                    if (pay == null) {
+                        PcUi.toast(getParentActivity(), t("Questo QR non contiene un indirizzo valido.", "This QR does not contain a valid address."));
+                        sendDialog(keepTo, keepAmt, keepPorco);
+                        return;
+                    }
+                    if (pay.chainId != null && pay.chainId != 8453) {
+                        PcUi.toast(getParentActivity(), t("Il QR e' per un'altra rete (chain " + pay.chainId + "). Qui si usa solo Base.", "This QR is for another network (chain " + pay.chainId + "). Only Base is supported."));
+                        sendDialog(keepTo, keepAmt, keepPorco);
+                        return;
+                    }
+                    boolean token = false;
+                    String amount = keepAmt;
+                    if (pay.contract != null) {
+                        if (PcWalletRpc.porcoContract().isEmpty() || !PcWalletRpc.porcoContract().equalsIgnoreCase(pay.contract)) {
+                            PcUi.toast(getParentActivity(), t("Token non supportato dal portafoglio.", "Token not supported by the wallet."));
+                            sendDialog(keepTo, keepAmt, keepPorco);
+                            return;
+                        }
+                        token = true;
+                        if (pay.value != null) {
+                            amount = PcWalletCore.formatUnits(pay.value, PcWalletRpc.porcoDecimals(), PcWalletRpc.porcoDecimals());
+                        }
+                    } else if (pay.value != null) {
+                        amount = PcWalletCore.formatUnits(pay.value, 18, 18);
+                    }
+                    if (amount.contains(".")) {
+                        amount = amount.replaceAll("0+$", "").replaceAll("\\.$", "");
+                    }
+                    PcUi.toast(getParentActivity(), t("Indirizzo letto dal QR", "Address read from QR"));
+                    sendDialog(pay.address, amount, token);
+                }, 150);
+            }
+
+            @Override
+            public void onDismiss() {
+                if (!found[0]) {
+                    org.telegram.messenger.AndroidUtilities.runOnUIThread(() -> sendDialog(keepTo, keepAmt, keepPorco), 150);
+                }
+            }
+        });
+    }
+
+    private void sendDialog(String prefTo, String prefAmt, boolean prefPorco) {
         if (getParentActivity() == null) {
             return;
         }
@@ -730,16 +793,18 @@ public class PcWalletActivity extends PcListFragment {
         final EditText to = new EditText(getParentActivity());
         to.setHint(t("Indirizzo 0x... (Base)", "Address 0x... (Base)"));
         to.setTextColor(0xFFF2F2F2);
+        to.setText(prefTo);
         to.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
         final EditText amt = new EditText(getParentActivity());
         amt.setHint(t("Importo", "Amount"));
         amt.setTextColor(0xFFF2F2F2);
+        amt.setText(prefAmt);
         amt.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
-        final boolean[] porco = {false};
+        final boolean[] porco = {prefPorco && !PcWalletRpc.porcoContract().isEmpty()};
         final TextView asset = text(getParentActivity(), "ETH", 15, true, 0xFF9DAAC8);
         asset.setPadding(0, dp(10), 0, dp(10));
         if (porcoOk) {
-            asset.setText("ETH  ▾");
+            asset.setText((porco[0] ? PcWalletRpc.porcoSymbol() : "ETH") + "  ▾");
             asset.setOnClickListener(v -> {
                 porco[0] = !porco[0];
                 asset.setText((porco[0] ? PcWalletRpc.porcoSymbol() : "ETH") + "  ▾");
@@ -753,15 +818,27 @@ public class PcWalletActivity extends PcListFragment {
         holder.addView(asset);
         holder.addView(to);
         holder.addView(amt);
+        final TextView scan = text(getParentActivity(), "\u25A3  " + t("Scansiona QR con la fotocamera", "Scan QR with the camera"), 15, true, 0xFF9DAAC8);
+        scan.setPadding(0, dp(14), 0, dp(6));
+        holder.addView(scan);
         AlertDialog.Builder b = new AlertDialog.Builder(getParentActivity());
         b.setTitle(t("Invia denaro", "Send money"));
         b.setView(holder);
         b.setPositiveButton(t("Stima costi", "Estimate"), (d, w) -> prepareSend(to.getText().toString().trim(), amt.getText().toString().trim(), porco[0]));
         b.setNegativeButton(LocaleController.getString(R.string.Cancel), null);
-        showDialog(b.create());
+        final AlertDialog dlg = b.create();
+        scan.setOnClickListener(v -> {
+            final String kt = to.getText().toString(), ka = amt.getText().toString();
+            final boolean kp = porco[0];
+            dlg.dismiss();
+            scanQr(kt, ka, kp);
+        });
+        showDialog(dlg);
     }
 
-    private void prepareSend(final String toAddr, final String amount, final boolean token) {
+    private void prepareSend(String toRaw, final String amount, final boolean token) {
+        PcWalletCore.Payment parsed = PcWalletCore.parsePayment(toRaw);
+        final String toAddr = parsed != null && parsed.address != null ? parsed.address : toRaw;
         if (!PcWalletCore.isValidAddress(toAddr)) {
             PcUi.toast(getParentActivity(), t("Indirizzo non valido (controlla il checksum)", "Invalid address (check the checksum)"));
             return;

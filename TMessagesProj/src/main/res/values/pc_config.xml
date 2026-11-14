@@ -16,6 +16,9 @@
     <string name="pc_base_explorer" translatable="false">https://basescan.org</string>
     <string name="pc_base_history_api" translatable="false">https://base.blockscout.com/api/v2</string>
     <!-- ID utente con spunta blu (separati da virgola). Finche' i pagamenti sono spenti li assegna il proprietario. -->
+    <!-- Spunta blu: Payment Link Stripe (pagina ospitata da Stripe, nessuna chiave segreta nell'app). Prodotto plc_bluecheck_v1 -->
+    <string name="pc_pay_link_month" translatable="false">https://buy.stripe.com/00w3co4VG0Log4peFmaMU00</string>
+    <string name="pc_pay_link_year" translatable="false">https://buy.stripe.com/9B6dR24VGbq2dWhcxeaMU01</string>
     <string name="pc_verified_user_ids" translatable="false"></string>
     <string name="pc_porco_name" translatable="false">PORCODIO LUXURY</string>
 </resources>

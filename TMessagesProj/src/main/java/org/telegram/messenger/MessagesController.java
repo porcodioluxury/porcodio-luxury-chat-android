@@ -22517,6 +22517,9 @@ public class MessagesController extends BaseController implements NotificationCe
         }
         for (int a = 0, N = allDialogs.size(); a < N; a++) {
             TLRPC.Dialog d = allDialogs.get(a);
+            if (d != null && d.id < 0 && org.telegram.porcodio.PcBoard.isBoardDialog(currentAccount, d.id)) {
+                continue; // Porcodio v12: il canale di pubblicazione e' invisibile (lista chat, condividi, ricerche)
+            }
             if (d instanceof TLRPC.TL_dialog) {
                 ArrayList<MessageObject> messageObjects = dialogMessage.get(d.id);
                 if (messageObjects != null) {

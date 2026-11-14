@@ -145,7 +145,7 @@ public class PcProfileEditActivity extends PcListFragment {
     protected void bindRow(View row, int viewType, int position) {
         final Context context = row.getContext();
         if (viewType == T_NOTE) {
-            ((TextView) row).setText(LocaleController.getString(loading ? R.string.PcFeedLoading : (PcBoard.isEnabled(currentAccount) ? (mine.isEmpty() ? R.string.PcFeedEmpty : R.string.PcMyGridNote) : R.string.PcMyBoardOff)));
+            ((TextView) row).setText(LocaleController.getString(loading ? R.string.PcFeedLoading : (mine.isEmpty() ? R.string.PcFeedEmpty : R.string.PcMyGridNote)));
             return;
         }
         if (viewType == T_GRID) {
@@ -193,18 +193,11 @@ public class PcProfileEditActivity extends PcListFragment {
         }
     }
 
-    private boolean needBoard() {
-        if (!PcBoard.isEnabled(currentAccount)) {
-            PcUi.toast(getParentActivity(), LocaleController.getString(R.string.PcMyBoardOff));
-            return true;
-        }
-        return false;
+    private void pickCover() {
+        PcBoard.ensure(this, this::pickCoverNow, ok -> PcUi.toast(getParentActivity(), "Operazione non riuscita: " + PcBoard.lastError));
     }
 
-    private void pickCover() {
-        if (needBoard()) {
-            return;
-        }
+    private void pickCoverNow() {
         android.content.Intent i = new android.content.Intent(android.content.Intent.ACTION_GET_CONTENT);
         i.setType("image/*");
         i.addCategory(android.content.Intent.CATEGORY_OPENABLE);
@@ -251,8 +244,12 @@ public class PcProfileEditActivity extends PcListFragment {
         });
     }
 
-    private void editLinks(String current) {
-        if (needBoard() || getParentActivity() == null) {
+    private void editLinks(final String current) {
+        PcBoard.ensure(this, () -> editLinksNow(current), ok -> PcUi.toast(getParentActivity(), "Operazione non riuscita: " + PcBoard.lastError));
+    }
+
+    private void editLinksNow(String current) {
+        if (getParentActivity() == null) {
             return;
         }
         final EditText edit = new EditText(getParentActivity());

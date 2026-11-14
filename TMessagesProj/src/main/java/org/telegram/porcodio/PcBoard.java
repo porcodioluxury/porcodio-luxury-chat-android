@@ -320,6 +320,9 @@ public class PcBoard {
             e.put("ts", System.currentTimeMillis());
             c.put(String.valueOf(uid), e);
             saveCache(account, c);
+            if (ok) {
+                PcBadge.add(uid);
+            }
         } catch (Exception ignore) {
         }
     }
@@ -469,11 +472,98 @@ public class PcBoard {
         setMarker(account, false, result);
     }
 
+    // ---- v12: la Bacheca e' invisibile e automatica
+
+    /** True se il dialogo e' il canale Bacheca (mio o noto): non va mostrato nella lista chat, nei "condividi" e nelle ricerche. */
+    public static boolean isBoardDialog(int account, long dialogId) {
+        if (dialogId >= 0) {
+            return false;
+        }
+        long chat = -dialogId;
+        SharedPreferences p = prefs();
+        if (chat == p.getLong("mine_" + account, 0) || chat == p.getLong("pending_" + account, 0)) {
+            return true;
+        }
+        try {
+            TLRPC.Chat c = MessagesController.getInstance(account).getChat(chat);
+            return c != null && ChatObject.isChannelAndNotMegaGroup(c) && c.username != null && c.username.startsWith("plcb_");
+        } catch (Throwable t) {
+            return false;
+        }
+    }
+
+    /**
+     * Garantisce il canale di pubblicazione (lo crea da solo, in silenzio, alla prima pubblicazione) e poi esegue ok.
+     * L'utente non sa che esiste: nessuna conferma, nessun pulsante "Attiva".
+     */
+    public static void ensure(final BaseFragment fragment, final Runnable ok, final Result failed) {
+        final int account = fragment.getCurrentAccount();
+        if (isEnabled(account)) {
+            ok.run();
+            return;
+        }
+        TLRPC.User me = UserConfig.getInstance(account).getCurrentUser();
+        String name = me != null ? org.telegram.messenger.UserObject.getUserName(me) : "";
+        enable(fragment, (name + " - Porcodio").trim(), done -> {
+            if (done) {
+                ok.run();
+            } else {
+                failed.done(false);
+            }
+        });
+    }
+
+    /** Segna una volta sola (in silenzio) il profilo come "usa PORCODIO LUXURY Chat", cosi' gli altri utenti dell'app lo riconoscono. */
+    public static void ensureMarker(final int account) {
+        final SharedPreferences p = prefs();
+        if (p.getBoolean("marker_done_" + account, false)) {
+            return;
+        }
+        final long uid = UserConfig.getInstance(account).getClientUserId();
+        if (uid == 0) {
+            return;
+        }
+        final MessagesController mc = MessagesController.getInstance(account);
+        TLRPC.UserFull full = mc.getUserFull(uid);
+        if (full == null) {
+            mc.loadFullUser(mc.getUser(uid), 0, true); // riprova al prossimo avvio quando e' nota la bio vera
+            return;
+        }
+        if (aboutHasMarker(full.about)) {
+            p.edit().putBoolean("marker_done_" + account, true).apply();
+            PcBadge.add(uid);
+            return;
+        }
+        setMarker(account, true, ok -> {
+            if (ok) {
+                p.edit().putBoolean("marker_done_" + account, true).apply();
+                PcBadge.add(uid);
+            }
+        });
+    }
+
+    /** Vero al massimo una volta ogni 12 ore: la ricerca automatica di chi usa l'app tra i contatti (dentro il budget giornaliero). */
+    public static boolean autoFindDue() {
+        SharedPreferences p = prefs();
+        long last = p.getLong("auto_find", 0);
+        if (System.currentTimeMillis() - last < 12L * 3600_000L) {
+            return false;
+        }
+        p.edit().putLong("auto_find", System.currentTimeMillis()).apply();
+        return true;
+    }
+
     /** Aggiunge o toglie il marcatore dalla bio (account.updateProfile). */
     public static void setMarker(int account, boolean on, Result result) {
         final long uid = UserConfig.getInstance(account).getClientUserId();
         final MessagesController mc = MessagesController.getInstance(account);
         final TLRPC.UserFull full = mc.getUserFull(uid);
+        if (full == null) {
+            // senza la bio attuale non si scrive nulla: si rischierebbe di cancellarla
+            fail("setMarker", "bio non ancora caricata");
+            result.done(false);
+            return;
+        }
         String about = full != null && full.about != null ? full.about : "";
         about = about.replace(" " + MARKER, "").replace(MARKER, "").trim();
         if (on) {

@@ -2551,15 +2551,7 @@ public class ImageReceiver implements NotificationCenter.NotificationCenterDeleg
     }
 
     public void setRoundRadius(int[] value) {
-        // Porcodio Luxury Chat: angoli massimi 4dp (avatar e foto quadrati arrotondati, niente cerchi)
-        if (!pcNoClamp) {
-            int pcMax = AndroidUtilities.dp(4);
-            int[] pcValue = new int[value.length];
-            for (int pcI = 0; pcI < value.length; pcI++) {
-                pcValue[pcI] = Math.min(value[pcI], pcMax);
-            }
-            value = pcValue;
-        }
+        // Porcodio v12: nessun limite ai raggi, avatar e icone tornano tondi (le foto restano squadrate perche' il loro raggio deriva da bubbleRadius)
         boolean changed = false;
         int firstValue = value[0];
         isRoundRect = true;
