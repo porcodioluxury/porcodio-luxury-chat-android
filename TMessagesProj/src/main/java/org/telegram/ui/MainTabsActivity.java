@@ -328,7 +328,7 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
 
         tabs = new GlassTabView[5];
         tabs[INDEX_CHATS] = GlassTabView.createMainTab(context, resourceProvider, GlassTabView.TabAnimation.CHATS, R.string.MainTabsChats);
-        tabs[INDEX_CONTACTS] = GlassTabView.createMainTab(context, resourceProvider, GlassTabView.TabAnimation.CONTACTS, R.string.MainTabsContacts);
+        tabs[INDEX_CONTACTS] = GlassTabView.createMainTab(context, resourceProvider, GlassTabView.TabAnimation.CONTACTS, R.string.PcTabSocial);
         tabs[INDEX_SETTINGS] = GlassTabView.createMainTab(context, resourceProvider, GlassTabView.TabAnimation.SETTINGS, R.string.Settings);
         tabs[INDEX_CALLS] = GlassTabView.createMainTab(context, resourceProvider, GlassTabView.TabAnimation.GIFT, R.string.PcTabShop);
         // Porcodio: barra in basso Chat / Contatti / Chiamate / Impostazioni (la scheda profilo diventa Impostazioni)
@@ -826,11 +826,10 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
     @Override
     protected BaseFragment createBaseFragmentAt(int position) {
         if (position == POSITION_CONTACTS) {
+            // Porcodio: la scheda centrale è il Social (i contatti si raggiungono dalla scheda Chat, chip RUBRICA)
             Bundle args = new Bundle();
-            args.putBoolean("needPhonebook", true);
-            args.putBoolean("needFinishFragment", false);
             args.putBoolean("hasMainTabs", true);
-            return new ContactsActivity(args);
+            return new org.telegram.porcodio.PcFeedActivity(args);
         } else if (position == POSITION_CALLS_OR_SETTINGS) {
             Bundle args = new Bundle();
             args.putBoolean("needFinishFragment", false);

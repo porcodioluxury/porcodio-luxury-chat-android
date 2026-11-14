@@ -34,8 +34,9 @@ import java.util.ArrayList;
  * Feed interno (solo per chi usa l'app): post delle Bacheche degli amici e la tua, come righe di un social.
  * Con l'argomento "author" mostra solo la Bacheca di quella persona.
  */
-public class PcFeedActivity extends PcListFragment {
-    private static final int T_BOARD = 0, T_POST = 1, T_NOTE = 2;
+public class PcFeedActivity extends PcListFragment implements org.telegram.ui.MainTabsActivity.TabFragmentDelegate {
+    private static final int T_BOARD = 0, T_POST = 1, T_NOTE = 2, T_CHIPS = 3;
+    private int section; // 0 feed, 1 storie, 2 reel, 3 esplora, 4 attività (solo nella scheda Social)
 
     private final long onlyAuthor;
     private final ArrayList<PcBoard.Post> posts = new ArrayList<>();
@@ -72,7 +73,21 @@ public class PcFeedActivity extends PcListFragment {
     }
 
     @Override
+    public void onParentScrollToTop() {
+        if (listView != null) {
+            listView.smoothScrollToPosition(0);
+        }
+    }
+
+    private boolean tabMode() {
+        return hasMainTabs;
+    }
+
+    @Override
     protected String screenTitle() {
+        if (tabMode()) {
+            return LocaleController.getString(R.string.PcTabSocial);
+        }
         if (onlyAuthor != 0) {
             TLRPC.User u = getMessagesController().getUser(onlyAuthor);
             return u == null ? LocaleController.getString(R.string.PcFeedTitle) : LocaleController.formatString(R.string.PcFeedFrom, UserObject.getFirstName(u));
@@ -103,16 +118,26 @@ public class PcFeedActivity extends PcListFragment {
 
     @Override
     protected int itemCount() {
-        return (showBoardCard() ? 1 : 0) + posts.size() + 1;
+        return (tabMode() ? 1 : 0) + (showBoardCard() ? 1 : 0) + shownPosts() + 1;
+    }
+
+    private int shownPosts() {
+        return section == 0 ? posts.size() : 0;
+    }
+
+    private int shift() {
+        return (tabMode() ? 1 : 0) + (showBoardCard() ? 1 : 0);
     }
 
     @Override
     protected int itemViewType(int position) {
-        int shift = showBoardCard() ? 1 : 0;
-        if (position < shift) {
+        if (tabMode() && position == 0) {
+            return T_CHIPS;
+        }
+        if (showBoardCard() && position == (tabMode() ? 1 : 0)) {
             return T_BOARD;
         }
-        return position - shift < posts.size() ? T_POST : T_NOTE;
+        return position - shift() < shownPosts() ? T_POST : T_NOTE;
     }
 
     @Override
@@ -122,6 +147,11 @@ public class PcFeedActivity extends PcListFragment {
 
     @Override
     protected View createRow(Context context, int viewType) {
+        if (viewType == T_CHIPS) {
+            ChipsRow c = new ChipsRow(context);
+            c.setLayoutParams(new RecyclerView.LayoutParams(-1, -2));
+            return c;
+        }
         if (viewType == T_BOARD) {
             return new BoardRow(context);
         }
@@ -130,20 +160,24 @@ public class PcFeedActivity extends PcListFragment {
         }
         TextView t = PcUi.label(context, "", 14, false, Theme.key_windowBackgroundWhiteGrayText);
         t.setGravity(Gravity.CENTER);
-        t.setPadding(dp(24), dp(24), dp(24), dp(96));
+        t.setPadding(dp(24), dp(24), dp(24), dp(tabMode() ? org.telegram.ui.DialogsActivity.MAIN_TABS_HEIGHT_WITH_MARGINS + 24 : 96));
         t.setLayoutParams(new RecyclerView.LayoutParams(-1, -2));
         return t;
     }
 
     @Override
     protected void bindRow(View row, int viewType, int position) {
-        if (viewType == T_BOARD) {
+        if (viewType == T_CHIPS) {
+            ((ChipsRow) row).bind();
+        } else if (viewType == T_BOARD) {
             ((BoardRow) row).bind();
         } else if (viewType == T_POST) {
-            ((PostRow) row).bind(posts.get(position - (showBoardCard() ? 1 : 0)));
+            ((PostRow) row).bind(posts.get(position - shift()));
         } else {
             TextView t = (TextView) row;
-            if (loading) {
+            if (section != 0) {
+                t.setText(LocaleController.getString(R.string.PcSocialSoon));
+            } else if (loading) {
                 t.setText(LocaleController.getString(R.string.PcFeedLoading));
             } else if (posts.isEmpty()) {
                 t.setText(LocaleController.getString(R.string.PcFeedEmpty));
@@ -260,6 +294,31 @@ public class PcFeedActivity extends PcListFragment {
         b.putLong("chat_id", p.chatId);
         b.putInt("message_id", p.msgId);
         presentFragment(new ChatActivity(b));
+    }
+
+    private class ChipsRow extends FrameLayout {
+        ChipsRow(Context context) {
+            super(context);
+        }
+
+        void bind() {
+            removeAllViews();
+            final Context context = getContext();
+            android.widget.HorizontalScrollView sv = new android.widget.HorizontalScrollView(context);
+            sv.setHorizontalScrollBarEnabled(false);
+            LinearLayout r = new LinearLayout(context);
+            final int[] names = {R.string.PcSocialFeed, R.string.PcSocialStories, R.string.PcSocialReels, R.string.PcSocialExplore, R.string.PcSocialActivity};
+            for (int i = 0; i < names.length; i++) {
+                final int idx = i;
+                TextView t = PcUi.button(context, LocaleController.getString(names[i]), section == i, v -> {
+                    section = idx;
+                    notifyData();
+                });
+                r.addView(t, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, 38, 0, 0, 6, 0));
+            }
+            sv.addView(r);
+            addView(sv, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.TOP, 12, 8, 12, 4));
+        }
     }
 
     private class BoardRow extends FrameLayout {

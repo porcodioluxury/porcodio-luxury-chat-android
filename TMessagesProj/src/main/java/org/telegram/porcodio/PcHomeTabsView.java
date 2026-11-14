@@ -74,6 +74,21 @@ public class PcHomeTabsView extends FrameLayout {
         feed.setBackground(PcUi.panel(false));
         feed.setOnClickListener(v -> fragment.presentFragment(new PcFeedActivity(new android.os.Bundle())));
         row.addView(feed, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, 32, Gravity.CENTER_VERTICAL, 0, 0, 6, 0));
+        android.widget.TextView book = new android.widget.TextView(context);
+        book.setText(LocaleController.getString(R.string.PcChipContacts));
+        book.setTextSize(13);
+        book.setTypeface(AndroidUtilities.bold());
+        book.setGravity(Gravity.CENTER);
+        book.setPadding(dp(12), 0, dp(12), 0);
+        book.setTextColor(color(Theme.key_windowBackgroundWhiteGrayText));
+        book.setBackground(PcUi.panel(false));
+        book.setOnClickListener(v -> {
+            android.os.Bundle ca = new android.os.Bundle();
+            ca.putBoolean("needFinishFragment", false);
+            ca.putBoolean("needPhonebook", true);
+            fragment.presentFragment(new org.telegram.ui.ContactsActivity(ca));
+        });
+        row.addView(book, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, 32, Gravity.CENTER_VERTICAL, 0, 0, 6, 0));
         android.widget.TextView feats = new android.widget.TextView(context);
         feats.setText(LocaleController.getString(R.string.PcFeaturesChip));
         feats.setTextSize(13);

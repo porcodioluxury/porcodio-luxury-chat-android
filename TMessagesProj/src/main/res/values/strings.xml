@@ -11883,5 +11883,13 @@
     <string name="PcSetSocial">Porcodio social</string>
     <string name="PcSetShopOrders">Shop and orders</string>
     <string name="PcSetSupport">Support and info</string>
+    <string name="PcTabSocial">Social</string>
+    <string name="PcSocialFeed">Feed</string>
+    <string name="PcSocialStories">Stories</string>
+    <string name="PcSocialReels">Reels</string>
+    <string name="PcSocialExplore">Explore</string>
+    <string name="PcSocialActivity">Activity</string>
+    <string name="PcSocialSoon">Coming soon, with an automatic update.</string>
+    <string name="PcChipContacts">CONTACTS</string>
     <!-- /PORCODIO PHASE3 -->
 </resources>
