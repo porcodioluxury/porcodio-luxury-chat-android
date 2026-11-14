@@ -48,7 +48,12 @@ Segnali (pesi in `PcInterests`):
 | "Non mi interessa" | −5 |
 | Nascondi autore | −8 |
 
-Stato attuale: tempo di visione (approssimato dal tempo in cui la riga resta a schermo), like, apertura, "Non mi interessa", nascondi, segnala sono attivi. Commenti, condivisioni, salvataggi, completamento reel e visite al profilo sono pesi già in config, collegati ai segnali quando le rispettive funzioni arrivano.
+Stato attuale (v8): sono collegati tutti i segnali tranne il completamento reel (stimato dal tempo a schermo).
+* **Commento** (+4): conta solo se, tornando nel feed dopo aver aperto la discussione, tra i commenti del post c'è davvero un commento mio più recente del tocco (controllo con `messages.getReplies`). Una volta per post.
+* **Condivisione** (+5): tasto "Condividi" nel menu ⋯ del post; il segnale parte solo quando scegli davvero una destinazione nel foglio di condivisione (callback del sistema), non quando lo apri. Una volta per post.
+* **Salvataggio** (+4): "Salva nei Messaggi salvati" inoltra il post ai tuoi Messaggi salvati; il segnale conta solo se il server accetta l'inoltro. Una volta per post.
+* **Visita al profilo** (+2): tocco su avatar o nome dell'autore nel feed apre il suo profilo. Una volta per post.
+Ogni segnale "una volta" è memorizzato nella sessione (`PcInterests.recordOnce`), così ripetere il tocco non gonfia i pesi.
 
 ## Controlli per l'utente
 * **Perché vedo questo** (menu ⋯ sul post): mostra freschezza, qualità, somiglianza, affinità, boost/penalità e punteggio.
@@ -71,5 +76,8 @@ Formula con i valori sopra (arrotondati).
 
 ## Limiti onesti
 * È un ordinamento **lato client** sui post che l'app scarica dalle Bacheche degli utenti (nessun indice globale a costo zero): la scoperta è limitata alle Bacheche già note.
-* Commenti, condivisioni e visualizzazioni arrivano dai contatori del canale; salvataggi e completamento reel non esistono ancora come dati.
-* Lo stato "verificato" arriva da `PcRanking.verifiedSource`: oggi sempre falso; in v8 va collegato a una fonte non falsificabile dal client.
+* Commenti, condivisioni e visualizzazioni arrivano dai contatori del canale; i salvataggi sono locali (non esiste un contatore pubblico) e il completamento reel è una stima.
+* Lo stato "verificato" arriva da `PcRanking.verifiedSource`: oggi sempre falso; in v9 va collegato a una fonte non falsificabile dal client (backend/webhook), dietro flag.
+
+## Account ufficiale (v8)
+`res/values/pc_config.xml` ha due chiavi: `pc_official_user_ids` (ID separati da virgola) e `pc_official_username` (con o senza @). Se c'è lo username, l'app lo risolve una volta con `contacts.resolveUsername` (all'apertura del Social), tiene l'ID in cache e lo aggiunge agli ID ufficiali: da quel momento storia in testa, ultimo post nello slot fisso, etichetta "Ufficiale" e posizione nei primi 3 di Esplora funzionano senza ricompilare altro.
