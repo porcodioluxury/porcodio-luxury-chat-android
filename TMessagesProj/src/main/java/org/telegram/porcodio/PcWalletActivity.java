@@ -304,7 +304,7 @@ public class PcWalletActivity extends PcListFragment {
             LinearLayout col = new LinearLayout(c);
             col.setOrientation(LinearLayout.VERTICAL);
             String other = out ? x.to : x.from;
-            col.addView(text(c, (out ? t("Inviato a ", "Sent to ") : t("Ricevuto da ", "Received from ")) + short(other), 14, true, 0xFFF2F2F2));
+            col.addView(text(c, (out ? t("Inviato a ", "Sent to ") : t("Ricevuto da ", "Received from ")) + shortAddr(other), 14, true, 0xFFF2F2F2));
             col.addView(text(c, new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm", java.util.Locale.getDefault()).format(new java.util.Date(x.time * 1000L)) + (x.ok ? "" : " · " + t("fallita", "failed")), 12, false, 0xFFBFBFBF));
             r.addView(col, new LinearLayout.LayoutParams(0, -2, 1f));
             r.addView(text(c, (out ? "-" : "+") + PcWalletCore.formatUnits(x.value, 18, 6) + " " + x.symbol, 14, true, out ? 0xFFBFBFBF : 0xFF9DAAC8));
@@ -350,7 +350,7 @@ public class PcWalletActivity extends PcListFragment {
         return w;
     }
 
-    private String short(String a) {
+    private String shortAddr(String a) {
         return a == null || a.length() < 12 ? String.valueOf(a) : a.substring(0, 6) + "..." + a.substring(a.length() - 4);
     }
 
