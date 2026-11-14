@@ -1775,5 +1775,15 @@
     <string name="PcSecretShowHidden">Mostra cartella nascosta (impronta)</string>
     <string name="PcSecretHiddenShown">Cartella nascosta visibile</string>
     <string name="PcSecretHiddenTag">nascosta</string>
+    <string name="PcPlusTitle">Pubblica</string>
+    <string name="PcPlusPhoto">Post con foto</string>
+    <string name="PcPlusReel">Reel (video)</string>
+    <string name="PcPlusStory">Storia</string>
+    <string name="PcPlusText">Post di testo</string>
+    <string name="PcPlusPreparing">Preparo il file...</string>
+    <string name="PcPlusCaption">Scrivi una didascalia</string>
+    <string name="PcMyStory">La mia storia</string>
+    <string name="PcSocialStoriesNote">Le storie dei tuoi contatti sono nella riga qui sopra. Tocca + per pubblicare la tua.</string>
+    <string name="PcSocialSectionEmpty">Ancora niente. Qui compaiono i post di chi usa l app.</string>
     <!-- /PORCODIO PHASE3 -->
 </resources>

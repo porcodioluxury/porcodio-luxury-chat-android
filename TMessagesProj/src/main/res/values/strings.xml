@@ -11916,5 +11916,15 @@
     <string name="PcSecretShowHidden">Show hidden folder (fingerprint)</string>
     <string name="PcSecretHiddenShown">Hidden folder shown</string>
     <string name="PcSecretHiddenTag">hidden</string>
+    <string name="PcPlusTitle">Publish</string>
+    <string name="PcPlusPhoto">Photo post</string>
+    <string name="PcPlusReel">Reel (video)</string>
+    <string name="PcPlusStory">Story</string>
+    <string name="PcPlusText">Text post</string>
+    <string name="PcPlusPreparing">Preparing the file...</string>
+    <string name="PcPlusCaption">Write a caption</string>
+    <string name="PcMyStory">My story</string>
+    <string name="PcSocialStoriesNote">Stories of your contacts are in the row above. Tap + to publish yours.</string>
+    <string name="PcSocialSectionEmpty">Nothing here yet. Posts of app users appear here.</string>
     <!-- /PORCODIO PHASE3 -->
 </resources>
