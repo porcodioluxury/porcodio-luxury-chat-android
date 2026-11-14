@@ -93,6 +93,12 @@ public class PcWalletActivity extends PcListFragment {
     }
 
     @Override
+    protected int bottomReserve() {
+        // come scheda della barra in basso: la lista finisce sopra la barra (altezza barra + margini + barra di sistema)
+        return hasMainTabs ? dp(org.telegram.ui.DialogsActivity.MAIN_TABS_HEIGHT_WITH_MARGINS) + org.telegram.messenger.AndroidUtilities.navigationBarHeight : 0;
+    }
+
+    @Override
     public View createView(Context context) {
         View v = super.createView(context);
         root.setBackgroundColor(0xFF121212);

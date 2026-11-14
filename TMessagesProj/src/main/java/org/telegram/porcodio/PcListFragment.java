@@ -73,6 +73,11 @@ public abstract class PcListFragment extends BaseFragment {
                     return;
                 }
             }
+            // v12: schermate aperte (non schede): il fondo della lista non finisce sotto la barra di sistema
+            final int wantBottom = (!hasMainTabs && bottomReserve() == 0) ? org.telegram.messenger.AndroidUtilities.navigationBarHeight : listView.getPaddingBottom();
+            if (listView.getPaddingBottom() != wantBottom) {
+                listView.setPadding(listView.getPaddingLeft(), listView.getPaddingTop(), listView.getPaddingRight(), wantBottom);
+            }
             if (listView.getPaddingTop() != want) {
                 listView.setPadding(listView.getPaddingLeft(), want, listView.getPaddingRight(), listView.getPaddingBottom());
                 listView.setClipToPadding(false);
