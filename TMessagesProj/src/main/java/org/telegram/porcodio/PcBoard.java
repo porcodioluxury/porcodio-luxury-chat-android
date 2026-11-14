@@ -98,6 +98,61 @@ public class PcBoard {
         return "plcb_" + uid;
     }
 
+    // ---- diagnostica: ultimo errore leggibile + log
+    public static volatile String lastError = "";
+
+    public static void fail(String where, String why) {
+        lastError = why == null ? "" : why;
+        org.telegram.messenger.FileLog.e("PcBoard " + where + ": " + why);
+    }
+
+    public static String rpcText(TLRPC.TL_error e) {
+        if (e == null) {
+            return "risposta vuota";
+        }
+        String t = e.text == null ? "" : e.text;
+        if (t.startsWith("FLOOD_WAIT")) {
+            return "troppe richieste, riprova tra poco (" + t + ")";
+        }
+        if (t.contains("CHANNELS_TOO_MUCH")) {
+            return "hai troppi canali/gruppi: esci da qualcuno e riprova (CHANNELS_TOO_MUCH)";
+        }
+        if (t.contains("CHANNELS_ADMIN_PUBLIC_TOO_MUCH") || t.contains("USERNAMES_ACTIVE_TOO_MUCH")) {
+            return "troppi canali pubblici su questo account (" + t + ")";
+        }
+        if (t.contains("USERNAME_OCCUPIED") || t.contains("USERNAME_INVALID")) {
+            return "username della bacheca non disponibile (" + t + ")";
+        }
+        if (t.contains("CHAT_ADMIN_REQUIRED") || t.contains("CHAT_WRITE_FORBIDDEN") || t.contains("CHAT_SEND")) {
+            return "non hai il permesso di scrivere nella tua bacheca (" + t + ")";
+        }
+        return t + " (" + e.code + ")";
+    }
+
+    /** Garantisce che il canale Bacheca sia noto al client (dopo un riavvio la cache puo' essere vuota) prima di inviare. */
+    public static void withBoard(final int account, final Runnable ok, final Result err) {
+        final long chat = myBoardChat(account);
+        final MessagesController mc = MessagesController.getInstance(account);
+        if (chat == 0) {
+            fail("withBoard", "la Bacheca non e' attiva");
+            err.done(false);
+            return;
+        }
+        if (mc.getChat(chat) != null && mc.getInputPeer(-chat) != null) {
+            ok.run();
+            return;
+        }
+        final long me = UserConfig.getInstance(account).getClientUserId();
+        mc.getUserNameResolver().resolve(username(me), peer -> {
+            if (mc.getChat(chat) != null && mc.getInputPeer(-chat) != null) {
+                ok.run();
+            } else {
+                fail("withBoard", "canale Bacheca " + chat + " non trovato (@" + username(me) + "): riattiva la Bacheca");
+                err.done(false);
+            }
+        });
+    }
+
     // ---- stato proprio
     public static long myBoardChat(int account) {
         return prefs().getLong("mine_" + account, 0);
@@ -331,6 +386,7 @@ public class PcBoard {
             } else if (id == NotificationCenter.chatDidFailCreate) {
                 nc.removeObserver(d[0], NotificationCenter.chatDidCreated);
                 nc.removeObserver(d[0], NotificationCenter.chatDidFailCreate);
+                fail("enable", "creazione del canale rifiutata dal server (vedi avviso mostrato)");
                 result.done(false);
             }
         };
@@ -344,7 +400,10 @@ public class PcBoard {
             prefs().edit().putLong("mine_" + account, chatId).remove("pending_" + account).apply();
             enableReactions(account, chatId);
             setMarker(account, true, result);
-        }, () -> result.done(false)); // username occupato, troppi canali pubblici, limite di richieste: l'utente può riprovare
+        }, () -> {
+            fail("finishSetup", "username @" + username(uid) + " non assegnato al canale " + chatId);
+            result.done(false);
+        }); // username occupato, troppi canali pubblici, limite di richieste: l'utente può riprovare
     }
 
     private static void enableReactions(int account, long chatId) {
@@ -391,6 +450,7 @@ public class PcBoard {
                 }
                 result.done(true);
             } else {
+                fail("setMarker", rpcText(error));
                 result.done(false);
             }
         }), ConnectionsManager.RequestFlagFailOnServerErrors);
@@ -428,6 +488,9 @@ public class PcBoard {
                 req.peer = peer;
                 req.limit = 8;
                 ConnectionsManager.getInstance(account).sendRequest(req, (response, error) -> AndroidUtilities.runOnUIThread(() -> {
+                    if (error != null) {
+                        fail("loadFeed", rpcText(error));
+                    }
                     if (response instanceof TLRPC.messages_Messages) {
                         TLRPC.messages_Messages res = (TLRPC.messages_Messages) response;
                         mc.putUsers(res.users, false);
@@ -543,10 +606,20 @@ public class PcBoard {
     }
 
     public static void publish(int account, String text) {
-        long chat = myBoardChat(account);
+        publish(account, text, ok -> {
+        });
+    }
+
+    public static void publish(final int account, final String text, final Result result) {
+        final long chat = myBoardChat(account);
         if (chat == 0 || text == null || text.trim().isEmpty()) {
+            fail("publish", chat == 0 ? "la Bacheca non e' attiva" : "testo vuoto");
+            result.done(false);
             return;
         }
-        org.telegram.messenger.SendMessagesHelper.prepareSendingText(AccountInstance.getInstance(account), text.trim(), -chat, true, 0, 0, 0);
+        withBoard(account, () -> {
+            org.telegram.messenger.SendMessagesHelper.prepareSendingText(AccountInstance.getInstance(account), text.trim(), -chat, true, 0, 0, 0);
+            result.done(true);
+        }, result);
     }
 }

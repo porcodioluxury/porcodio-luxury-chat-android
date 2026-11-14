@@ -11834,7 +11834,7 @@
     <string name="PcUpdVerifying">Checking the file...</string>
     <string name="PcUpdBadHash">The downloaded file does not match and was discarded.</string>
     <string name="PcUpdAllow">Allow installing from this app, then tap Update again.</string>
-    <string name="PcUpdSettings">Check for updates</string>
+    <string name="PcUpdSettings">Updates</string>
     <string name="PcUpdSettingsInfo">Automatic updates for Porcodio Luxury Chat</string>
     <string name="PcSetFeatures">Porcodio features</string>
     <string name="PcSetShopInfo">Products, search and filters</string>
@@ -12057,5 +12057,29 @@
     <string name="PcReqOpen">Open chat</string>
     <string name="PcReqConfirmReject">Delete this chat?</string>
     <string name="PcReqConfirmBlock">Delete this chat and block the person?</string>
+    <string name="PcUpdTitleNew">New version available</string>
+    <string name="PcUpdNowBtn">Update now</string>
+    <string name="PcUpdNotes">What is new</string>
+    <string name="PcUpdFrom">(you have %1$s)</string>
+    <string name="PcUpdDownloadingMb">Downloading... %1$d%% (%2$s of %3$s MB)</string>
+    <string name="PcUpdErrTitle">Update problem</string>
+    <string name="PcUpdErrNet">Could not check for updates. Check your connection and try again.</string>
+    <string name="PcUpdErrDownload">The download was interrupted. Check your connection and try again.</string>
+    <string name="PcUpdErrInstall">The installation did not complete: %1$s</string>
+    <string name="PcUpdRetry">Try again</string>
+    <string name="PcUpdClose">Close</string>
+    <string name="PcUpdPermTitle">One permission is needed</string>
+    <string name="PcUpdPermText">To install the update Android asks you to allow Porcodio Luxury Chat to \"Install unknown apps\". I will open that screen: turn the switch on, then come back here and the installation continues by itself.</string>
+    <string name="PcUpdOpenSettings">Open settings</string>
+    <string name="PcUpdReadyTitle">Update ready</string>
+    <string name="PcUpdReadyText">Version %1$s was downloaded and checked. Install it now?</string>
+    <string name="PcUpdInstallBtn">Install</string>
+    <string name="PcUpdCancelled">Installation cancelled</string>
+    <string name="PcUpdScreenTitle">Updates</string>
+    <string name="PcUpdCurrent">Installed version: %1$s</string>
+    <string name="PcUpdSearch">Check for updates</string>
+    <string name="PcUpdAutoToggle">Automatic update</string>
+    <string name="PcUpdAutoInfo">When on, the new version is downloaded in the background and you are only asked to install it.</string>
+    <string name="PcUpdStatusAvailable">New version available: %1$s</string>
     <!-- /PORCODIO PHASE3 -->
 </resources>

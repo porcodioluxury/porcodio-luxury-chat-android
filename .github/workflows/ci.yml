@@ -35,6 +35,12 @@ jobs:
           distribution: temurin
           java-version: '17'
 
+      - name: Test logica aggiornamenti (Java puro)
+        run: |
+          mkdir -p /tmp/ult
+          javac -d /tmp/ult TMessagesProj/src/main/java/org/telegram/porcodio/PcUpdateLogic.java tools/test/PcUpdateLogicTest.java
+          java -cp /tmp/ult PcUpdateLogicTest
+
       - uses: android-actions/setup-android@v3
         with:
           packages: "platform-tools platforms;android-36 build-tools;36.0.0 ndk;27.2.12479018 cmake;3.22.1"

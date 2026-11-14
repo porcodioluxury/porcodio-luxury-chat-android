@@ -65,7 +65,15 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
     }
 
     private void reload() {
-        loading = true;
+        reload(false);
+    }
+
+    private String lastSig = "";
+
+    private void reload(final boolean quiet) {
+        if (!quiet) {
+            loading = true;
+        }
         for (long oid : PcRanking.officialIds()) {
             if (PcBoard.knownBoard(currentAccount, oid) == 0) {
                 PcBoard.discover(currentAccount, oid, null);
@@ -73,6 +81,18 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
         }
         PcBoard.loadFeed(currentAccount, list -> {
             loading = false;
+            StringBuilder sig = new StringBuilder();
+            for (PcBoard.Post p : list) {
+                sig.append(p.chatId).append(':').append(p.msgId).append(':').append(p.likes).append(':').append(p.comments).append(',');
+            }
+            final boolean same = quiet && sig.toString().equals(lastSig);
+            lastSig = sig.toString();
+            if (pull != null) {
+                pull.setRefreshing(false);
+            }
+            if (same) {
+                return;
+            }
             posts.clear();
             for (PcBoard.Post p : list) {
                 if ((onlyAuthor == 0 || p.authorId == onlyAuthor) && !PcBoard.isSpecial(p)) {
@@ -84,7 +104,9 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
             }
             notifyData();
         });
-        notifyData();
+        if (!quiet) {
+            notifyData();
+        }
     }
 
     @Override
@@ -144,6 +166,9 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
     private final ArrayList<Row> rows = new ArrayList<>();
 
     private static boolean isVideo(PcBoard.Post p) {
+        if (p.text != null && p.text.toLowerCase(java.util.Locale.ROOT).contains("#reel") && p.message != null && p.message.media instanceof TLRPC.TL_messageMediaDocument) {
+            return true;
+        }
         return p.message != null && p.message.media instanceof TLRPC.TL_messageMediaDocument && p.message.media.document != null
             && org.telegram.messenger.MessageObject.isVideoDocument(p.message.media.document);
     }
@@ -218,6 +243,7 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
     public boolean onFragmentCreate() {
         reload();
         getNotificationCenter().addObserver(this, NotificationCenter.storiesUpdated);
+        getNotificationCenter().addObserver(this, NotificationCenter.messageSendError);
         try {
             getMessagesController().getStoriesController().loadStories();
         } catch (Throwable ignore) {
@@ -229,11 +255,25 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
     @Override
     public void onFragmentDestroy() {
         getNotificationCenter().removeObserver(this, NotificationCenter.storiesUpdated);
+        getNotificationCenter().removeObserver(this, NotificationCenter.messageSendError);
         super.onFragmentDestroy();
+    }
+
+    private long watchUntil;
+
+    private void watchSend() {
+        watchUntil = System.currentTimeMillis() + 120000;
     }
 
     @Override
     public void didReceivedNotification(int id, int account, Object... args) {
+        if (id == NotificationCenter.messageSendError) {
+            if (System.currentTimeMillis() < watchUntil) {
+                PcBoard.fail("send", "invio rifiutato o interrotto (messageSendError)");
+                PcUi.toast(getParentActivity(), "Pubblicazione non riuscita: l'invio e' stato rifiutato o interrotto. Controlla la connessione e riprova.");
+            }
+            return;
+        }
         if (id == NotificationCenter.storiesUpdated && tabMode()) {
             notifyData();
         }
@@ -370,7 +410,7 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
             final String path = copyToCache(uri, video);
             AndroidUtilities.runOnUIThread(() -> {
                 if (path == null) {
-                    PcUi.toast(getParentActivity(), LocaleController.getString(R.string.PcBoardFailed));
+                    PcUi.toast(getParentActivity(), "Pubblicazione non riuscita: impossibile leggere il file scelto");
                 } else {
                     askCaption(path, video);
                 }
@@ -415,14 +455,24 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
             org.telegram.messenger.SendMessagesHelper.SendingMediaInfo info = new org.telegram.messenger.SendMessagesHelper.SendingMediaInfo();
             info.path = path;
             info.isVideo = video;
-            info.caption = edit.getText().toString().trim();
+            String cap = edit.getText().toString().trim();
+            if (video && !cap.toLowerCase(java.util.Locale.ROOT).contains("#reel")) {
+                cap = (cap.isEmpty() ? "" : cap + " ") + "#reel"; // i reel si riconoscono dal tag
+            }
+            info.caption = cap;
             ArrayList<org.telegram.messenger.SendMessagesHelper.SendingMediaInfo> list = new ArrayList<>();
             list.add(info);
-            long chat = PcBoard.myBoardChat(currentAccount);
-            org.telegram.messenger.SendMessagesHelper.prepareSendingMedia(org.telegram.messenger.AccountInstance.getInstance(currentAccount), list, -chat, null, null, null, null,
-                false, false, null, true, 0, 0, 0, false, null, org.telegram.messenger.SendMessageChatArguments.EMPTY, 0, false, 0, 0, null);
-            PcUi.toast(getParentActivity(), LocaleController.getString(R.string.PcBoardPublished));
-            AndroidUtilities.runOnUIThread(this::reload, 6000);
+            final long chat = PcBoard.myBoardChat(currentAccount);
+            PcBoard.withBoard(currentAccount, () -> {
+                org.telegram.messenger.SendMessagesHelper.prepareSendingMedia(org.telegram.messenger.AccountInstance.getInstance(currentAccount), list, -chat, null, null, null, null,
+                    false, false, null, true, 0, 0, 0, false, null, org.telegram.messenger.SendMessageChatArguments.EMPTY, 0, false, 0, 0, null);
+                PcUi.toast(getParentActivity(), LocaleController.getString(R.string.PcBoardPublished));
+                watchSend();
+                // il caricamento di un video richiede tempo: ricarico piu' volte finche' il post compare
+                for (int delay : new int[]{3000, 8000, 15000, 30000, 60000}) {
+                    AndroidUtilities.runOnUIThread(() -> reload(true), delay);
+                }
+            }, ok -> PcUi.toast(getParentActivity(), "Pubblicazione non riuscita: " + PcBoard.lastError));
         });
         b.setNegativeButton(LocaleController.getString(R.string.Cancel), null);
         showDialog(b.create());
@@ -441,7 +491,7 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
             String title = (me != null ? UserObject.getUserName(me) : "") + " - " + LocaleController.getString(R.string.PcProfileBoard);
             PcBoard.enable(this, title, ok -> {
                 if (!ok) {
-                    PcUi.toast(getParentActivity(), LocaleController.getString(R.string.PcBoardFailed));
+                    PcUi.toast(getParentActivity(), "Pubblicazione non riuscita: " + PcBoard.lastError);
                 }
                 notifyData();
                 reload();
@@ -489,9 +539,17 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
         b.setPositiveButton(LocaleController.getString(R.string.PcBoardPublish), (d, w) -> {
             String text = edit.getText().toString();
             if (!text.trim().isEmpty()) {
-                PcBoard.publish(currentAccount, text);
-                PcUi.toast(getParentActivity(), LocaleController.getString(R.string.PcBoardPublished));
-                AndroidUtilities.runOnUIThread(this::reload, 2000);
+                PcBoard.publish(currentAccount, text, ok -> {
+                    if (ok) {
+                        PcUi.toast(getParentActivity(), LocaleController.getString(R.string.PcBoardPublished));
+                        watchSend();
+                        for (int delay : new int[]{2000, 6000, 15000}) {
+                            AndroidUtilities.runOnUIThread(() -> reload(true), delay);
+                        }
+                    } else {
+                        PcUi.toast(getParentActivity(), "Pubblicazione non riuscita: " + PcBoard.lastError);
+                    }
+                });
             }
         });
         b.setNegativeButton(LocaleController.getString(R.string.Cancel), null);

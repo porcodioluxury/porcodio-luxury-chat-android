@@ -384,7 +384,15 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
         tabsViewBackground = iBlur3FactoryGlass.create(tabsView, BlurredBackgroundProviderImpl.mainTabs(resourceProvider));
         tabsViewBackground.setRadius(dp(4));
         tabsViewBackground.setPadding(dp(DialogsActivity.MAIN_TABS_MARGIN - 0.334f));
-        tabsView.setBackground(tabsViewBackground);
+        {
+            // Porcodio: barra in basso opaca (#1A1A1A, bordo #2F3442, raggio 4dp), mai trasparente o sfocata
+            android.graphics.drawable.GradientDrawable pcBar = new android.graphics.drawable.GradientDrawable();
+            pcBar.setColor(0xFF1A1A1A);
+            pcBar.setCornerRadius(dp(4));
+            pcBar.setStroke(Math.max(1, dp(1)), 0xFF2F3442);
+            int pcInset = dp(DialogsActivity.MAIN_TABS_MARGIN);
+            tabsView.setBackground(new android.graphics.drawable.InsetDrawable(pcBar, pcInset));
+        }
 
         BlurredBackgroundDrawableViewFactory iBlur3FactoryFade = new BlurredBackgroundDrawableViewFactory(iBlur3SourceColor);
         iBlur3FactoryFade.setSourceRootView(viewPositionWatcher, contentView);
@@ -392,7 +400,7 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
         fadeView = new View(context);
         BlurredBackgroundWithFadeDrawable fadeDrawable = new BlurredBackgroundWithFadeDrawable(iBlur3FactoryFade.create(fadeView, null));
         fadeDrawable.setFadeHeight(dp(60), true);
-        fadeView.setBackground(fadeDrawable);
+        fadeView.setBackgroundColor(0xFF121212); // Porcodio: sotto la barra sfondo pieno
 
         contentView.addView(fadeView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 0, Gravity.BOTTOM));
 
