@@ -436,6 +436,14 @@ public final class PcWalletCore {
 
     public static final String ETH_PATH = "m/44'/60'/0'/0/0";
 
+    /** Percorso BIP44 dell'indirizzo numero i (m/44'/60'/0'/0/i): un indirizzo nuovo per ogni condivisione. */
+    public static String ethPath(int index) {
+        if (index < 0) {
+            throw new IllegalArgumentException();
+        }
+        return "m/44'/60'/0'/0/" + index;
+    }
+
     // ---------- RLP ----------
     public static byte[] rlpBytes(byte[] b) {
         if (b.length == 1 && (b[0] & 0xff) < 0x80) return b;

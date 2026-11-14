@@ -56,10 +56,41 @@ public final class PcWalletRpc {
         return res(R.string.pc_base_explorer) + "/tx/" + hash;
     }
 
+    /** Proxy SOCKS5 dell'app (es. Tor su 127.0.0.1:9050) se l'utente ha scelto "Usa Tor/Proxy"; fallisce chiuso se non c'e'. */
+    private static java.net.Proxy proxyOrNull() throws Exception {
+        if (!PcWalletStore.useProxy()) {
+            return null;
+        }
+        org.telegram.messenger.SharedConfig.ProxyInfo pi = org.telegram.messenger.SharedConfig.currentProxy;
+        if (!org.telegram.messenger.SharedConfig.isProxyEnabled() || pi == null
+            || pi.settings.getType() != org.telegram.utils.proxy.ProxySettings.Type.SOCKS5 || !pi.settings.getUser().isEmpty()) {
+            throw new Exception("Usa Tor/Proxy e' attivo ma nell'app non c'e' un proxy SOCKS5 senza password: nessuna richiesta inviata");
+        }
+        return new java.net.Proxy(java.net.Proxy.Type.SOCKS, java.net.InetSocketAddress.createUnresolved(pi.settings.getAddress(), pi.settings.getPort()));
+    }
+
+    private static final String GENERIC_UA = "Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Mobile Safari/537.36";
+
+    /** Un RPC pubblico a caso tra quelli configurati (rotazione per ogni richiesta). */
+    private static String[] rpcUrls() {
+        String[] a = res(R.string.pc_base_rpcs).trim().split("\\s*,\\s*");
+        java.util.List<String> l = new ArrayList<>(java.util.Arrays.asList(a));
+        l.removeAll(java.util.Collections.singleton(""));
+        if (l.isEmpty()) {
+            l.add(res(R.string.pc_base_rpc));
+        }
+        java.util.Collections.shuffle(l, new java.security.SecureRandom());
+        return l.toArray(new String[0]);
+    }
+
     private static String http(String urlStr, String body) throws Exception {
-        HttpURLConnection c = (HttpURLConnection) new URL(urlStr).openConnection();
+        java.net.Proxy px = proxyOrNull();
+        HttpURLConnection c = (HttpURLConnection) (px == null ? new URL(urlStr).openConnection() : new URL(urlStr).openConnection(px));
         c.setConnectTimeout(12000);
         c.setReadTimeout(20000);
+        c.setUseCaches(false);
+        c.setRequestProperty("User-Agent", GENERIC_UA);
+        c.setRequestProperty("Accept-Language", "en-US,en;q=0.9");
         c.setRequestProperty("Accept", "application/json");
         if (body != null) {
             c.setRequestMethod("POST");
@@ -91,7 +122,23 @@ public final class PcWalletRpc {
         req.put("id", 1);
         req.put("method", method);
         req.put("params", params);
-        JSONObject r = new JSONObject(http(res(R.string.pc_base_rpc), req.toString()));
+        JSONObject r = null;
+        Exception last = null;
+        for (String u : rpcUrls()) {
+            try {
+                r = new JSONObject(http(u, req.toString()));
+                last = null;
+                break;
+            } catch (Exception e) {
+                last = e;
+                if (e.getMessage() != null && e.getMessage().startsWith("Usa Tor")) {
+                    throw e;
+                }
+            }
+        }
+        if (r == null) {
+            throw last != null ? last : new Exception("RPC non raggiungibile");
+        }
         if (r.has("error")) {
             JSONObject e = r.getJSONObject("error");
             throw new Exception(e.optString("message", "errore RPC") + " (" + e.optInt("code") + ")");
@@ -111,7 +158,8 @@ public final class PcWalletRpc {
                 final T v = job.call();
                 AndroidUtilities.runOnUIThread(() -> cb.done(v, null));
             } catch (final Throwable t) {
-                org.telegram.messenger.FileLog.e("PcWalletRpc: " + t.getMessage());
+                // nessun log di indirizzi o dettagli di rete (privacy): solo la classe dell'errore
+                org.telegram.messenger.FileLog.e("PcWalletRpc: " + t.getClass().getSimpleName());
                 AndroidUtilities.runOnUIThread(() -> cb.done(null, t.getMessage() == null ? t.toString() : t.getMessage()));
             }
         });

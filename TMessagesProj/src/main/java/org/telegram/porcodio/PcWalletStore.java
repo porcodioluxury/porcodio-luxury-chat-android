@@ -73,6 +73,9 @@ public final class PcWalletStore {
 
     public static void lock() {
         sessionMnemonic = null;
+        synchronized (PcWalletStore.class) {
+            addrCache.clear();
+        }
     }
 
     /** Frase di recupero della sessione sbloccata (null se bloccato). */
@@ -81,11 +84,61 @@ public final class PcWalletStore {
     }
 
     public static byte[] privateKey() {
+        return privateKey(0);
+    }
+
+    public static byte[] privateKey(int index) {
         String m = mnemonic();
         if (m == null) {
             return null;
         }
-        return PcWalletCore.derivePrivate(PcWalletCore.mnemonicToSeed(m, ""), PcWalletCore.ETH_PATH);
+        return PcWalletCore.derivePrivate(PcWalletCore.mnemonicToSeed(m, ""), PcWalletCore.ethPath(index));
+    }
+
+    // ---------- indirizzi HD (privacy): si salva solo l'indice dell'ultimo indirizzo consegnato, mai l'elenco ----------
+    public static final int MAX_ADDRESSES = 20;
+    private static final java.util.HashMap<Integer, String> addrCache = new java.util.HashMap<>();
+
+    /** Indice dell'indirizzo di ricezione corrente (0 = primo). */
+    public static int currentIndex() {
+        return Math.min(MAX_ADDRESSES - 1, Math.max(0, prefs().getInt("idx", 0)));
+    }
+
+    /** Passa al prossimo indirizzo (nuovo ogni volta). Falso se si e' raggiunto il massimo. */
+    public static boolean advanceIndex() {
+        int i = currentIndex();
+        if (i + 1 >= MAX_ADDRESSES) {
+            return false;
+        }
+        prefs().edit().putInt("idx", i + 1).apply();
+        return true;
+    }
+
+    /** Indirizzo i derivato dalla frase (serve il portafoglio sbloccato); in cache solo nella sessione. */
+    public static synchronized String addressAt(int index) {
+        if (index == 0 && !isUnlocked()) {
+            return address();
+        }
+        String c = addrCache.get(index);
+        if (c != null && isUnlocked()) {
+            return c;
+        }
+        byte[] priv = privateKey(index);
+        if (priv == null) {
+            return null;
+        }
+        String a = PcWalletCore.addressFromPrivate(priv);
+        Arrays.fill(priv, (byte) 0);
+        addrCache.put(index, a);
+        return a;
+    }
+
+    public static boolean useProxy() {
+        return prefs().getBoolean("use_proxy", false);
+    }
+
+    public static void setUseProxy(boolean on) {
+        prefs().edit().putBoolean("use_proxy", on).apply();
     }
 
     // ---------- PIN ----------

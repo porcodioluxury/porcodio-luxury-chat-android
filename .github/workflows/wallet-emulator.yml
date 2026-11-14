@@ -1,0 +1,97 @@
+name: Wallet - test su emulatore Android
+
+# Gratis: repo pubblico + runner ubuntu con KVM. Compila l'app per x86_64 ed esegue SOLO i test del portafoglio.
+on:
+  workflow_dispatch:
+  push:
+    branches: [v12-emulator]
+
+concurrency:
+  group: wallet-emulator-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  emulator:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      USE_CCACHE: "1"
+      CCACHE_DIR: ${{ github.workspace }}/.ccache
+      CCACHE_MAXSIZE: 1500M
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Libera spazio su disco
+        run: |
+          sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/.ghcup /usr/share/swift /usr/local/share/boost /opt/hostedtoolcache/CodeQL /usr/local/graalvm /usr/local/share/powershell /usr/lib/google-cloud-sdk || true
+          df -h /
+
+      - name: Abilita KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: "platform-tools platforms;android-36 build-tools;36.0.0 ndk;27.2.12479018 cmake;3.22.1"
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: ccache
+        uses: actions/cache@v4
+        with:
+          path: .ccache
+          key: ccache-emu-${{ github.run_id }}
+          restore-keys: |
+            ccache-emu-
+
+      - name: Installa ccache
+        run: sudo apt-get install -y ccache
+
+      - name: Test strumentali del portafoglio (emulatore x86_64, API 34)
+        uses: reactivecircus/android-emulator-runner@v2
+        env:
+          TELEGRAM_API_ID: ${{ secrets.TELEGRAM_API_ID }}
+          TELEGRAM_API_HASH: ${{ secrets.TELEGRAM_API_HASH }}
+        with:
+          api-level: 34
+          arch: x86_64
+          target: google_apis
+          profile: pixel_6
+          force-avd-creation: false
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: true
+          script: |
+            mkdir -p out
+            chmod +x gradlew
+            adb logcat -c
+            ./gradlew :TMessagesProj_AppTests:connectedAfatDebugAndroidTest -PPORCODIO_ABIS=x86_64 -Pandroid.testInstrumentationRunnerArguments.class=org.telegram.porcodio.PcWalletInstrumentedTest --no-daemon --stacktrace -Dorg.gradle.jvmargs="-Xmx6g -XX:MaxMetaspaceSize=1g" || echo "GRADLE_FAILED" > out/failed.txt
+            adb logcat -d -s PcWalletTest:I AndroidRuntime:E TestRunner:I > out/logcat.txt || true
+            adb exec-out screencap -p > out/screen-final.png || true
+
+      - name: Raccogli risultati
+        if: always()
+        run: |
+          mkdir -p out
+          cp -r TMessagesProj_AppTests/build/reports out/reports 2>/dev/null || true
+          cp -r TMessagesProj_AppTests/build/outputs/androidTest-results out/results 2>/dev/null || true
+          ls -R out | head -50
+          if [ -f out/failed.txt ]; then echo "::error::test falliti"; fi
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: wallet-emulator-results
+          path: out
+          retention-days: 14
+
+      - name: Esito
+        run: test ! -f out/failed.txt

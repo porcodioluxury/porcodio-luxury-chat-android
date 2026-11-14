@@ -60,6 +60,7 @@ public class PcWalletActivity extends PcListFragment {
     private final ArrayList<Item> items = new ArrayList<>();
     private List<String> words;
     private BigInteger ethWei, porcoUnits;
+    private BigInteger[] ethBals = new BigInteger[PcWalletStore.MAX_ADDRESSES], tokBals = new BigInteger[PcWalletStore.MAX_ADDRESSES];
     private String balanceError;
     private ArrayList<PcWalletRpc.Tx> history = new ArrayList<>();
     private boolean loadingBalance;
@@ -99,7 +100,7 @@ public class PcWalletActivity extends PcListFragment {
         if (shareToDialog != 0 || getArguments() != null && getArguments().getBoolean("open_send", false)) {
             AndroidUtilities.runOnUIThread(() -> {
                 if (PcWalletStore.exists()) {
-                    ensureUnlocked(this::sendDialog);
+                    ensureUnlocked(shareToDialog != 0 ? this::chatChoice : this::sendDialog);
                 }
             }, 400);
         }
@@ -172,7 +173,7 @@ public class PcWalletActivity extends PcListFragment {
             }
             items.add(new Item(T_HERO, eth + " ETH", porco + (balanceError != null ? "\n" + t("Saldo non disponibile: ", "Balance unavailable: ") + balanceError : ""), null));
             items.add(new Item(T_ACTIONS, null, null, null));
-            items.add(new Item(T_ADDR, PcWalletStore.address(), null, null));
+            items.add(new Item(T_ADDR, receiveAddress(), null, null));
             items.add(new Item(T_HEAD, t("Cronologia", "History"), null, null));
             if (history.isEmpty()) {
                 items.add(new Item(T_NOTE, loadingBalance ? t("Caricamento...", "Loading...") : t("Nessuna transazione.", "No transactions."), null, null));
@@ -191,6 +192,8 @@ public class PcWalletActivity extends PcListFragment {
                     notifyData();
                 })));
             }
+            items.add(new Item(T_ROW, t("Privacy del portafoglio", "Wallet privacy"), t("Indirizzi nuovi, RPC a rotazione, Tor/Proxy: cosa protegge e cosa no", "Fresh addresses, rotating RPCs, Tor/Proxy: what it protects and what it does not"), this::privacyDialog));
+            items.add(new Item(T_ROW, t("Compra / vendi con euro", "Buy / sell with euro"), t("Tramite partner autorizzato (KYC del partner)", "Via a licensed partner (partner KYC)"), this::onrampDialog));
             items.add(new Item(T_ROW, t("Cambia PIN", "Change PIN"), null, () -> reauth(() -> pinSetup(pin -> {
                 PcWalletStore.changePin(pin);
                 PcUi.toast(getParentActivity(), t("PIN aggiornato", "PIN updated"));
@@ -298,7 +301,7 @@ public class PcWalletActivity extends PcListFragment {
         } else if (viewType == T_TX) {
             box.setPadding(dp(16), dp(10), dp(16), dp(10));
             PcWalletRpc.Tx x = it.tx;
-            boolean out = x.from.equalsIgnoreCase(PcWalletStore.address());
+            boolean out = ownAddresses().contains(x.from.toLowerCase());
             LinearLayout r = new LinearLayout(c);
             r.setGravity(Gravity.CENTER_VERTICAL);
             LinearLayout col = new LinearLayout(c);
@@ -369,37 +372,112 @@ public class PcWalletActivity extends PcListFragment {
         build();
     }
 
+    private String receiveAddress() {
+        String a = PcWalletStore.addressAt(PcWalletStore.currentIndex());
+        return a == null ? PcWalletStore.address() : a;
+    }
+
+    private java.util.HashSet<String> ownAddresses() {
+        java.util.HashSet<String> set = new java.util.HashSet<>();
+        for (int i = 0; i <= PcWalletStore.currentIndex(); i++) {
+            String a = PcWalletStore.addressAt(i);
+            if (a != null) {
+                set.add(a.toLowerCase());
+            }
+        }
+        return set;
+    }
+
+    /** Il saldo e' la somma di tutti gli indirizzi consegnati finora (0..indice corrente). */
     private void refresh() {
         if (!PcWalletStore.isUnlocked()) {
             return;
         }
-        final String addr = PcWalletStore.address();
+        final int n = PcWalletStore.currentIndex() + 1;
+        final String token = PcWalletRpc.porcoContract();
         loadingBalance = true;
         balanceError = null;
-        PcWalletRpc.ethBalance(addr, (v, e) -> {
+        final int[] pending = {n * (token.isEmpty() ? 1 : 2)};
+        final BigInteger[] eth = new BigInteger[PcWalletStore.MAX_ADDRESSES], tok = new BigInteger[PcWalletStore.MAX_ADDRESSES];
+        final Runnable fin = () -> {
+            if (--pending[0] > 0) {
+                return;
+            }
             loadingBalance = false;
-            if (e != null) {
-                balanceError = e;
-            } else {
-                ethWei = v;
+            BigInteger se = BigInteger.ZERO, st = BigInteger.ZERO;
+            boolean haveE = false;
+            for (int k = 0; k < n; k++) {
+                if (eth[k] != null) {
+                    se = se.add(eth[k]);
+                    haveE = true;
+                }
+                if (tok[k] != null) {
+                    st = st.add(tok[k]);
+                }
+            }
+            ethBals = eth;
+            tokBals = tok;
+            if (haveE) {
+                ethWei = se;
+            }
+            if (!token.isEmpty()) {
+                porcoUnits = st;
             }
             build();
-        });
-        final String token = PcWalletRpc.porcoContract();
-        if (!token.isEmpty()) {
-            PcWalletRpc.tokenBalance(token, addr, (v, e) -> {
-                if (e == null) {
-                    porcoUnits = v;
+        };
+        for (int k = 0; k < n; k++) {
+            final int idx = k;
+            final String addr = PcWalletStore.addressAt(k);
+            if (addr == null) {
+                pending[0] -= token.isEmpty() ? 1 : 2;
+                continue;
+            }
+            PcWalletRpc.ethBalance(addr, (v, e) -> {
+                if (e != null) {
+                    balanceError = e;
+                } else {
+                    eth[idx] = v;
+                }
+                fin.run();
+            });
+            if (!token.isEmpty()) {
+                PcWalletRpc.tokenBalance(token, addr, (v, e) -> {
+                    if (e == null) {
+                        tok[idx] = v;
+                    }
+                    fin.run();
+                });
+            }
+        }
+        if (pending[0] <= 0) {
+            loadingBalance = false;
+        }
+        final ArrayList<PcWalletRpc.Tx> merged = new ArrayList<>();
+        final int[] hp = {n};
+        for (int k = 0; k < n; k++) {
+            String addr = PcWalletStore.addressAt(k);
+            if (addr == null) {
+                hp[0]--;
+                continue;
+            }
+            PcWalletRpc.history(addr, (list, e) -> {
+                if (list != null) {
+                    merged.addAll(list);
+                }
+                if (--hp[0] == 0) {
+                    java.util.HashSet<String> seen = new java.util.HashSet<>();
+                    ArrayList<PcWalletRpc.Tx> out = new ArrayList<>();
+                    java.util.Collections.sort(merged, (a, b) -> Long.compare(b.time, a.time));
+                    for (PcWalletRpc.Tx x : merged) {
+                        if (seen.add(x.hash)) {
+                            out.add(x);
+                        }
+                    }
+                    history = out;
                     build();
                 }
             });
         }
-        PcWalletRpc.history(addr, (list, e) -> {
-            if (list != null) {
-                history = list;
-                build();
-            }
-        });
     }
 
     // ---------- sblocco ----------
@@ -684,7 +762,7 @@ public class PcWalletActivity extends PcListFragment {
         if (getParentActivity() == null) {
             return;
         }
-        final String addr = PcWalletStore.address();
+        final String addr = receiveAddress();
         LinearLayout holder = new LinearLayout(getParentActivity());
         holder.setOrientation(LinearLayout.VERTICAL);
         holder.setGravity(Gravity.CENTER_HORIZONTAL);
@@ -698,6 +776,9 @@ public class PcWalletActivity extends PcListFragment {
         a.setGravity(Gravity.CENTER);
         holder.addView(a, lp(0, 10, 0, 0));
         holder.addView(text(getParentActivity(), t("Invia qui solo ETH o token sulla rete Base.", "Only send ETH or tokens on the Base network here."), 12, false, 0xFFBFBFBF), lp(0, 8, 0, 0));
+        final TextView fresh = text(getParentActivity(), "\u21BB  " + t("Genera un nuovo indirizzo (piu' privacy)", "Generate a new address (more privacy)"), 14, true, 0xFF9DAAC8);
+        fresh.setPadding(0, dp(12), 0, dp(4));
+        holder.addView(fresh);
         AlertDialog.Builder b = new AlertDialog.Builder(getParentActivity());
         b.setTitle(t("Ricevi", "Receive"));
         b.setView(holder);
@@ -712,7 +793,101 @@ public class PcWalletActivity extends PcListFragment {
             }
         });
         b.setNegativeButton(LocaleController.getString(R.string.Close), null);
+        final AlertDialog dlg = b.create();
+        fresh.setOnClickListener(v -> {
+            if (!PcWalletStore.advanceIndex()) {
+                PcUi.toast(getParentActivity(), t("Hai raggiunto il massimo di " + PcWalletStore.MAX_ADDRESSES + " indirizzi.", "You reached the maximum of " + PcWalletStore.MAX_ADDRESSES + " addresses."));
+                return;
+            }
+            dlg.dismiss();
+            build();
+            notifyData();
+            refresh();
+            receiveDialog();
+        });
+        showDialog(dlg);
+    }
+
+    /** Dalla chat: "Invia denaro" o "Chiedi denaro" (condivide un indirizzo NUOVO ogni volta, derivato HD). */
+    private void chatChoice() {
+        if (getParentActivity() == null) {
+            return;
+        }
+        AlertDialog.Builder b = new AlertDialog.Builder(getParentActivity());
+        b.setTitle(t("Denaro in chat", "Money in chat"));
+        b.setMessage(t("Per la tua privacy, quando chiedi denaro condividiamo sempre un indirizzo nuovo.", "For your privacy, when you request money we always share a new address."));
+        b.setPositiveButton(t("Invia denaro", "Send money"), (d, w) -> sendDialog());
+        b.setNeutralButton(t("Chiedi denaro", "Request money"), (d, w) -> {
+            if (!PcWalletStore.advanceIndex()) {
+                PcUi.toast(getParentActivity(), t("Hai raggiunto il massimo di " + PcWalletStore.MAX_ADDRESSES + " indirizzi.", "You reached the maximum of " + PcWalletStore.MAX_ADDRESSES + " addresses."));
+                return;
+            }
+            String a = receiveAddress();
+            org.telegram.messenger.SendMessagesHelper.prepareSendingText(org.telegram.messenger.AccountInstance.getInstance(currentAccount),
+                t("Puoi inviarmi denaro su Base a questo indirizzo (nuovo, solo per te):\n", "You can send me money on Base to this address (new, just for you):\n") + a, shareToDialog, true, 0, 0, 0);
+            PcUi.toast(getParentActivity(), t("Indirizzo nuovo inviato nella chat", "New address sent in the chat"));
+            build();
+            notifyData();
+            refresh();
+        });
+        b.setNegativeButton(LocaleController.getString(R.string.Cancel), null);
         showDialog(b.create());
+    }
+
+    private void privacyDialog() {
+        if (getParentActivity() == null) {
+            return;
+        }
+        String msg = t(
+            "COSA FACCIAMO\n"
+                + "• Nessun collegamento tra il portafoglio e il tuo account o telefono: l'app non invia a nessun server nostro ne' indirizzi ne' saldi, e non c'e' alcuna analitica.\n"
+                + "• Ogni volta che chiedi denaro in chat o premi \"Nuovo indirizzo\" usi un indirizzo HD diverso (m/44'/60'/0'/0/i). Il saldo e' la somma dei tuoi indirizzi.\n"
+                + "• Le richieste alla rete passano da RPC pubblici scelti a caso, senza chiavi, senza account e con un'intestazione generica.\n"
+                + "• Nessun registro degli indirizzi sul dispositivo.\n"
+                + "• \"Usa Tor/Proxy\" instrada le richieste nel proxy SOCKS5 configurato nell'app (per esempio Tor su 127.0.0.1:9050).\n\n"
+                + "COSA NON POSSIAMO FARE\n"
+                + "• La blockchain e' pubblica: chiunque veda un indirizzo vede saldo e movimenti. Chi sa che un indirizzo e' tuo (perche' lo hai dato a qualcuno) puo' seguirlo.\n"
+                + "• Gli indirizzi nuovi non sono anonimi: se unisci i fondi di piu' indirizzi in una sola transazione, li colleghi. Per questo paghiamo sempre da un solo indirizzo.\n"
+                + "• Gli RPC pubblici e Blockscout vedono il tuo indirizzo IP e gli indirizzi che interroghi, a meno che tu usi Tor.\n"
+                + "• Non usiamo mixer.",
+            "WHAT WE DO\n"
+                + "• No link between the wallet and your account or phone: the app sends no addresses or balances to any server of ours, and has no analytics.\n"
+                + "• Each time you request money in chat or tap \"New address\" you use a different HD address (m/44'/60'/0'/0/i). The balance is the sum of your addresses.\n"
+                + "• Network requests go through randomly chosen public RPCs, with no keys, no accounts and a generic header.\n"
+                + "• No address logs on the device.\n"
+                + "• \"Use Tor/Proxy\" routes requests through the SOCKS5 proxy configured in the app (e.g. Tor on 127.0.0.1:9050).\n\n"
+                + "WHAT WE CANNOT DO\n"
+                + "• The blockchain is public: anyone who sees an address sees its balance and activity. Whoever knows an address is yours (because you gave it to them) can follow it.\n"
+                + "• Fresh addresses are not anonymous: merging funds from several addresses in one transaction links them. So we always pay from a single address.\n"
+                + "• Public RPCs and Blockscout see your IP address and the addresses you query, unless you use Tor.\n"
+                + "• We do not use mixers.");
+        AlertDialog.Builder b = new AlertDialog.Builder(getParentActivity());
+        b.setTitle(t("Privacy del portafoglio", "Wallet privacy"));
+        b.setMessage(msg);
+        final boolean on = PcWalletStore.useProxy();
+        b.setPositiveButton(on ? t("Disattiva Tor/Proxy", "Turn off Tor/Proxy") : t("Usa Tor/Proxy", "Use Tor/Proxy"), (d, w) -> {
+            PcWalletStore.setUseProxy(!on);
+            if (!on && !(org.telegram.messenger.SharedConfig.isProxyEnabled() && org.telegram.messenger.SharedConfig.currentProxy != null
+                && org.telegram.messenger.SharedConfig.currentProxy.settings.getType() == org.telegram.utils.proxy.ProxySettings.Type.SOCKS5)) {
+                PcUi.toast(getParentActivity(), t("Attivo, ma serve un proxy SOCKS5 attivo nelle impostazioni proxy dell'app: finche' non c'e', il portafoglio non fa richieste.", "On, but an active SOCKS5 proxy is needed in the app proxy settings: until then the wallet makes no requests."));
+            }
+        });
+        b.setNegativeButton(LocaleController.getString(R.string.Close), null);
+        showDialog(b.create());
+    }
+
+    /** Acquisto/vendita in euro tramite partner autorizzato (Transak, MoonPay, Coinbase Onramp): serve una chiave partner in pc_config. */
+    private void onrampDialog() {
+        if (getParentActivity() == null) {
+            return;
+        }
+        String tpl = getParentActivity().getString(R.string.pc_onramp_url).trim();
+        if (tpl.isEmpty()) {
+            PcUi.toast(getParentActivity(), t("Acquisto/vendita in euro: in arrivo. Serve la registrazione come partner (chiave) presso Transak, MoonPay o Coinbase.", "Buy/sell with euro: coming soon. Needs partner registration (key) with Transak, MoonPay or Coinbase."));
+            return;
+        }
+        String url = tpl.replace("{address}", receiveAddress()).replace("{network}", "base");
+        PcLinks.open(getParentActivity(), url);
     }
 
     private static Bitmap qr(String s, int size) {
@@ -851,19 +1026,46 @@ public class PcWalletActivity extends PcListFragment {
             PcUi.toast(getParentActivity(), t("Importo non valido", "Invalid amount"));
             return;
         }
+        // Privacy: si paga da UN solo indirizzo (mai da piu' indirizzi insieme, che li collegherebbe sulla blockchain)
+        int pick = -1;
+        BigInteger best = BigInteger.ZERO;
+        for (int k = 0; k <= PcWalletStore.currentIndex() && k < ethBals.length; k++) {
+            BigInteger have = token ? tokBals[k] : ethBals[k];
+            if (have == null || have.compareTo(units) < 0) {
+                continue;
+            }
+            if (token && (ethBals[k] == null || ethBals[k].signum() <= 0)) {
+                continue;
+            }
+            if (pick < 0 || have.compareTo(best) > 0) {
+                pick = k;
+                best = have;
+            }
+        }
+        if (pick < 0) {
+            PcUi.toast(getParentActivity(), t("Nessun singolo indirizzo ha fondi sufficienti (per il gas serve ETH sullo stesso indirizzo). Unire i fondi collegherebbe i tuoi indirizzi: vedi Privacy.",
+                "No single address has enough funds (gas needs ETH on the same address). Merging funds would link your addresses: see Privacy."));
+            return;
+        }
+        final int fromIdx = pick;
         PcUi.toast(getParentActivity(), t("Stimo il gas...", "Estimating gas..."));
-        final String from = PcWalletStore.address();
+        final String from = PcWalletStore.addressAt(fromIdx);
         final byte[] data = token ? PcWalletCore.erc20TransferData(toAddr, units) : new byte[0];
         PcWalletRpc.quote(from, toAddr, token ? BigInteger.ZERO : units, data, token ? PcWalletRpc.porcoContract() : null, (q, err) -> {
             if (err != null) {
                 PcUi.toast(getParentActivity(), t("Impossibile stimare: ", "Cannot estimate: ") + err);
                 return;
             }
-            confirmSend(toAddr, amount, token, units, q);
+            BigInteger bal = ethBals[fromIdx];
+            if (!token && bal != null && units.add(q.feeWei()).compareTo(bal) > 0) {
+                PcUi.toast(getParentActivity(), t("Fondi insufficienti per importo + gas su un singolo indirizzo.", "Not enough funds for amount + gas on a single address."));
+                return;
+            }
+            confirmSend(toAddr, amount, token, units, q, fromIdx);
         });
     }
 
-    private void confirmSend(final String toAddr, final String amount, final boolean token, final BigInteger units, final PcWalletRpc.Quote q) {
+    private void confirmSend(final String toAddr, final String amount, final boolean token, final BigInteger units, final PcWalletRpc.Quote q, final int fromIdx) {
         if (getParentActivity() == null) {
             return;
         }
@@ -878,7 +1080,7 @@ public class PcWalletActivity extends PcListFragment {
         b.setTitle(t("Conferma l'invio", "Confirm sending"));
         b.setMessage(msg);
         b.setPositiveButton(t("Conferma con PIN", "Confirm with PIN"), (d, w) -> reauth(() -> {
-            final byte[] priv = PcWalletStore.privateKey();
+            final byte[] priv = PcWalletStore.privateKey(fromIdx);
             if (priv == null) {
                 PcUi.toast(getParentActivity(), t("Portafoglio bloccato", "Wallet locked"));
                 return;

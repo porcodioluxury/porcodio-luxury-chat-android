@@ -61,6 +61,13 @@ public class PcWalletCoreTest {
             PcWalletCore.hex(PcWalletCore.erc20TransferData("0x70997970C51812dc3A010C7d01b50e0d17dc79C8", BigInteger.TEN)));
         eq("units", "1500000000000000", PcWalletCore.parseUnits("0.0015", 18).toString());
         eq("format", "0.0015", PcWalletCore.formatUnits(new BigInteger("1500000000000000"), 18, 6));
+        // HD: indirizzi 0 e 1 della frase di prova Hardhat/Foundry (vettori noti)
+        String jm = "test test test test test test test test test test test junk";
+        byte[] jseed = PcWalletCore.mnemonicToSeed(jm, "");
+        eq("hd path 0", "m/44'/60'/0'/0/0", PcWalletCore.ethPath(0));
+        eq("hd addr 0", "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266", PcWalletCore.addressFromPrivate(PcWalletCore.derivePrivate(jseed, PcWalletCore.ethPath(0))));
+        eq("hd addr 1", "0x70997970C51812dc3A010C7d01b50e0d17dc79C8", PcWalletCore.addressFromPrivate(PcWalletCore.derivePrivate(jseed, PcWalletCore.ethPath(1))));
+        eq("hd addr 2", "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC", PcWalletCore.addressFromPrivate(PcWalletCore.derivePrivate(jseed, PcWalletCore.ethPath(2))));
         // EIP-681
         String A = "0x52908400098527886E0F7030069857D2E4169EE7";
         PcWalletCore.Payment p1 = PcWalletCore.parsePayment(A);

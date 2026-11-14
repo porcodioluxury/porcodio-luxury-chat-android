@@ -1,23 +1,32 @@
-# Sicurezza dei messaggi (v8)
+# Sicurezza e privacy del portafoglio (v12)
 
-Tutto è lato client a costo zero, tranne due privacy del server (inviti ai gruppi, chiamate). Impostazioni > Sicurezza dei messaggi. Codice: `PcPolicy`, `PcSecurityActivity`, `PcRequestsActivity`, `PcHome`.
+Il portafoglio di PORCODIO LUXURY Chat e' **non-custodial**: la frase di recupero (BIP39) e le chiavi esistono solo sul dispositivo.
 
-## Blocca gruppi sconosciuti
-* Server: `account.setPrivacy` con la chiave `chatInvite`: Solo contatti (default) oppure Nessuno.
-* Client: all'attivazione si fotografano i gruppi che hai già (restano dove sono). I gruppi nuovi comparsi dopo, che non hai creato e in cui non hai scritto, vanno in Richieste (o Spam se sembrano spam, stesso punteggio antispam delle persone). "Accetta" li riporta in Gruppi.
-* Uscita automatica: opzionale, spenta di default, con avviso; esce solo dai gruppi nuovi non accettati.
+## Chiavi
+- Frase di recupero cifrata con AES-256-GCM, chiave nel Keystore Android (non esportabile). Mai inviata a nessun server.
+- Sblocco con PIN (PBKDF2-SHA512, blocco progressivo dopo 5 errori) o biometria. Blocco automatico dopo 2 minuti e all'uscita dalla schermata.
+- Schermata protetta da screenshot (FLAG_SECURE) mentre il portafoglio e' aperto. Avviso se il dispositivo ha root.
+- Firma delle transazioni (EIP-1559, chain Base 8453) solo in locale, con conferma del PIN.
 
-## Richieste di contatto
-Tutti / Contatti dei contatti / Nessuno. Il primo messaggio di un non contatto va in Richieste. Con "Contatti dei contatti" restano in Richieste solo le persone con almeno un gruppo in comune (`common_chats_count` del profilo completo): le altre sono archiviate e silenziate. Con "Nessuno" sono archiviate e silenziate tutte. Nessuna chat viene cancellata. Schermata Richieste: Accetta (aggiunge ai contatti, toglie archivio e silenzio), Rifiuta (elimina la chat o esce dal gruppo), Rifiuta e blocca, Apri.
+## Privacy
+Cosa fa l'app:
+1. **Nessun collegamento con account o telefono.** L'app non invia indirizzi o saldi a server nostri, non c'e' analitica, non c'e' alcun account del portafoglio.
+2. **Indirizzi nuovi (HD).** Ricevi: "Genera un nuovo indirizzo" passa all'indirizzo successivo `m/44'/60'/0'/0/i`. Dalla chat, "Chiedi denaro" condivide **sempre un indirizzo nuovo**. Si salva solo l'indice corrente (mai l'elenco). Massimo 20 indirizzi. Il saldo mostrato e' la somma di tutti gli indirizzi consegnati.
+3. **Si paga da un solo indirizzo.** Se nessun indirizzo ha fondi sufficienti (compreso ETH per il gas) l'app lo dice invece di unire i fondi: unire fondi di piu' indirizzi in una transazione li collega sulla blockchain.
+4. **RPC pubblici a rotazione casuale** (lista `pc_base_rpcs` in `pc_config.xml`, ordine casuale a ogni richiesta, senza chiavi ne' account), `User-Agent` generico, nessun header identificativo, nessun cookie, nessuna cache.
+5. **Nessun log degli indirizzi.** Gli errori di rete registrano solo il tipo di errore.
+6. **Usa Tor/Proxy** (Portafoglio -> Privacy). Riusa il proxy **SOCKS5 senza password** configurato nell'app (per esempio Orbot/Tor su `127.0.0.1:9050`). I proxy MTProto non possono trasportare HTTP e non sono usati. Se l'opzione e' attiva e non c'e' un proxy SOCKS5 valido, il portafoglio **non fa richieste** (fail-closed).
 
-## Chi può scrivermi
-Tutti / Solo contatti / Solo verificati / Nessuno (solo chat esistenti). **E' un filtro del client**: il messaggio arriva comunque al telefono, qui viene nascosto dalla lista e non fa notifica; il server non lo blocca (per bloccare davvero c'è Blocca sul profilo). Le chat esistenti al momento dell'attivazione e quelle accettate restano visibili. I messaggi nascosti si rivedono in Richieste. Le chiamate seguono la privacy del server (solo contatti o nessuno).
+Cosa NON possiamo fare (detto chiaramente anche nell'app):
+- **La blockchain e' pubblica.** Chi vede un indirizzo vede saldo e movimenti; chi sa che e' tuo lo puo' seguire.
+- Gli indirizzi nuovi non rendono anonimo: tutti derivano dalla stessa frase e, se i fondi vengono spostati insieme, si collegano.
+- RPC pubblici e Blockscout (cronologia) vedono IP e indirizzi interrogati, a meno che si usi Tor.
+- **Nessun mixer** nella build pubblica.
 
-## Notifiche delle chat super segrete
-Mai testo in chiaro: per i messaggi `PCS1:` (anche da push, Wear, risposta rapida) e per ogni testo in una chat con la funzione attiva la notifica dice solo "Nuovo messaggio segreto".
+## Mixer / privacy avanzata (rinviato)
+Valutato per una build privata per Mario (flavor con altro applicationId, fuori dalla release pubblica). Tornado Cash escluso (sanzionato). Railgun (non sanzionato) ha contratti su Ethereum, Polygon, Arbitrum e BNB Chain; la distribuzione su **Base** e' stata approvata il 31 agosto 2026 ma ha liquidita' trascurabile (meno di 1 dollaro al 16 ottobre 2026) e l'integrazione richiede il motore ZK di Railgun (WASM/JS) e la sincronizzazione degli eventi: non e' realistica nella v12. Rinviato.
 
-## Pulizia in blocco
-Impostazioni > Pulizia in blocco (`PcBulkActivity`, `PcBulk`). Filtri: Tutte, Private, Gruppi, Canali, Bot, Archiviate, Non lette, Inattive da N giorni (7/30/90/180/365). Azioni: Elimina chat (private, bot), Esci ed elimina (gruppi, canali; non per chi li ha creato), Archivia, Rimuovi dall'archivio, Segna come lette. Lotti da 4 chat ogni 1,5 s, barra di avanzamento, Annulla, pausa automatica quando il server risponde FLOOD_WAIT_n (rilevato in `ConnectionsManager`), riepilogo finale. Doppia conferma per le azioni che cancellano.
-
-## Non incluso in v8
-* Cifratura dei media nelle chat super segrete: rimandata a v9 (richiede di integrare la decifratura nella visualizzazione dei messaggi con allegato).
+## Pagamenti
+- Spunta blu: Payment Link Stripe (pagina ospitata da Stripe). Nessuna chiave segreta nell'app. Conferma pagamento e Stripe Identity richiedono un server/webhook (non incluso).
+- PaymentSheet in app, Stripe Connect e commissione 5% restano **spenti** (`PcFlags.STRIPE_PAYMENTS=false`).
+- On/off-ramp in euro: predisposto dietro `pc_onramp_url` (vuoto = "in arrivo"). Serve registrazione come partner presso Transak, MoonPay o Coinbase Onramp (chiave pubblica; il KYC lo fa il partner).
