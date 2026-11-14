@@ -248,6 +248,28 @@ public class PcSecret {
     private static final HashMap<String, String> shownCache = new HashMap<>();
 
     /** Testo da mostrare per un messaggio (chiamata da MessageObject). Gestisce anche lo scambio chiavi. */
+    /**
+     * Testo da mostrare nelle notifiche (anche push, Wear e risposta rapida): per le chat super segrete mai il contenuto,
+     * solo "Nuovo messaggio segreto". Vale per i messaggi PCS1 (testo cifrato o handshake) e per ogni messaggio di testo
+     * in una chat con la funzione attiva. Null = notifica normale.
+     */
+    public static String notifText(MessageObject mo) {
+        try {
+            if (mo == null || mo.messageOwner == null) {
+                return null;
+            }
+            String raw = mo.messageOwner.message;
+            boolean secret = raw != null && raw.startsWith("PCS1:");
+            if (!secret) {
+                long did = mo.getDialogId();
+                secret = did != 0 && mo.messageOwner.media == null && !android.text.TextUtils.isEmpty(raw) && isOnAny(did);
+            }
+            return secret ? LocaleController.getString(R.string.PcSecretNotif) : null;
+        } catch (Throwable t) {
+            return null;
+        }
+    }
+
     public static String display(int account, MessageObject mo, String raw) {
         if (raw == null || !raw.startsWith("PCS1:")) {
             return raw;

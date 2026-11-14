@@ -70,12 +70,63 @@ public class PcRanking {
                 }
             } catch (Throwable ignore) {
             }
+            try {
+                long r = resolvedOfficial();
+                if (r != 0 && !ids.contains(r)) {
+                    ids.add(r);
+                }
+            } catch (Throwable ignore) {
+            }
             officialIds = new long[ids.size()];
             for (int i = 0; i < ids.size(); i++) {
                 officialIds[i] = ids.get(i);
             }
         }
         return officialIds;
+    }
+
+    private static String configuredUsername() {
+        try {
+            int id = ApplicationLoader.applicationContext.getResources().getIdentifier("pc_official_username", "string", ApplicationLoader.applicationContext.getPackageName());
+            String u = id == 0 ? "" : ApplicationLoader.applicationContext.getString(id).trim();
+            return u.startsWith("@") ? u.substring(1) : u;
+        } catch (Throwable t) {
+            return "";
+        }
+    }
+
+    private static android.content.SharedPreferences officialPrefs() {
+        return ApplicationLoader.applicationContext.getSharedPreferences("pc_official", android.content.Context.MODE_PRIVATE);
+    }
+
+    private static long resolvedOfficial() {
+        String u = configuredUsername();
+        return u.isEmpty() ? 0 : officialPrefs().getLong("id:" + u.toLowerCase(), 0);
+    }
+
+    /**
+     * Se in pc_config.xml c'e' uno username ufficiale (pc_official_username) lo risolve con contacts.resolveUsername
+     * (una volta, poi l'ID resta in cache) e lo aggiunge agli ID ufficiali. Senza username non fa nulla.
+     */
+    public static void resolveOfficialUsername(final int account) {
+        final String u = configuredUsername();
+        if (u.isEmpty() || resolvedOfficial() != 0) {
+            return;
+        }
+        org.telegram.tgnet.TLRPC.TL_contacts_resolveUsername req = new org.telegram.tgnet.TLRPC.TL_contacts_resolveUsername();
+        req.username = u;
+        org.telegram.tgnet.ConnectionsManager.getInstance(account).sendRequest(req, (response, error) -> {
+            if (response instanceof org.telegram.tgnet.TLRPC.TL_contacts_resolvedPeer) {
+                org.telegram.tgnet.TLRPC.TL_contacts_resolvedPeer r = (org.telegram.tgnet.TLRPC.TL_contacts_resolvedPeer) response;
+                if (r.peer instanceof org.telegram.tgnet.TLRPC.TL_peerUser && r.peer.user_id != 0) {
+                    officialPrefs().edit().putLong("id:" + u.toLowerCase(), r.peer.user_id).apply();
+                    synchronized (PcRanking.class) {
+                        officialIds = null;
+                    }
+                    org.telegram.messenger.MessagesController.getInstance(account).putUsers(r.users, false);
+                }
+            }
+        });
     }
 
     public static boolean isOfficial(long userId) {

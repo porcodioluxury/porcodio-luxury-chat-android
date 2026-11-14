@@ -1821,5 +1821,10 @@
     <string name="PcWhyExploration">Mostrato come scoperta, fuori dai tuoi soliti interessi.</string>
     <string name="PcWhyTotal">Punteggio totale: %1$s</string>
     <string name="PcWhyPrivacy">Calcolato sul tuo telefono, niente lascia il dispositivo.</string>
+    <string name="PcSecretNotif">Nuovo messaggio segreto</string>
+    <string name="PcSavePost">Salva nei Messaggi salvati</string>
+    <string name="PcSharePost">Condividi</string>
+    <string name="PcSavedOk">Salvato</string>
+    <string name="PcSavedFail">Impossibile salvare il post</string>
     <!-- /PORCODIO PHASE3 -->
 </resources>

@@ -11962,5 +11962,10 @@
     <string name="PcWhyExploration">Shown as a discovery, outside your usual interests.</string>
     <string name="PcWhyTotal">Total score: %1$s</string>
     <string name="PcWhyPrivacy">Computed on your phone, nothing leaves the device.</string>
+    <string name="PcSecretNotif">New secret message</string>
+    <string name="PcSavePost">Save to Saved messages</string>
+    <string name="PcSharePost">Share</string>
+    <string name="PcSavedOk">Saved</string>
+    <string name="PcSavedFail">Could not save the post</string>
     <!-- /PORCODIO PHASE3 -->
 </resources>

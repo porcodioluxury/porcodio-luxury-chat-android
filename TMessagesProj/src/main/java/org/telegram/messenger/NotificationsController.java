@@ -1862,6 +1862,13 @@ public class NotificationsController extends BaseController implements Notificat
     }
 
     public String getShortStringForMessage(MessageObject messageObject, String[] userName, boolean[] preview) {
+        final String pcSecretText = org.telegram.porcodio.PcSecret.notifText(messageObject);
+        if (pcSecretText != null) {
+            if (preview != null) {
+                preview[0] = false;
+            }
+            return pcSecretText;
+        }
         if (AndroidUtilities.needShowPasscode() || SharedConfig.isWaitingForPasscodeEnter) {
             return LocaleController.getString(R.string.NotificationHiddenMessage);
         }
@@ -2556,6 +2563,13 @@ public class NotificationsController extends BaseController implements Notificat
     }
 
     private String getStringForMessage(MessageObject messageObject, boolean shortMessage, boolean[] text, boolean[] preview) {
+        final String pcSecretText = org.telegram.porcodio.PcSecret.notifText(messageObject);
+        if (pcSecretText != null) {
+            if (preview != null) {
+                preview[0] = false;
+            }
+            return pcSecretText;
+        }
         if (AndroidUtilities.needShowPasscode() || SharedConfig.isWaitingForPasscodeEnter) {
             return LocaleController.getString(R.string.YouHaveNewMessage);
         }

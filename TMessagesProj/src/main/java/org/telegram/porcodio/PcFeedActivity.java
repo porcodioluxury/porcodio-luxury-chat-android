@@ -222,6 +222,7 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
             getMessagesController().getStoriesController().loadStories();
         } catch (Throwable ignore) {
         }
+        PcRanking.resolveOfficialUsername(currentAccount);
         return super.onFragmentCreate();
     }
 
@@ -535,6 +536,8 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
         }
         CharSequence[] items = {
             LocaleController.getString(R.string.PcWhyTitle),
+            LocaleController.getString(R.string.PcSavePost),
+            LocaleController.getString(R.string.PcSharePost),
             LocaleController.getString(R.string.PcNotInterested),
             LocaleController.getString(R.string.PcHideAuthor),
             LocaleController.getString(R.string.PcReportPost)};
@@ -548,9 +551,13 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
                 w.setNeutralButton(LocaleController.getString(R.string.PcInterestsManage), (dd, ww) -> presentFragment(new PcInterestsActivity()));
                 showDialog(w.create());
             } else if (which == 1) {
+                savePost(p);
+            } else if (which == 2) {
+                sharePost(p);
+            } else if (which == 3) {
                 PcInterests.hidePost(p);
                 notifyData();
-            } else if (which == 2) {
+            } else if (which == 4) {
                 PcInterests.hideAuthor(p.authorId);
                 notifyData();
             } else {
@@ -560,6 +567,95 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
             }
         });
         showDialog(b.create());
+    }
+
+    /** Salvataggio: copia nei Messaggi salvati; il segnale "salvato" conta solo se il server accetta l'inoltro. */
+    private void savePost(final PcBoard.Post p) {
+        PcBoard.saveToSaved(currentAccount, p, ok -> {
+            if (ok) {
+                PcInterests.recordOnce(p, "save", PcInterests.W_SAVE);
+                PcUi.toast(getParentActivity(), LocaleController.getString(R.string.PcSavedOk));
+            } else {
+                PcUi.toast(getParentActivity(), LocaleController.getString(R.string.PcSavedFail));
+            }
+        });
+    }
+
+    /** Condivisione: foglio di condivisione di sistema; il segnale conta solo quando l'utente sceglie davvero una destinazione. */
+    private void sharePost(final PcBoard.Post p) {
+        if (getParentActivity() == null) {
+            return;
+        }
+        final android.app.Activity act = getParentActivity();
+        final String action = "org.telegram.porcodio.SHARED." + p.chatId + "." + p.msgId;
+        final android.content.BroadcastReceiver rcv = new android.content.BroadcastReceiver() {
+            @Override
+            public void onReceive(Context c, android.content.Intent i) {
+                PcInterests.recordOnce(p, "share", PcInterests.W_SHARE);
+                try {
+                    c.getApplicationContext().unregisterReceiver(this);
+                } catch (Throwable ignore) {
+                }
+            }
+        };
+        try {
+            Context app = act.getApplicationContext();
+            android.content.IntentFilter f = new android.content.IntentFilter(action);
+            if (android.os.Build.VERSION.SDK_INT >= 33) {
+                app.registerReceiver(rcv, f, Context.RECEIVER_NOT_EXPORTED);
+            } else {
+                app.registerReceiver(rcv, f);
+            }
+            android.content.Intent send = new android.content.Intent(android.content.Intent.ACTION_SEND);
+            send.setType("text/plain");
+            String body = (TextUtils.isEmpty(p.text) ? "" : p.text + "\n") + "https://t.me/c/" + p.chatId + "/" + p.msgId;
+            send.putExtra(android.content.Intent.EXTRA_TEXT, body);
+            android.content.Intent cb = new android.content.Intent(action).setPackage(app.getPackageName());
+            int fl = android.app.PendingIntent.FLAG_UPDATE_CURRENT | (android.os.Build.VERSION.SDK_INT >= 31 ? android.app.PendingIntent.FLAG_MUTABLE : 0);
+            android.app.PendingIntent pi = android.app.PendingIntent.getBroadcast(app, 0, cb, fl);
+            act.startActivity(android.content.Intent.createChooser(send, LocaleController.getString(R.string.PcSharePost), pi.getIntentSender()));
+        } catch (Throwable t) {
+            try {
+                act.getApplicationContext().unregisterReceiver(rcv);
+            } catch (Throwable ignore) {
+            }
+        }
+    }
+
+    // commenti in attesa di verifica: appena si torna nel feed si controlla se c'e' un commento mio piu' recente del tocco
+    private final ArrayList<Object[]> pendingComments = new ArrayList<>();
+
+    private void openForComment(PcBoard.Post p) {
+        pendingComments.add(new Object[]{p, (int) (System.currentTimeMillis() / 1000)});
+        openPost(p);
+    }
+
+    private void openAuthorProfile(PcBoard.Post p) {
+        if (p == null || p.authorId == 0) {
+            return;
+        }
+        PcInterests.recordOnce(p, "profile", PcInterests.W_PROFILE_VISIT);
+        Bundle b = new Bundle();
+        b.putLong("user_id", p.authorId);
+        presentFragment(new org.telegram.ui.ProfileActivity(b));
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (pendingComments.isEmpty()) {
+            return;
+        }
+        final ArrayList<Object[]> todo = new ArrayList<>(pendingComments);
+        pendingComments.clear();
+        for (Object[] o : todo) {
+            final PcBoard.Post p = (PcBoard.Post) o[0];
+            PcBoard.hasMyCommentSince(currentAccount, p, (Integer) o[1], mine -> {
+                if (mine) {
+                    PcInterests.recordOnce(p, "comment", PcInterests.W_COMMENT);
+                }
+            });
+        }
     }
 
     private void openPost(PcBoard.Post p) {
@@ -803,11 +899,13 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
             avatar = new BackupImageView(context);
             avatar.setRoundRadius(dp(4));
             head.addView(avatar, LayoutHelper.createLinear(40, 40));
+            avatar.setOnClickListener(v -> openAuthorProfile(post));
             LinearLayout col = new LinearLayout(context);
             col.setOrientation(LinearLayout.VERTICAL);
             name = PcUi.label(context, "", 15, true, Theme.key_windowBackgroundWhiteBlackText);
             name.setSingleLine(true);
             name.setEllipsize(TextUtils.TruncateAt.END);
+            name.setOnClickListener(v -> openAuthorProfile(post));
             date = PcUi.label(context, "", 12, false, Theme.key_windowBackgroundWhiteGrayText);
             col.addView(name);
             col.addView(date);
@@ -845,7 +943,7 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
             likeBtn = PcUi.button(context, LocaleController.getString(R.string.PcLike), false, v -> like());
             actions.addView(likeBtn, LayoutHelper.createLinear(0, 38, 1f, 0, 0, 4, 0));
             actions.addView(PcUi.button(context, LocaleController.getString(R.string.PcComment), false, v -> {
-                if (post != null) openPost(post);
+                if (post != null) openForComment(post);
             }), LayoutHelper.createLinear(0, 38, 1f, 4, 0, 4, 0));
             actions.addView(PcUi.button(context, LocaleController.getString(R.string.PcOpenPost), false, v -> {
                 if (post != null) openPost(post);
