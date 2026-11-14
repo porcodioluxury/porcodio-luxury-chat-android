@@ -12082,4 +12082,33 @@
     <string name="PcUpdAutoInfo">When on, the new version is downloaded in the background and you are only asked to install it.</string>
     <string name="PcUpdStatusAvailable">New version available: %1$s</string>
     <!-- /PORCODIO PHASE3 -->
+    <!-- PORCODIO v10 -->
+    <string name="PcTabHome">Home</string>
+    <string name="PcTabReels">Reels</string>
+    <string name="PcTabExplore">Explore</string>
+    <string name="PcTabProfile">Profile</string>
+    <string name="PcReelsFriends">Friends</string>
+    <string name="PcReelsEmpty">No reels yet. Follow people or publish the first one.</string>
+    <string name="PcFollow">Follow</string>
+    <string name="PcFollowing">Following</string>
+    <string name="PcShare">Share</string>
+    <string name="PcExploreSearch">Search</string>
+    <string name="PcExploreForYou">For you</string>
+    <string name="PcProfilePosts">posts</string>
+    <string name="PcProfileFollowers">followers</string>
+    <string name="PcProfileFollowing">following</string>
+    <string name="PcProfileDashboard">Professional dashboard</string>
+    <string name="PcProfileViews30">%1$s views in the last 30 days</string>
+    <string name="PcProfileAddLink">Add link</string>
+    <string name="PcProfileRepostsEmpty">No reposts yet</string>
+    <string name="PcProfileTaggedEmpty">No tagged posts</string>
+    <string name="PcProfileNoPosts">No posts yet. Tap + to publish.</string>
+    <string name="PcProfileBoardOff">Your board is off. Turn it on from Settings.</string>
+    <string name="PcSendMoney">Send money</string>
+    <string name="PcWalletTitle">Wallet</string>
+    <string name="PcWalletInfo">Non-custodial wallet on Base: ETH and PORCO, send and receive</string>
+    <string name="PcVerifyTitle">Blue check</string>
+    <string name="PcVerifyInfo">Verified account with benefits</string>
+    <string name="PcVerifySoon">The blue check arrives in the next update: EUR 4.99/month or EUR 49.99/year. Payments are not active yet.</string>
+    <string name="PcSetWalletSection">Wallet and verification</string>
 </resources>

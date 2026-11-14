@@ -2762,21 +2762,13 @@ public class ChatAttachAlert extends BottomSheet implements NotificationCenter.N
                     }
                     showLayout(photoLayout);
                 } else if (num == LAYOUT_TYPE_MONEY) {
-                    if (gramLayout == null && baseFragment instanceof ChatActivity) {
-                        final TLRPC.User recipient = ((ChatActivity) baseFragment).getCurrentUser();
-                        if (isMoneyTabRecipient(recipient)) {
-                            layouts[11] = gramLayout = new ChatAttachAlertGramLayout(
-                                    this,
-                                    getContext(),
-                                    currentAccount,
-                                    recipient,
-                                    resourcesProvider
-                            );
-                        }
-                    }
-                    if (gramLayout != null) {
-                        showLayout(gramLayout);
-                    }
+                    // Porcodio v10: "Invia denaro" apre il portafoglio non-custodial (invio ETH/PORCO su Base)
+                    final BaseFragment pcFrag = lastFragment;
+                    long pcDialog = baseFragment instanceof ChatActivity ? ((ChatActivity) baseFragment).getDialogId() : 0;
+                    dismiss();
+                    android.os.Bundle pcArgs = new android.os.Bundle();
+                    pcArgs.putLong("share_dialog", pcDialog);
+                    pcFrag.presentFragment(new org.telegram.porcodio.PcWalletActivity(pcArgs));
                 } else if (num == 3) {
                     if (!musicEnabled && checkCanRemoveRestrictionsByBoosts()) {
                         return;
@@ -6700,7 +6692,7 @@ public class ChatAttachAlert extends BottomSheet implements NotificationCenter.N
                         attachButton.setTag(1);
                         err = !checkPhotoAndCameraPermission(mContext);
                     } else if (position == moneyButton) {
-                        attachButton.setTextAndIcon(LAYOUT_TYPE_MONEY, getString(R.string.WalletAttachMoney), GlassTabView.TabAnimation.GRAM);
+                        attachButton.setTextAndIcon(LAYOUT_TYPE_MONEY, getString(R.string.PcSendMoney), GlassTabView.TabAnimation.GRAM);
                         attachButton.setTag(LAYOUT_TYPE_MONEY);
                     } else if (position == documentButton) {
                         attachButton.setTextAndIcon(4, getString(R.string.ChatDocument), GlassTabView.TabAnimation.FILES);
@@ -6850,7 +6842,7 @@ public class ChatAttachAlert extends BottomSheet implements NotificationCenter.N
                 final boolean paidUser = user != null && ((ChatActivity) baseFragment).getMessagesController().getSendPaidMessagesStars(user.id) > 0;
                 galleryButton = buttonsCount++;
                 documentButton = buttonsCount++;
-                if (MessagesController.getInstance(currentAccount).config.walletAvailable.get() && ((ChatActivity) baseFragment).getChatMode() == ChatActivity.MODE_DEFAULT && isMoneyTabRecipient(user)) {
+                if (((ChatActivity) baseFragment).getChatMode() == ChatActivity.MODE_DEFAULT && isMoneyTabRecipient(user) && !((ChatActivity) baseFragment).isSecretChat()) {
                     moneyButton = buttonsCount++;
                 }
 
