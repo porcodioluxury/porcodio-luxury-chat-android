@@ -72,7 +72,22 @@ public abstract class PcListFragment extends BaseFragment {
 
     protected void notifyData() {
         if (adapter != null) {
+            // Porcodio: mantiene la posizione di scorrimento quando la lista si ricarica (niente salti in cima)
+            int pos = -1, off = 0;
+            try {
+                if (listView != null && listView.getLayoutManager() instanceof LinearLayoutManager) {
+                    LinearLayoutManager lm = (LinearLayoutManager) listView.getLayoutManager();
+                    pos = lm.findFirstVisibleItemPosition();
+                    View first = pos >= 0 ? lm.findViewByPosition(pos) : null;
+                    off = first != null ? first.getTop() : 0;
+                }
+            } catch (Throwable ignore) {
+                pos = -1;
+            }
             adapter.notifyDataSetChanged();
+            if (pos > 0 && listView != null && pos < adapter.getItemCount()) {
+                ((LinearLayoutManager) listView.getLayoutManager()).scrollToPositionWithOffset(pos, off);
+            }
         }
     }
 

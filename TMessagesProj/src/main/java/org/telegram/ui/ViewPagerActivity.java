@@ -223,6 +223,16 @@ public abstract class ViewPagerActivity extends BaseFragment {
     }
 
     @Override
+    public void onActivityResultFragment(int requestCode, int resultCode, android.content.Intent data) {
+        // Porcodio: il risultato di un selettore (foto/video) va alla pagina visibile, non solo al contenitore
+        super.onActivityResultFragment(requestCode, resultCode, data);
+        final BaseFragment fragment = getCurrentVisibleFragment();
+        if (fragment != null) {
+            fragment.onActivityResultFragment(requestCode, resultCode, data);
+        }
+    }
+
+    @Override
     public void onRequestPermissionsResultFragment(int requestCode, String[] permissions, int[] grantResults) {
         final BaseFragment fragment = getCurrentVisibleFragment();
         if (fragment != null) {
