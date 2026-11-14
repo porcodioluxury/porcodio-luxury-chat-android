@@ -458,6 +458,7 @@ public class ConnectionsManager extends BaseController {
                         error.code = errorCode;
                         error.text = errorText;
                         org.telegram.porcodio.PcBulk.noteError(errorCode, errorText);
+                        org.telegram.porcodio.PcBoard.noteRpc(errorCode, errorText, object == null ? "" : object.getClass().getSimpleName());
                         if (BuildVars.LOGS_ENABLED && error.code != -2000) {
                             FileLog.e(object + " got error " + error.code + " " + error.text);
                         }

@@ -25,6 +25,7 @@ import org.telegram.messenger.UserConfig;
 import org.telegram.messenger.UserObject;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.ActionBar.AlertDialog;
+import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.ChatActivity;
 import org.telegram.ui.Components.AvatarDrawable;
@@ -55,9 +56,29 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
     private boolean loading = true, finding;
     private String findNote;
 
+    private final String mode; // "home", "explore", "activity" o vuoto (schermata classica)
+
     public PcFeedActivity(Bundle args) {
         super(args);
         onlyAuthor = args != null ? args.getLong("author", 0) : 0;
+        mode = args != null ? args.getString("pc_mode", "") : "";
+        if ("explore".equals(mode)) {
+            section = 3;
+        } else if ("activity".equals(mode)) {
+            section = 4;
+        }
+    }
+
+    private boolean homeMode() {
+        return "home".equals(mode);
+    }
+
+    private boolean exploreMode() {
+        return "explore".equals(mode);
+    }
+
+    private boolean newLayout() {
+        return !mode.isEmpty();
     }
 
     {
@@ -122,6 +143,15 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
 
     @Override
     protected String screenTitle() {
+        if (homeMode()) {
+            return "PORCODIO LUXURY";
+        }
+        if (exploreMode()) {
+            return LocaleController.getString(R.string.PcTabExplore);
+        }
+        if ("activity".equals(mode)) {
+            return LocaleController.getString(R.string.PcSocialActivity);
+        }
         if (tabMode()) {
             return LocaleController.getString(R.string.PcTabSocial);
         }
@@ -146,6 +176,32 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
     public View createView(Context context) {
         View v = super.createView(context);
         root.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundGray));
+        if (newLayout() && simpleActionBar != null) {
+            if (homeMode() && !hasMainTabs) {
+                if (getArguments() != null && getArguments().getBoolean("pc_open_plus", false)) {
+                    AndroidUtilities.runOnUIThread(this::onPlus, 350);
+                }
+            } else if (homeMode()) {
+                // intestazione: "+" a sinistra, titolo al centro, cuore delle attivita' a destra
+                simpleActionBar.setBackButtonImage(R.drawable.ic_pc_plus);
+                simpleActionBar.getTitleTextView().setTypeface(PcUi.serif(true, false));
+                simpleActionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
+                    @Override
+                    public void onItemClick(int id) {
+                        if (id == -1) {
+                            onPlus();
+                        } else if (id == 1) {
+                            Bundle a = new Bundle();
+                            a.putString("pc_mode", "activity");
+                            presentFragment(new PcFeedActivity(a));
+                        }
+                    }
+                });
+                simpleActionBar.createMenu().addItem(1, R.drawable.ic_pc_heart);
+            } else if (exploreMode()) {
+                simpleActionBar.getTitleTextView().setTypeface(PcUi.serif(true, false));
+            }
+        }
         return v;
     }
 
@@ -179,11 +235,15 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
 
     private void rebuild() {
         rows.clear();
-        if (tabMode()) {
+        if (homeMode()) {
+            rows.add(new Row(T_STORIES));
+        } else if (exploreMode()) {
+            rows.add(new Row(T_CHIPS));
+        } else if (tabMode()) {
             rows.add(new Row(T_STORIES));
             rows.add(new Row(T_CHIPS));
         }
-        if (showBoardCard()) {
+        if (showBoardCard() && !newLayout()) {
             rows.add(new Row(T_BOARD));
         }
         final long me = UserConfig.getInstance(currentAccount).getClientUserId();
@@ -260,6 +320,8 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
     }
 
     private long watchUntil;
+    private String retryPath, retryCaption;
+    private boolean retriedAsDoc;
 
     private void watchSend() {
         watchUntil = System.currentTimeMillis() + 120000;
@@ -269,8 +331,17 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
     public void didReceivedNotification(int id, int account, Object... args) {
         if (id == NotificationCenter.messageSendError) {
             if (System.currentTimeMillis() < watchUntil) {
-                PcBoard.fail("send", "invio rifiutato o interrotto (messageSendError)");
-                PcUi.toast(getParentActivity(), "Pubblicazione non riuscita: l'invio e' stato rifiutato o interrotto. Controlla la connessione e riprova.");
+                String rpc = PcBoard.recentRpc();
+                String why = rpc.isEmpty() ? "invio interrotto prima di raggiungere il server (compressione o caricamento del file), nessun codice dal server" : "rifiutato dal server: " + rpc;
+                PcBoard.fail("send", why);
+                if (retryPath != null && !retriedAsDoc) {
+                    retriedAsDoc = true;
+                    PcUi.toast(getParentActivity(), "Pubblicazione non riuscita: " + why + ". Riprovo come documento video...");
+                    sendMedia(retryPath, true, retryCaption, true);
+                } else {
+                    PcUi.toast(getParentActivity(), "Pubblicazione non riuscita: " + why);
+                }
+                watchUntil = 0;
             }
             return;
         }
@@ -452,30 +523,37 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
         b.setTitle(LocaleController.getString(video ? R.string.PcPlusReel : R.string.PcPlusPhoto));
         b.setView(holder);
         b.setPositiveButton(LocaleController.getString(R.string.PcBoardPublish), (d, w) -> {
-            org.telegram.messenger.SendMessagesHelper.SendingMediaInfo info = new org.telegram.messenger.SendMessagesHelper.SendingMediaInfo();
-            info.path = path;
-            info.isVideo = video;
             String cap = edit.getText().toString().trim();
             if (video && !cap.toLowerCase(java.util.Locale.ROOT).contains("#reel")) {
                 cap = (cap.isEmpty() ? "" : cap + " ") + "#reel"; // i reel si riconoscono dal tag
             }
-            info.caption = cap;
-            ArrayList<org.telegram.messenger.SendMessagesHelper.SendingMediaInfo> list = new ArrayList<>();
-            list.add(info);
-            final long chat = PcBoard.myBoardChat(currentAccount);
-            PcBoard.withBoard(currentAccount, () -> {
-                org.telegram.messenger.SendMessagesHelper.prepareSendingMedia(org.telegram.messenger.AccountInstance.getInstance(currentAccount), list, -chat, null, null, null, null,
-                    false, false, null, true, 0, 0, 0, false, null, org.telegram.messenger.SendMessageChatArguments.EMPTY, 0, false, 0, 0, null);
-                PcUi.toast(getParentActivity(), LocaleController.getString(R.string.PcBoardPublished));
-                watchSend();
-                // il caricamento di un video richiede tempo: ricarico piu' volte finche' il post compare
-                for (int delay : new int[]{3000, 8000, 15000, 30000, 60000}) {
-                    AndroidUtilities.runOnUIThread(() -> reload(true), delay);
-                }
-            }, ok -> PcUi.toast(getParentActivity(), "Pubblicazione non riuscita: " + PcBoard.lastError));
+            retryPath = video ? path : null;
+            retryCaption = cap;
+            retriedAsDoc = false;
+            sendMedia(path, video, cap, false);
         });
         b.setNegativeButton(LocaleController.getString(R.string.Cancel), null);
         showDialog(b.create());
+    }
+
+    private void sendMedia(final String path, final boolean video, final String cap, final boolean asDocument) {
+        org.telegram.messenger.SendMessagesHelper.SendingMediaInfo info = new org.telegram.messenger.SendMessagesHelper.SendingMediaInfo();
+        info.path = path;
+        info.isVideo = video && !asDocument;
+        info.caption = cap;
+        final ArrayList<org.telegram.messenger.SendMessagesHelper.SendingMediaInfo> list = new ArrayList<>();
+        list.add(info);
+        final long chat = PcBoard.myBoardChat(currentAccount);
+        PcBoard.withBoard(currentAccount, () -> {
+            watchSend();
+            org.telegram.messenger.SendMessagesHelper.prepareSendingMedia(org.telegram.messenger.AccountInstance.getInstance(currentAccount), list, -chat, null, null, null, null,
+                asDocument, false, null, true, 0, 0, 0, false, null, org.telegram.messenger.SendMessageChatArguments.EMPTY, 0, false, 0, 0, null);
+            PcUi.toast(getParentActivity(), LocaleController.getString(R.string.PcBoardPublished));
+            // il caricamento di un video richiede tempo: ricarico piu' volte finche' il post compare
+            for (int delay : new int[]{3000, 8000, 15000, 30000, 60000}) {
+                AndroidUtilities.runOnUIThread(() -> reload(true), delay);
+            }
+        }, ok -> PcUi.toast(getParentActivity(), "Pubblicazione non riuscita: " + PcBoard.lastError));
     }
 
     // ---- azioni Bacheca
@@ -542,6 +620,7 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
                 PcBoard.publish(currentAccount, text, ok -> {
                     if (ok) {
                         PcUi.toast(getParentActivity(), LocaleController.getString(R.string.PcBoardPublished));
+                        retryPath = null;
                         watchSend();
                         for (int delay : new int[]{2000, 6000, 15000}) {
                             AndroidUtilities.runOnUIThread(() -> reload(true), delay);
@@ -724,12 +803,68 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
         presentFragment(new ChatActivity(b));
     }
 
+    static android.graphics.drawable.GradientDrawable pill(int fill, int stroke) {
+        android.graphics.drawable.GradientDrawable g = new android.graphics.drawable.GradientDrawable();
+        g.setColor(fill);
+        g.setCornerRadius(dp(22));
+        if (stroke != 0) {
+            g.setStroke(Math.max(1, dp(1)), stroke);
+        }
+        return g;
+    }
+
+    static TextView chip(Context context, String text, boolean selected, View.OnClickListener l) {
+        TextView t = new TextView(context);
+        t.setText(text);
+        t.setTextSize(13);
+        t.setTypeface(AndroidUtilities.bold());
+        t.setGravity(Gravity.CENTER);
+        t.setSingleLine(true);
+        t.setPadding(dp(14), 0, dp(14), 0);
+        t.setTextColor(selected ? 0xFFF2F2F2 : 0xFFBFBFBF);
+        t.setBackground(pill(selected ? 0xFF2F3442 : 0xFF1A1A1A, selected ? 0 : 0xFF2F3442));
+        if (l != null) {
+            t.setOnClickListener(l);
+        }
+        return t;
+    }
+
     private class ChipsRow extends FrameLayout {
         ChipsRow(Context context) {
             super(context);
         }
 
+        void bindExplore() {
+            removeAllViews();
+            final Context context = getContext();
+            LinearLayout col = new LinearLayout(context);
+            col.setOrientation(LinearLayout.VERTICAL);
+            // ricerca arrotondata: apre la rubrica con la ricerca persone
+            TextView search = PcUi.label(context, LocaleController.getString(R.string.PcExploreSearch), 15, false, Theme.key_windowBackgroundWhiteGrayText);
+            search.setGravity(Gravity.CENTER_VERTICAL);
+            search.setPadding(dp(16), 0, dp(16), 0);
+            search.setBackground(pill(0xFF242833, 0));
+            search.setOnClickListener(v -> {
+                Bundle ca = new Bundle();
+                ca.putBoolean("needFinishFragment", false);
+                presentFragment(new org.telegram.ui.ContactsActivity(ca));
+            });
+            col.addView(search, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 44, 14, 6, 14, 8));
+            android.widget.HorizontalScrollView sv = new android.widget.HorizontalScrollView(context);
+            sv.setHorizontalScrollBarEnabled(false);
+            LinearLayout r = new LinearLayout(context);
+            r.addView(chip(context, LocaleController.getString(R.string.PcExploreForYou), true, null), LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, 34, 0, 0, 8, 0));
+            r.addView(chip(context, LocaleController.getString(R.string.PcTabShop) + " \u00B7 porcodioluxury.com", false, v -> presentFragment(new PcShopActivity(new Bundle()))), LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, 34, 0, 0, 8, 0));
+            sv.addView(r);
+            col.addView(sv, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 14, 0, 14, 8));
+            addView(col, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+        }
+
         void bind() {
+            if (exploreMode()) {
+                bindExplore();
+                return;
+            }
             removeAllViews();
             final Context context = getContext();
             android.widget.HorizontalScrollView sv = new android.widget.HorizontalScrollView(context);
@@ -804,7 +939,7 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
             android.graphics.drawable.GradientDrawable g = new android.graphics.drawable.GradientDrawable();
             g.setShape(android.graphics.drawable.GradientDrawable.OVAL);
             g.setColor(0);
-            g.setStroke(Math.max(2, dp(1.5f)), unread ? 0xFFF3EEE6 : 0x55F3EEE6);
+            g.setStroke(Math.max(2, dp(2f)), unread ? 0xFF9DAAC8 : 0xFF2F3442);
             return g;
         }
 

@@ -154,7 +154,7 @@ public class GlassTabView extends FrameLayout implements MainTabsLayout.Tab, Fac
         if (selectedFactor > 0 && !skipDrawSelector) {
             final float alpha = AnimatorUtils.DECELERATE_INTERPOLATOR.getInterpolation(selectedFactor);
 
-            paintCounterBackground.setColor(Theme.multAlpha(colorSelected, 0.09f * alpha));
+            paintCounterBackground.setColor(Theme.multAlpha(0xFFF2F2F2, 0.16f * alpha)); // pillola attiva
             tmpRectF.set(0, 0, viewWidth, getHeight());
             final float r = Math.min(tmpRectF.width(), tmpRectF.height()) / 2f;
             final float s = lerp(0.6f, 1, selectedFactor) * MathUtils.clamp(attachScale, 0, 1);
@@ -418,9 +418,11 @@ public class GlassTabView extends FrameLayout implements MainTabsLayout.Tab, Fac
         GlassTabView tab = new GlassTabView(context);
         tab.resourcesProvider = resourcesProvider;
         tab.tabAnimation = tabAnimation;
-        tab.textView.setText(LocaleController.getString(stringRes));
+        tab.textView.setText("");
+        tab.textView.setVisibility(GONE);
+        tab.setContentDescription(LocaleController.getString(stringRes));
         tab.checkPlayAnimation(false);
-        tab.imageView.setLayoutParams(LayoutHelper.createFrame(24, 24, Gravity.CENTER_HORIZONTAL | Gravity.TOP, 0, 4, 0, 0));
+        tab.imageView.setLayoutParams(LayoutHelper.createFrame(26, 26, Gravity.CENTER, 0, 0, 0, 0));
         tab.colorDefault = Theme.getColor(Theme.key_glass_tabUnselected, resourcesProvider);
         tab.colorSelected = Theme.getColor(Theme.key_glass_tabSelected, resourcesProvider);
         tab.colorSelectedText = Theme.getColor(Theme.key_glass_tabSelectedText, resourcesProvider);
@@ -430,7 +432,9 @@ public class GlassTabView extends FrameLayout implements MainTabsLayout.Tab, Fac
 
     public static GlassTabView createAvatar(Context context, Theme.ResourcesProvider resourcesProvider, int currentAccount, @StringRes int stringRes) {
         GlassTabView tab = new GlassTabView(context);
-        tab.textView.setText(LocaleController.getString(stringRes));
+        tab.textView.setText("");
+        tab.textView.setVisibility(GONE);
+        tab.setContentDescription(LocaleController.getString(stringRes));
         tab.imageView.setVisibility(GONE);
 
         TLRPC.User user = MessagesController.getInstance(currentAccount).getUser(UserConfig.getInstance(currentAccount).getClientUserId());
@@ -441,7 +445,8 @@ public class GlassTabView extends FrameLayout implements MainTabsLayout.Tab, Fac
         backupImageView.setRoundRadius(dp(11));
         tab.backupImageView = backupImageView;
 
-        tab.addView(backupImageView, LayoutHelper.createFrame(22, 22, Gravity.CENTER_HORIZONTAL | Gravity.TOP, 0, 5, 0, 0));
+        tab.addView(backupImageView, LayoutHelper.createFrame(26, 26, Gravity.CENTER, 0, 0, 0, 0));
+        backupImageView.setRoundRadius(dp(13));
         tab.colorDefault = Theme.getColor(Theme.key_glass_tabUnselected, resourcesProvider);
         tab.colorSelected = Theme.getColor(Theme.key_glass_tabSelected, resourcesProvider);
         tab.colorSelectedText = Theme.getColor(Theme.key_glass_tabSelectedText, resourcesProvider);
@@ -580,6 +585,9 @@ public class GlassTabView extends FrameLayout implements MainTabsLayout.Tab, Fac
         REPLIES(R.raw.tab_reply, R.raw.tab_reply_reverse),
         WALLET(R.raw.tab_wallet, R.raw.tab_wallet_reverse),
         PC_CHAT(TabAnimationType.STATIC, R.drawable.ic_pc_tab_chat),
+        PC_HOME(TabAnimationType.STATIC, R.drawable.ic_pc_tab_home),
+        PC_REELS(TabAnimationType.STATIC, R.drawable.ic_pc_tab_reels),
+        PC_EXPLORE(TabAnimationType.STATIC, R.drawable.ic_pc_tab_explore),
         PC_SOCIAL(TabAnimationType.STATIC, R.drawable.ic_pc_tab_social),
         PC_SHOP(TabAnimationType.STATIC, R.drawable.ic_pc_tab_shop),
         PC_SETTINGS(TabAnimationType.STATIC, R.drawable.ic_pc_tab_settings),
