@@ -40,6 +40,14 @@ import java.util.ArrayList;
 public class PcFeedActivity extends PcListFragment implements org.telegram.ui.MainTabsActivity.TabFragmentDelegate, NotificationCenter.NotificationCenterDelegate {
     private static final int T_BOARD = 0, T_POST = 1, T_NOTE = 2, T_CHIPS = 3, T_STORIES = 4, T_GRID = 5;
     private static final int REQ_PHOTO = 7101, REQ_VIDEO = 7102;
+    private static boolean following() {
+        return org.telegram.messenger.ApplicationLoader.applicationContext.getSharedPreferences("pc_social", Context.MODE_PRIVATE).getBoolean("following", false);
+    }
+
+    private static void setFollowing(boolean v) {
+        org.telegram.messenger.ApplicationLoader.applicationContext.getSharedPreferences("pc_social", Context.MODE_PRIVATE).edit().putBoolean("following", v).apply();
+    }
+
     private int section; // 0 feed, 1 storie, 2 reel, 3 esplora, 4 attività (solo nella scheda Social)
 
     private final long onlyAuthor;
@@ -58,6 +66,11 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
 
     private void reload() {
         loading = true;
+        for (long oid : PcRanking.officialIds()) {
+            if (PcBoard.knownBoard(currentAccount, oid) == 0) {
+                PcBoard.discover(currentAccount, oid, null);
+            }
+        }
         PcBoard.loadFeed(currentAccount, list -> {
             loading = false;
             posts.clear();
@@ -150,30 +163,38 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
         }
         final long me = UserConfig.getInstance(currentAccount).getClientUserId();
         if (!tabMode() || section == 0) {
-            for (PcBoard.Post p : posts) {
+            for (PcBoard.Post p : PcRanking.rankFeed(currentAccount, posts, following())) {
                 Row r = new Row(T_POST);
                 r.post = p;
                 rows.add(r);
             }
         } else if (section == 2) {
+            ArrayList<PcBoard.Post> vids = new ArrayList<>();
             for (PcBoard.Post p : posts) {
                 if (isVideo(p)) {
-                    Row r = new Row(T_POST);
-                    r.post = p;
-                    rows.add(r);
+                    vids.add(p);
                 }
             }
+            for (PcBoard.Post p : PcRanking.rankFeed(currentAccount, vids, following())) {
+                Row r = new Row(T_POST);
+                r.post = p;
+                rows.add(r);
+            }
         } else if (section == 3) {
-            Row g = null;
+            ArrayList<PcBoard.Post> media = new ArrayList<>();
             for (PcBoard.Post p : posts) {
                 if (isPhoto(p) || isVideo(p)) {
-                    if (g == null || g.grid.size() == 3) {
-                        g = new Row(T_GRID);
-                        g.grid = new ArrayList<>();
-                        rows.add(g);
-                    }
-                    g.grid.add(p);
+                    media.add(p);
                 }
+            }
+            Row g = null;
+            for (PcBoard.Post p : PcRanking.rankExplore(currentAccount, media)) {
+                if (g == null || g.grid.size() == 3) {
+                    g = new Row(T_GRID);
+                    g.grid = new ArrayList<>();
+                    rows.add(g);
+                }
+                g.grid.add(p);
             }
         } else if (section == 4) {
             for (PcBoard.Post p : posts) {
@@ -508,7 +529,41 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
         });
     }
 
+    private void showPostMenu(final PcBoard.Post p) {
+        if (getParentActivity() == null) {
+            return;
+        }
+        CharSequence[] items = {
+            LocaleController.getString(R.string.PcWhyTitle),
+            LocaleController.getString(R.string.PcNotInterested),
+            LocaleController.getString(R.string.PcHideAuthor),
+            LocaleController.getString(R.string.PcReportPost)};
+        AlertDialog.Builder b = new AlertDialog.Builder(getParentActivity());
+        b.setItems(items, (d, which) -> {
+            if (which == 0) {
+                AlertDialog.Builder w = new AlertDialog.Builder(getParentActivity());
+                w.setTitle(LocaleController.getString(R.string.PcWhyTitle));
+                w.setMessage(PcRanking.whyText(currentAccount, p, tabMode() && section == 3));
+                w.setPositiveButton(LocaleController.getString(R.string.OK), null);
+                w.setNeutralButton(LocaleController.getString(R.string.PcInterestsManage), (dd, ww) -> presentFragment(new PcInterestsActivity()));
+                showDialog(w.create());
+            } else if (which == 1) {
+                PcInterests.hidePost(p);
+                notifyData();
+            } else if (which == 2) {
+                PcInterests.hideAuthor(p.authorId);
+                notifyData();
+            } else {
+                PcInterests.report(p);
+                notifyData();
+                PcUi.toast(getParentActivity(), LocaleController.getString(R.string.PcReportedThanks));
+            }
+        });
+        showDialog(b.create());
+    }
+
     private void openPost(PcBoard.Post p) {
+        PcInterests.record(p, PcInterests.W_OPEN);
         Bundle b = new Bundle();
         b.putLong("chat_id", p.chatId);
         b.putInt("message_id", p.msgId);
@@ -529,6 +584,11 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
             TextView plus = PcUi.button(context, "+", true, v -> onPlus());
             plus.setTextSize(20);
             r.addView(plus, LayoutHelper.createLinear(44, 38, 0, 0, 10, 0));
+            TextView mode = PcUi.button(context, LocaleController.getString(following() ? R.string.PcModeFollowing : R.string.PcModeForYou), false, v -> {
+                setFollowing(!following());
+                notifyData();
+            });
+            r.addView(mode, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, 38, 0, 0, 10, 0));
             final int[] names = {R.string.PcSocialFeed, R.string.PcSocialStories, R.string.PcSocialReels, R.string.PcSocialExplore, R.string.PcSocialActivity};
             for (int i = 0; i < names.length; i++) {
                 final int idx = i;
@@ -610,7 +670,11 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
             try {
                 ArrayList<org.telegram.tgnet.tl.TL_stories.PeerStories> list = getMessagesController().getStoriesController().getDialogListStories();
                 final long me = UserConfig.getInstance(currentAccount).getClientUserId();
-                for (org.telegram.tgnet.tl.TL_stories.PeerStories ps : list) {
+                ArrayList<org.telegram.tgnet.tl.TL_stories.PeerStories> sorted = new ArrayList<>(list);
+                java.util.Collections.sort(sorted, (a, b) -> Boolean.compare(
+                    PcRanking.isOfficial(org.telegram.messenger.DialogObject.getPeerDialogId(b.peer)),
+                    PcRanking.isOfficial(org.telegram.messenger.DialogObject.getPeerDialogId(a.peer))));
+                for (org.telegram.tgnet.tl.TL_stories.PeerStories ps : sorted) {
                     final long did = org.telegram.messenger.DialogObject.getPeerDialogId(ps.peer);
                     if (did <= 0 || did == me) {
                         continue;
@@ -620,7 +684,8 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
                         continue;
                     }
                     boolean unread = getMessagesController().getStoriesController().hasUnreadStories(did);
-                    r.addView(item(context, UserObject.getFirstName(u), u, false, unread, v -> {
+                    final boolean off = PcRanking.isOfficial(did);
+                    r.addView(item(context, off ? LocaleController.getString(R.string.PcOfficial) : UserObject.getFirstName(u), u, false, unread, v -> {
                         if (getParentActivity() != null) {
                             getOrCreateStoryViewer().open(getParentActivity(), did, org.telegram.ui.Stories.StoriesListPlaceProvider.of(listView));
                         }
@@ -721,6 +786,8 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
         private final TextView likeBtn;
         private final BackupImageView media;
         private final TextView playBadge;
+        private final TextView officialBadge;
+        private long shownSince;
         private final AvatarDrawable avatarDrawable = new AvatarDrawable();
         private PcBoard.Post post;
 
@@ -745,6 +812,15 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
             col.addView(name);
             col.addView(date);
             head.addView(col, LayoutHelper.createLinear(0, LayoutHelper.WRAP_CONTENT, 1f, 10, 0, 0, 0));
+            officialBadge = PcUi.badge(context, LocaleController.getString(R.string.PcOfficial).toUpperCase());
+            officialBadge.setVisibility(GONE);
+            head.addView(officialBadge, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER_VERTICAL, 0, 0, 6, 0));
+            TextView more = PcUi.label(context, "\u22EF", 22, false, Theme.key_windowBackgroundWhiteGrayText);
+            more.setPadding(dp(10), dp(2), dp(6), dp(2));
+            more.setOnClickListener(v -> {
+                if (post != null) showPostMenu(post);
+            });
+            head.addView(more, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER_VERTICAL));
             box.addView(head, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
             FrameLayout mediaBox = new FrameLayout(context);
             media = new BackupImageView(context);
@@ -785,6 +861,7 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
             final PcBoard.Post p = post;
             PcBoard.like(currentAccount, p, ok -> {
                 if (ok) {
+                    PcInterests.record(p, PcInterests.W_LIKE);
                     p.likes++;
                     if (post == p) {
                         bind(p);
@@ -795,8 +872,25 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
             });
         }
 
+        @Override
+        protected void onAttachedToWindow() {
+            super.onAttachedToWindow();
+            shownSince = android.os.SystemClock.elapsedRealtime();
+        }
+
+        @Override
+        protected void onDetachedFromWindow() {
+            super.onDetachedFromWindow();
+            if (post != null && shownSince > 0) {
+                // tempo di visione: sotto 1 secondo = scorso via (segnale negativo), sopra = interesse
+                PcInterests.recordDwell(post, android.os.SystemClock.elapsedRealtime() - shownSince, isVideo(post));
+            }
+            shownSince = 0;
+        }
+
         void bind(PcBoard.Post p) {
             post = p;
+            officialBadge.setVisibility(PcRanking.isOfficial(p.authorId) ? VISIBLE : GONE);
             TLRPC.User u = getMessagesController().getUser(p.authorId);
             if (u != null) {
                 avatarDrawable.setInfo(currentAccount, u);

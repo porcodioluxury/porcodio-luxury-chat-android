@@ -111,7 +111,7 @@ public class PcSecret {
         return (SecretKey) ks.getKey(WRAP_ALIAS, null);
     }
 
-    private static String wrap(byte[] plain) {
+    static String wrap(byte[] plain) {
         try {
             Cipher c = Cipher.getInstance("AES/GCM/NoPadding");
             c.init(Cipher.ENCRYPT_MODE, wrapKey());
@@ -127,7 +127,7 @@ public class PcSecret {
         }
     }
 
-    private static byte[] unwrap(String s) {
+    static byte[] unwrap(String s) {
         try {
             byte[] raw = Base64.decode(s.substring(1), Base64.NO_WRAP);
             if (s.charAt(0) == 'p') {

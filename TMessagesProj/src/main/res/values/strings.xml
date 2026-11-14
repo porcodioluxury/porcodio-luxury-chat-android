@@ -11937,5 +11937,30 @@
     <string name="PcMyLinksSaved">Links published</string>
     <string name="PcMyGridNote">Your posts with photos and videos</string>
     <string name="PcMyBoardOff">Turn on your Board in the Social tab first.</string>
+    <string name="PcOfficial">Official</string>
+    <string name="PcModeForYou">For you</string>
+    <string name="PcModeFollowing">Following</string>
+    <string name="PcWhyTitle">Why am I seeing this?</string>
+    <string name="PcNotInterested">Not interested</string>
+    <string name="PcHideAuthor">Hide this author</string>
+    <string name="PcReportPost">Report</string>
+    <string name="PcReportedThanks">Thanks, this post will rank lower for you.</string>
+    <string name="PcInterestsManage">My interests</string>
+    <string name="PcInterestsTitle">Interests and algorithm</string>
+    <string name="PcInterestsRowInfo">See, change or reset what the feed learns</string>
+    <string name="PcInterestsHow">The feed learns your interests from how long you watch, likes and comments. Everything stays encrypted on this phone: nothing is sent anywhere. Use + and - to show more or less of a topic, or reset everything.</string>
+    <string name="PcInterestsReset">Reset interests</string>
+    <string name="PcInterestsResetAsk">The feed forgets everything it learned about you. Continue?</string>
+    <string name="PcInterestsEmpty">No interests yet. Watch and like a few posts.</string>
+    <string name="PcWhyOfficial">Official account of Porcodio Luxury: pinned for everyone.</string>
+    <string name="PcWhyFresh">Freshness: x%1$s (halves every 24 hours)</string>
+    <string name="PcWhyQuality">Overall quality and engagement: x%1$s</string>
+    <string name="PcWhyInterest">Your interests: x%1$s (similarity %2$s, author affinity %3$s)</string>
+    <string name="PcWhyTopics">Topics: %1$s</string>
+    <string name="PcWhyVerified">Verified boost: x%1$s</string>
+    <string name="PcWhyPenalty">Penalty (spam or reported): x%1$s</string>
+    <string name="PcWhyExploration">Shown as a discovery, outside your usual interests.</string>
+    <string name="PcWhyTotal">Total score: %1$s</string>
+    <string name="PcWhyPrivacy">Computed on your phone, nothing leaves the device.</string>
     <!-- /PORCODIO PHASE3 -->
 </resources>

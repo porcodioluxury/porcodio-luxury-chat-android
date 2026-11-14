@@ -123,6 +123,7 @@ public class PcSettingsActivity extends PcListFragment implements MainTabsActivi
             section(R.string.PcSetFeatures);
         }
         row(R.string.PcFeedInfo, R.string.PcFeedInfoSub, R.drawable.ic_pc_grid, () -> presentFragment(new PcFeedActivity(new Bundle())));
+        row(R.string.PcInterestsTitle, R.string.PcInterestsRowInfo, R.drawable.ic_pc_spark, () -> presentFragment(new PcInterestsActivity()));
         if (!featuresOnly) {
             section(R.string.PcSetShopOrders);
         }

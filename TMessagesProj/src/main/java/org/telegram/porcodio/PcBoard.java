@@ -85,7 +85,7 @@ public class PcBoard {
 
     public static class Post {
         public long authorId, chatId;
-        public int msgId, date, views, likes;
+        public int msgId, date, views, likes, comments, shares;
         public String text;
         public TLRPC.Message message;
     }
@@ -442,6 +442,8 @@ public class PcBoard {
                             p.msgId = m.id;
                             p.date = m.date;
                             p.views = m.views;
+                            p.shares = m.forwards;
+                            p.comments = m.replies != null ? m.replies.replies : 0;
                             p.text = m.message == null ? "" : m.message;
                             p.message = m;
                             if (m.reactions != null && m.reactions.results != null) {

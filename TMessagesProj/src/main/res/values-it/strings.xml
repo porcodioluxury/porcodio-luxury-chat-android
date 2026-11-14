@@ -1796,5 +1796,30 @@
     <string name="PcMyLinksSaved">Link pubblicati</string>
     <string name="PcMyGridNote">I tuoi post con foto e video</string>
     <string name="PcMyBoardOff">Prima attiva la tua Bacheca nella scheda Social.</string>
+    <string name="PcOfficial">Ufficiale</string>
+    <string name="PcModeForYou">Per te</string>
+    <string name="PcModeFollowing">Seguiti</string>
+    <string name="PcWhyTitle">Perché vedo questo</string>
+    <string name="PcNotInterested">Non mi interessa</string>
+    <string name="PcHideAuthor">Nascondi questo autore</string>
+    <string name="PcReportPost">Segnala</string>
+    <string name="PcReportedThanks">Grazie, questo post conterà meno per te.</string>
+    <string name="PcInterestsManage">I miei interessi</string>
+    <string name="PcInterestsTitle">Interessi e algoritmo</string>
+    <string name="PcInterestsRowInfo">Vedi, cambia o azzera ciò che il feed impara</string>
+    <string name="PcInterestsHow">Il feed impara i tuoi interessi da quanto guardi, like e commenti. Tutto resta cifrato su questo telefono: non viene inviato niente. Usa + e - per vedere più o meno di un argomento, oppure azzera tutto.</string>
+    <string name="PcInterestsReset">Azzera interessi</string>
+    <string name="PcInterestsResetAsk">Il feed dimentica tutto quello che ha imparato su di te. Continuare?</string>
+    <string name="PcInterestsEmpty">Ancora nessun interesse. Guarda e metti like a qualche post.</string>
+    <string name="PcWhyOfficial">Account ufficiale di Porcodio Luxury: fissato in evidenza per tutti.</string>
+    <string name="PcWhyFresh">Freschezza: x%1$s (dimezza ogni 24 ore)</string>
+    <string name="PcWhyQuality">Qualità e coinvolgimento generale: x%1$s</string>
+    <string name="PcWhyInterest">I tuoi interessi: x%1$s (somiglianza %2$s, affinità con l autore %3$s)</string>
+    <string name="PcWhyTopics">Argomenti: %1$s</string>
+    <string name="PcWhyVerified">Boost verificato: x%1$s</string>
+    <string name="PcWhyPenalty">Penalità (spam o segnalato): x%1$s</string>
+    <string name="PcWhyExploration">Mostrato come scoperta, fuori dai tuoi soliti interessi.</string>
+    <string name="PcWhyTotal">Punteggio totale: %1$s</string>
+    <string name="PcWhyPrivacy">Calcolato sul tuo telefono, niente lascia il dispositivo.</string>
     <!-- /PORCODIO PHASE3 -->
 </resources>
