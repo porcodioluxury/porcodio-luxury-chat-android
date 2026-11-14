@@ -588,6 +588,7 @@ public class GlassTabView extends FrameLayout implements MainTabsLayout.Tab, Fac
         PC_HOME(TabAnimationType.STATIC, R.drawable.ic_pc_tab_home),
         PC_REELS(TabAnimationType.STATIC, R.drawable.ic_pc_tab_reels),
         PC_EXPLORE(TabAnimationType.STATIC, R.drawable.ic_pc_tab_explore),
+        PC_WALLET(TabAnimationType.STATIC, R.drawable.ic_pc_wallet),
         PC_SOCIAL(TabAnimationType.STATIC, R.drawable.ic_pc_tab_social),
         PC_SHOP(TabAnimationType.STATIC, R.drawable.ic_pc_tab_shop),
         PC_SETTINGS(TabAnimationType.STATIC, R.drawable.ic_pc_tab_settings),

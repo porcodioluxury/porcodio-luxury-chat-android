@@ -12085,6 +12085,7 @@
     <!-- PORCODIO v10 -->
     <string name="PcTabHome">Home</string>
     <string name="PcTabReels">Reels</string>
+    <string name="PcTabWallet">Wallet</string>
     <string name="PcTabExplore">Explore</string>
     <string name="PcTabProfile">Profile</string>
     <string name="PcReelsFriends">Friends</string>

@@ -95,19 +95,21 @@ import me.vkryl.android.animator.FactorAnimator;
 
 public class MainTabsActivity extends ViewPagerActivity implements NotificationCenter.NotificationCenterDelegate, FactorAnimator.Target {
 
-    // Porcodio v10: barra a 5 icone: Home, Reel, Messaggi (al centro), Esplora (+Shop), Profilo
-    public static final int TABS_COUNT = 5;
+    // Porcodio v12: barra a 6 icone: Home, Reel, Messaggi, Esplora (+Shop), Wallet, Profilo
+    public static final int TABS_COUNT = 6;
     private static final int POSITION_CONTACTS = 0; // Home
     private static final int POSITION_REELS = 1;
     private static final int POSITION_CHATS = 2;
     private static final int POSITION_CALLS_OR_SETTINGS = 3; // Esplora
-    private static final int POSITION_PROFILE = 4;
+    private static final int POSITION_WALLET = 4;
+    private static final int POSITION_PROFILE = 5;
 
     private static final int INDEX_CONTACTS = 0; // Home
     private static final int INDEX_SETTINGS = 1; // Reel
     private static final int INDEX_CHATS = 2;
     private static final int INDEX_CALLS = 3; // Esplora
-    private static final int INDEX_PROFILE = 4;
+    private static final int INDEX_WALLET = 4;
+    private static final int INDEX_PROFILE = 5;
 
     private static int indexToPosition(int index) {
         return index;
@@ -331,11 +333,12 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
         tabsView.setPadding(dp(DialogsActivity.MAIN_TABS_MARGIN + 4), dp(DialogsActivity.MAIN_TABS_MARGIN + 4), dp(DialogsActivity.MAIN_TABS_MARGIN + 4), dp(DialogsActivity.MAIN_TABS_MARGIN + 4));
         tabsView.setMaxWidth(0);
 
-        tabs = new GlassTabView[5];
+        tabs = new GlassTabView[6];
         tabs[INDEX_CONTACTS] = GlassTabView.createMainTab(context, resourceProvider, GlassTabView.TabAnimation.PC_HOME, R.string.PcTabHome);
         tabs[INDEX_SETTINGS] = GlassTabView.createMainTab(context, resourceProvider, GlassTabView.TabAnimation.PC_REELS, R.string.PcTabReels);
         tabs[INDEX_CHATS] = GlassTabView.createMainTab(context, resourceProvider, GlassTabView.TabAnimation.PC_CHAT, R.string.MainTabsChats);
         tabs[INDEX_CALLS] = GlassTabView.createMainTab(context, resourceProvider, GlassTabView.TabAnimation.PC_EXPLORE, R.string.PcTabExplore);
+        tabs[INDEX_WALLET] = GlassTabView.createMainTab(context, resourceProvider, GlassTabView.TabAnimation.PC_WALLET, R.string.PcTabWallet);
         tabs[INDEX_PROFILE] = GlassTabView.createAvatar(context, resourceProvider, currentAccount, R.string.PcTabProfile);
         tabs[INDEX_CHATS].setOnLongClickListener(this::openFoldersSelector);
         tabs[INDEX_PROFILE].setOnLongClickListener(this::openAccountSelector);
@@ -345,6 +348,7 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
         tabsView.addTabToIgnoreClick(tabs[INDEX_PROFILE]);
         tabsView.addTabToIgnoreClick(tabs[INDEX_CALLS]);
         tabsView.addTabToIgnoreClick(tabs[INDEX_SETTINGS]);
+        tabsView.addTabToIgnoreClick(tabs[INDEX_WALLET]);
 
         for (int index = 0; index < tabs.length; index++) {
             final GlassTabView view = tabs[index];
@@ -846,6 +850,10 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
             dialogsActivity = new DialogsActivity(args);
             dialogsActivity.setMainTabsActivityController(new MainTabsActivityControllerImpl());
             return dialogsActivity;
+        } else if (position == POSITION_WALLET) {
+            Bundle args = new Bundle();
+            args.putBoolean("hasMainTabs", true);
+            return new org.telegram.porcodio.PcWalletActivity(args);
         } else if (position == POSITION_PROFILE) {
             Bundle args = new Bundle();
             args.putBoolean("hasMainTabs", true);

@@ -1944,6 +1944,7 @@
     <!-- PORCODIO v10 -->
     <string name="PcTabHome">Home</string>
     <string name="PcTabReels">Reel</string>
+    <string name="PcTabWallet">Wallet</string>
     <string name="PcTabExplore">Esplora</string>
     <string name="PcTabProfile">Profilo</string>
     <string name="PcReelsFriends">Amici</string>
