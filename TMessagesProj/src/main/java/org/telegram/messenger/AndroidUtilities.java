@@ -4419,6 +4419,14 @@ public class AndroidUtilities {
         if (f == null || !f.exists()) {
             f = FileLoader.getInstance(message.currentAccount).getPathToMessage(message.messageOwner);
         }
+        // Porcodio v11: allegati cifrati delle chat super segrete, si decifrano in una cartella privata e si aprono da li'
+        if (f != null && f.exists() && f.getName().endsWith(org.telegram.porcodio.PcSecretMedia.EXT)) {
+            File pcDec = org.telegram.porcodio.PcSecretMedia.decryptForView(message.currentAccount, message.getDialogId(), f);
+            if (pcDec != null) {
+                return openForView(pcDec, pcDec.getName(), null, activity, resourcesProvider, false);
+            }
+            return false;
+        }
         String mimeType = message.type == MessageObject.TYPE_FILE || message.type == MessageObject.TYPE_TEXT ? message.getMimeType() : null;
         return openForView(f, message.getFileName(), mimeType, activity, resourcesProvider, restrict);
     }

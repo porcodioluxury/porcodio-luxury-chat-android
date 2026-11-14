@@ -47,6 +47,14 @@ jobs:
           javac -d /tmp/wlt TMessagesProj/src/main/java/org/telegram/porcodio/PcWalletCore.java tools/test/PcWalletCoreTest.java
           java -cp /tmp/wlt PcWalletCoreTest TMessagesProj/src/main/assets/bip39_en.txt
 
+      - name: Test media segreti e pagamenti (Java puro)
+        run: |
+          mkdir -p /tmp/smt /tmp/pyt
+          javac -d /tmp/smt TMessagesProj/src/main/java/org/telegram/porcodio/PcSecretMediaCore.java tools/test/PcSecretMediaCoreTest.java
+          java -cp /tmp/smt PcSecretMediaCoreTest
+          javac -d /tmp/pyt TMessagesProj/src/main/java/org/telegram/porcodio/PcPayments.java TMessagesProj/src/main/java/org/telegram/porcodio/PcFlags.java tools/test/PcPaymentsTest.java
+          java -cp /tmp/pyt PcPaymentsTest
+
       - uses: android-actions/setup-android@v3
         with:
           packages: "platform-tools platforms;android-36 build-tools;36.0.0 ndk;27.2.12479018 cmake;3.22.1"

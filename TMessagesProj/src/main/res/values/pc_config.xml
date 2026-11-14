@@ -15,4 +15,7 @@
     <string name="pc_base_rpc" translatable="false">https://mainnet.base.org</string>
     <string name="pc_base_explorer" translatable="false">https://basescan.org</string>
     <string name="pc_base_history_api" translatable="false">https://base.blockscout.com/api/v2</string>
+    <!-- ID utente con spunta blu (separati da virgola). Finche' i pagamenti sono spenti li assegna il proprietario. -->
+    <string name="pc_verified_user_ids" translatable="false"></string>
+    <string name="pc_porco_name" translatable="false">PORCODIO LUXURY</string>
 </resources>

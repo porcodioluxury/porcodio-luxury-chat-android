@@ -101,15 +101,7 @@ public class PcSettingsActivity extends PcListFragment implements MainTabsActivi
         if (!featuresOnly) {
             section(R.string.PcSetWalletSection);
             row(R.string.PcWalletTitle, R.string.PcWalletInfo, R.drawable.ic_pc_wallet, () -> presentFragment(new PcWalletActivity(new Bundle())));
-            row(R.string.PcVerifyTitle, R.string.PcVerifyInfo, R.drawable.ic_pc_shield, () -> {
-                if (getParentActivity() != null) {
-                    AlertDialog.Builder vb = new AlertDialog.Builder(getParentActivity());
-                    vb.setTitle(s(R.string.PcVerifyTitle));
-                    vb.setMessage(s(R.string.PcVerifySoon));
-                    vb.setPositiveButton(s(R.string.OK), null);
-                    showDialog(vb.create());
-                }
-            });
+            row(R.string.PcVerifyTitle, R.string.PcVerifyInfo, R.drawable.ic_pc_shield, () -> presentFragment(new PcVerifyActivity()));
             section(R.string.PcSetSecurity);
             row(R.string.PcSetPrivacy, R.string.PcSetPrivacyInfo, R.drawable.ic_pc_shield, () -> presentFragment(new PrivacySettingsActivity()));
             row(R.string.PcSetPrivateTools, R.string.PcSetPrivateToolsInfo, R.drawable.ic_pc_lock, this::explainPrivateTools);
