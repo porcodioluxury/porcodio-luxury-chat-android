@@ -119,7 +119,7 @@ S = {
  'PcPlusStory': ('Story', 'Storia'),
  'PcPlusText': ('Text post', 'Post di testo'),
  'PcPlusPreparing': ('Preparing the file...', 'Preparo il file...'),
- 'PcPlusCaption': ('Write a caption', 'Scrivi una didascalia'),
+ 'PcPlusCaption': ('Write a caption, add #topics', 'Scrivi una didascalia, aggiungi #argomenti'),
  'PcMyStory': ('My story', 'La mia storia'),
  'PcSocialStoriesNote': ('Stories of your contacts are in the row above. Tap + to publish yours.', 'Le storie dei tuoi contatti sono nella riga qui sopra. Tocca + per pubblicare la tua.'),
  'PcSocialSectionEmpty': ('Nothing here yet. Posts of app users appear here.', 'Ancora niente. Qui compaiono i post di chi usa l app.'),

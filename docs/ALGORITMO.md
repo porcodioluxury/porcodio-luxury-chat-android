@@ -34,7 +34,7 @@ Gli ID si configurano in `res/values/pc_config.xml` (`pc_official_user_ids`, sep
 
 Vettore argomento→peso più affinità per account, salvati cifrati con una chiave dell'Android Keystore. Entrambi **decadono nel tempo** (emivita 14 giorni), così gli interessi si aggiornano.
 
-Argomenti di un contenuto: **hashtag** (peso 1.0), **categorie scelte da chi pubblica** (scritte come hashtag), **parole chiave** della didascalia (peso 0.3, max 12, senza parole comuni).
+Argomenti di un contenuto: **hashtag** (peso 1.0), **categorie scelte da chi pubblica** (oggi si scrivono come #argomenti nella didascalia), **parole chiave** della didascalia (peso 0.3, max 12, senza parole comuni).
 
 Segnali (pesi in `PcInterests`):
 
