@@ -24,8 +24,8 @@ public class PcUi {
 
     /** Serif per titoli e logotipo (come nella foto di riferimento). */
     public static android.graphics.Typeface serif(boolean bold, boolean italic) {
-        return android.graphics.Typeface.create(android.graphics.Typeface.SERIF,
-            bold ? (italic ? android.graphics.Typeface.BOLD_ITALIC : android.graphics.Typeface.BOLD) : (italic ? android.graphics.Typeface.ITALIC : android.graphics.Typeface.NORMAL));
+        // Porcodio v10: un solo carattere pulito in tutta l'app (niente serif misto): sans medio/regolare
+        return bold ? AndroidUtilities.bold() : android.graphics.Typeface.DEFAULT;
     }
 
     public static GradientDrawable filled(int color) {

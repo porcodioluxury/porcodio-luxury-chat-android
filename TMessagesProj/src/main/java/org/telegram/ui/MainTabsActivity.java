@@ -329,7 +329,7 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
         tabsView = new MainTabsLayout(context, resourceProvider);
         tabsView.setClipChildren(false);
         tabsView.setPadding(dp(DialogsActivity.MAIN_TABS_MARGIN + 4), dp(DialogsActivity.MAIN_TABS_MARGIN + 4), dp(DialogsActivity.MAIN_TABS_MARGIN + 4), dp(DialogsActivity.MAIN_TABS_MARGIN + 4));
-        tabsView.setMaxWidth(dp(328 + DialogsActivity.MAIN_TABS_MARGIN * 2));
+        tabsView.setMaxWidth(0);
 
         tabs = new GlassTabView[5];
         tabs[INDEX_CONTACTS] = GlassTabView.createMainTab(context, resourceProvider, GlassTabView.TabAnimation.PC_HOME, R.string.PcTabHome);
@@ -388,15 +388,7 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
         tabsViewBackground = iBlur3FactoryGlass.create(tabsView, BlurredBackgroundProviderImpl.mainTabs(resourceProvider));
         tabsViewBackground.setRadius(dp(4));
         tabsViewBackground.setPadding(dp(DialogsActivity.MAIN_TABS_MARGIN - 0.334f));
-        {
-            // Porcodio: barra in basso opaca (#1A1A1A, bordo #2F3442, raggio 4dp), mai trasparente o sfocata
-            android.graphics.drawable.GradientDrawable pcBar = new android.graphics.drawable.GradientDrawable();
-            pcBar.setColor(0xFF1A1A1A);
-            pcBar.setCornerRadius(dp(4));
-            pcBar.setStroke(Math.max(1, dp(1)), 0xFF2F3442);
-            int pcInset = dp(DialogsActivity.MAIN_TABS_MARGIN);
-            tabsView.setBackground(new android.graphics.drawable.InsetDrawable(pcBar, pcInset));
-        }
+        tabsView.setBackground(new android.graphics.drawable.ColorDrawable(0xFF121212)); // Porcodio v10: barra docked opaca
 
         BlurredBackgroundDrawableViewFactory iBlur3FactoryFade = new BlurredBackgroundDrawableViewFactory(iBlur3SourceColor);
         iBlur3FactoryFade.setSourceRootView(viewPositionWatcher, contentView);

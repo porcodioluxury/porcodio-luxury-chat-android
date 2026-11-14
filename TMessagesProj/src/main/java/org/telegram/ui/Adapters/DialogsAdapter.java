@@ -692,7 +692,7 @@ public class DialogsAdapter extends RecyclerListView.SelectionAdapter implements
                     view = new ProfileSearchCell(mContext);
                 } else {
                     DialogCell dialogCell = new DialogCell(parentFragment, mContext, true, false, currentAccount, null);
-                    dialogCell.pcCard = true;
+                    dialogCell.pcCard = false; // Porcodio v10: righe pulite, niente riquadri
                     if (showOpenBotButton()) {
                         dialogCell.allowBotOpenButton(true, this::onOpenBot);
                     }
@@ -1771,7 +1771,7 @@ public class DialogsAdapter extends RecyclerListView.SelectionAdapter implements
             itemInternals.add(new ItemInternal(VIEW_TYPE_SHADOW));
             itemInternals.add(new ItemInternal(VIEW_TYPE_HEADER));
             itemInternals.add(new ItemInternal(VIEW_TYPE_CONTACTS_FLICKER));
-        } else if (onlineContacts != null && !onlineContacts.isEmpty() && dialogsType != 7 && dialogsType != 8) {
+        } else if (false && onlineContacts != null && !onlineContacts.isEmpty() && dialogsType != 7 && dialogsType != 8) { // Porcodio v10: niente contatti ammucchiati sotto la lista
             if (dialogsCount == 0) {
                 isEmpty = true;
                 if (requestPeerType != null) {

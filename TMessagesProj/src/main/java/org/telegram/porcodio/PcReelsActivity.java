@@ -150,6 +150,11 @@ public class PcReelsActivity extends PcListFragment implements org.telegram.ui.M
     }
 
     @Override
+    protected boolean overlayHeader() {
+        return true;
+    }
+
+    @Override
     protected void onViewCreated(View view) {
         super.onViewCreated(view);
         // nessuna barra semplice sopra il video
