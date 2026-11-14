@@ -1113,6 +1113,13 @@ public class NotificationsController extends BaseController implements Notificat
             }
         }
 
+        for (int i = 0; i < messageObjects.size(); i++) {
+            if (org.telegram.porcodio.PcPolicy.suppressNotification(currentAccount, messageObjects.get(i))) {
+                messageObjects.remove(i);
+                i--;
+            }
+        }
+
         if (messageObjects.isEmpty()) {
             if (countDownLatch != null) {
                 countDownLatch.countDown();

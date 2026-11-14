@@ -457,6 +457,7 @@ public class ConnectionsManager extends BaseController {
                         error = new TLRPC.TL_error();
                         error.code = errorCode;
                         error.text = errorText;
+                        org.telegram.porcodio.PcBulk.noteError(errorCode, errorText);
                         if (BuildVars.LOGS_ENABLED && error.code != -2000) {
                             FileLog.e(object + " got error " + error.code + " " + error.text);
                         }

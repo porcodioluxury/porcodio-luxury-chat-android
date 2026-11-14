@@ -26,7 +26,9 @@ public class PcAntispam {
             LocaleController.getString(R.string.PcBlockReportSpam),
             LocaleController.getString(R.string.PcAcceptRequests),
             LocaleController.getString(R.string.PcMuteAllGroups),
-            LocaleController.getString(R.string.PcQuickCleanup)
+            LocaleController.getString(R.string.PcQuickCleanup),
+            LocaleController.getString(R.string.PcBulkTitle),
+            LocaleController.getString(R.string.PcReqTitle)
         };
         AlertDialog.Builder b = new AlertDialog.Builder(ctx);
         b.setTitle(LocaleController.getString(R.string.PcAntispamMenu));
@@ -37,6 +39,8 @@ public class PcAntispam {
                 case 2: acceptAll(fragment, account, onChanged); break;
                 case 3: muteAllGroups(fragment, account, onChanged); break;
                 case 4: fragment.presentFragment(new PcCleanupActivity()); break;
+                case 5: fragment.presentFragment(new PcBulkActivity()); break;
+                case 6: fragment.presentFragment(new PcRequestsActivity()); break;
             }
         });
         b.setNegativeButton(LocaleController.getString(R.string.Cancel), null);
