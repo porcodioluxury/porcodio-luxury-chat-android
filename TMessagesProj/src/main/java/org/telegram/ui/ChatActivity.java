@@ -3992,7 +3992,7 @@ public class ChatActivity extends BaseFragment implements
                 } else if (id == bot_settings) {
                     getSendMessagesHelper().sendMessage(SendMessagesHelper.SendMessageParams.of("/settings", dialog_id, null, null, null, false, null, null, null, true, 0, 0, null, false));
                 } else if (id == pc_secret) {
-                    org.telegram.porcodio.PcSecret.showMenu(ChatActivity.this, currentAccount, dialog_id, () -> AndroidUtilities.runOnUIThread(this::pcApplySecure, 300));
+                    org.telegram.porcodio.PcSecret.showMenu(ChatActivity.this, currentAccount, dialog_id, () -> AndroidUtilities.runOnUIThread(ChatActivity.this::pcApplySecure, 300));
                 } else if (id == pc_lock) {
                     org.telegram.porcodio.PcLock.toggleWithAuth(dialog_id, null);
                 } else if (id == pc_quick) {
