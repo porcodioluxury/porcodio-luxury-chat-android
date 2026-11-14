@@ -666,12 +666,12 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
             if (isPhoto(p)) {
                 TLRPC.Photo photo = p.message.media.photo;
                 TLRPC.PhotoSize sz = FileLoader.getClosestPhotoSizeWithSize(photo.sizes, side);
-                img.setImage(ImageLocation.getForPhoto(sz, photo), side + "_" + side, null, p.message);
+                img.setImage(ImageLocation.getForPhoto(sz, photo), side + "_" + side, (android.graphics.drawable.Drawable) null, p.message);
             } else if (isVideo(p)) {
                 TLRPC.Document doc = p.message.media.document;
                 TLRPC.PhotoSize sz = FileLoader.getClosestPhotoSizeWithSize(doc.thumbs, side);
                 if (sz != null) {
-                    img.setImage(ImageLocation.getForDocument(sz, doc), side + "_" + side, null, p.message);
+                    img.setImage(ImageLocation.getForDocument(sz, doc), side + "_" + side, (android.graphics.drawable.Drawable) null, p.message);
                 }
             }
         } catch (Throwable ignore) {
