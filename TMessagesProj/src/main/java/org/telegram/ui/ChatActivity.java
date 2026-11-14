@@ -1708,6 +1708,7 @@ public class ChatActivity extends BaseFragment implements
 
     private final static int search = 40;
     private final static int pc_quick = 9001;
+    private final static int pc_lock = 9002;
 
     private final static int topic_close = 60;
     private final static int open_forum = 61;
@@ -3989,6 +3990,8 @@ public class ChatActivity extends BaseFragment implements
                     getSendMessagesHelper().sendMessage(SendMessagesHelper.SendMessageParams.of("/help", dialog_id, null, null, null, false, null, null, null, true, 0, 0, null, false));
                 } else if (id == bot_settings) {
                     getSendMessagesHelper().sendMessage(SendMessagesHelper.SendMessageParams.of("/settings", dialog_id, null, null, null, false, null, null, null, true, 0, 0, null, false));
+                } else if (id == pc_lock) {
+                    org.telegram.porcodio.PcLock.toggleWithAuth(dialog_id, null);
                 } else if (id == pc_quick) {
                     org.telegram.porcodio.PcQuick.showPicker(ChatActivity.this, text -> {
                         if (chatActivityEnterView != null) {
@@ -4409,6 +4412,9 @@ public class ChatActivity extends BaseFragment implements
             }
             if (chatMode == MODE_DEFAULT) {
                 headerItem.lazilyAddSubItem(pc_quick, R.drawable.msg_edit, LocaleController.getString(R.string.PcQuickReplies));
+                if (currentUser != null && !UserObject.isUserSelf(currentUser)) {
+                    headerItem.lazilyAddSubItem(pc_lock, R.drawable.msg_secret, LocaleController.getString(R.string.PcProfileLock));
+                }
             }
             if (ChatObject.isBoostSupported(currentChat) && (getUserConfig().isPremium() || ChatObject.isBoosted(chatInfo) || ChatObject.hasAdminRights(currentChat))) {
                 RLottieDrawable drawable = new RLottieDrawable(R.raw.boosts, dp(24), dp(24));

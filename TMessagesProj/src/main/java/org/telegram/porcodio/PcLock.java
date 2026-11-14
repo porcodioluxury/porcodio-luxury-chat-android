@@ -97,4 +97,18 @@ public class PcLock {
             if (onFail != null) onFail.run();
         }
     }
+
+    /** Attiva o toglie il blocco (richiede sempre l'autenticazione). Mostra un avviso se il telefono non ha impronta/PIN. */
+    public static void toggleWithAuth(long dialogId, Runnable after) {
+        if (!isAvailable()) {
+            PcUi.toast(ApplicationLoader.applicationContext, LocaleController.getString(R.string.PcProfileLockUnavailable));
+            return;
+        }
+        final boolean now = isLocked(dialogId);
+        authenticate(dialogId, () -> {
+            setLocked(dialogId, !now);
+            PcUi.toast(ApplicationLoader.applicationContext, LocaleController.getString(!now ? R.string.PcProfileLockOn : R.string.PcOff));
+            if (after != null) after.run();
+        }, null);
+    }
 }

@@ -11836,5 +11836,36 @@
     <string name="PcUpdAllow">Allow installing from this app, then tap Update again.</string>
     <string name="PcUpdSettings">Check for updates</string>
     <string name="PcUpdSettingsInfo">Automatic updates for Porcodio Luxury Chat</string>
+    <string name="PcSetFeatures">Porcodio features</string>
+    <string name="PcSetShopInfo">Products, search and filters</string>
+    <string name="PcSetPrivateTools">Chat lock and private notes</string>
+    <string name="PcSetPrivateToolsInfo">How to use them</string>
+    <string name="PcSetPrivateToolsHow">Open a contact profile: there you can lock that chat with your fingerprint or phone unlock, and write a private note only you can see. Both stay on this phone.</string>
+    <string name="PcSetAntispamInfo">Requests, spam, block and report</string>
+    <string name="PcSetAccount">Account and privacy</string>
+    <string name="PcSetPrivacy">Privacy and security</string>
+    <string name="PcSetNotifications">Notifications</string>
+    <string name="PcSetData">Data and storage</string>
+    <string name="PcSetDevices">Devices</string>
+    <string name="PcSetLook">Look and chats</string>
+    <string name="PcSetTheme">Theme and chat look</string>
+    <string name="PcSetFolders">Chat folders</string>
+    <string name="PcSetLanguage">Language</string>
+    <string name="PcSetPower">Power saving</string>
+    <string name="PcSetInfo">Information</string>
+    <string name="PcSetAbout">About the app</string>
+    <string name="PcSetAdvanced">Advanced</string>
+    <string name="PcSetOriginal">All original settings</string>
+    <string name="PcSetOriginalInfo">Premium, wallet, business and the rest</string>
+    <string name="PcSetEditProfile">Edit profile</string>
+    <string name="PcFeaturesChip">FEATURES</string>
+    <string name="PcShopSearch">Search</string>
+    <string name="PcShopSearchHint">Product name</string>
+    <string name="PcShopAll">All</string>
+    <string name="PcShopSortLow">Price: low to high</string>
+    <string name="PcShopSortHigh">Price: high to low</string>
+    <string name="PcShopOnlyAvailable">In stock</string>
+    <string name="PcShopCount">%1$d products</string>
+    <string name="PcShopNoResults">No product matches these filters.</string>
     <!-- /PORCODIO PHASE3 -->
 </resources>

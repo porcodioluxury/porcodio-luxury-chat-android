@@ -74,6 +74,20 @@ public class PcHomeTabsView extends FrameLayout {
         feed.setBackground(PcUi.panel(false));
         feed.setOnClickListener(v -> fragment.presentFragment(new PcFeedActivity(new android.os.Bundle())));
         row.addView(feed, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, 32, Gravity.CENTER_VERTICAL, 0, 0, 6, 0));
+        android.widget.TextView feats = new android.widget.TextView(context);
+        feats.setText(LocaleController.getString(R.string.PcFeaturesChip));
+        feats.setTextSize(13);
+        feats.setTypeface(AndroidUtilities.bold());
+        feats.setGravity(Gravity.CENTER);
+        feats.setPadding(dp(12), 0, dp(12), 0);
+        feats.setTextColor(color(Theme.key_windowBackgroundWhiteGrayText));
+        feats.setBackground(PcUi.panel(false));
+        feats.setOnClickListener(v -> {
+            android.os.Bundle fa = new android.os.Bundle();
+            fa.putBoolean("features_only", true);
+            fragment.presentFragment(new PcSettingsActivity(fa));
+        });
+        row.addView(feats, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, 32, Gravity.CENTER_VERTICAL, 0, 0, 6, 0));
         more = new MoreButton(context);
         more.setOnClickListener(v -> PcAntispam.showMenu(fragment, currentAccount, this::update));
         addView(more, LayoutHelper.createFrame(36, 32, Gravity.RIGHT | Gravity.CENTER_VERTICAL, 0, 0, 0, 0));

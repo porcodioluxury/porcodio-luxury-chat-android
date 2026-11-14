@@ -1695,5 +1695,36 @@
     <string name="PcUpdAllow">Consenti l\'installazione da quest\'app, poi tocca di nuovo Aggiorna.</string>
     <string name="PcUpdSettings">Controlla aggiornamenti</string>
     <string name="PcUpdSettingsInfo">Aggiornamenti automatici di Porcodio Luxury Chat</string>
+    <string name="PcSetFeatures">Funzioni Porcodio</string>
+    <string name="PcSetShopInfo">Prodotti, ricerca e filtri</string>
+    <string name="PcSetPrivateTools">Blocco chat e note private</string>
+    <string name="PcSetPrivateToolsInfo">Come si usano</string>
+    <string name="PcSetPrivateToolsHow">Apri il profilo di un contatto: lì puoi bloccare quella chat con impronta o sblocco del telefono e scrivere una nota privata che vedi solo tu. Restano entrambe su questo telefono.</string>
+    <string name="PcSetAntispamInfo">Richieste, spam, blocca e segnala</string>
+    <string name="PcSetAccount">Account e privacy</string>
+    <string name="PcSetPrivacy">Privacy e sicurezza</string>
+    <string name="PcSetNotifications">Notifiche</string>
+    <string name="PcSetData">Dati e memoria</string>
+    <string name="PcSetDevices">Dispositivi</string>
+    <string name="PcSetLook">Aspetto e chat</string>
+    <string name="PcSetTheme">Tema e aspetto chat</string>
+    <string name="PcSetFolders">Cartelle chat</string>
+    <string name="PcSetLanguage">Lingua</string>
+    <string name="PcSetPower">Risparmio energetico</string>
+    <string name="PcSetInfo">Informazioni</string>
+    <string name="PcSetAbout">Info sull\'app</string>
+    <string name="PcSetAdvanced">Avanzate</string>
+    <string name="PcSetOriginal">Tutte le impostazioni originali</string>
+    <string name="PcSetOriginalInfo">Premium, wallet, business e il resto</string>
+    <string name="PcSetEditProfile">Modifica profilo</string>
+    <string name="PcFeaturesChip">FUNZIONI</string>
+    <string name="PcShopSearch">Cerca</string>
+    <string name="PcShopSearchHint">Nome del prodotto</string>
+    <string name="PcShopAll">Tutti</string>
+    <string name="PcShopSortLow">Prezzo crescente</string>
+    <string name="PcShopSortHigh">Prezzo decrescente</string>
+    <string name="PcShopOnlyAvailable">Disponibili</string>
+    <string name="PcShopCount">%1$d prodotti</string>
+    <string name="PcShopNoResults">Nessun prodotto con questi filtri.</string>
     <!-- /PORCODIO PHASE3 -->
 </resources>

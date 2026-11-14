@@ -26,10 +26,14 @@ import java.util.HashSet;
 
 /** Scheda Shop: catalogo nativo (due colonne) dal feed pubblico Shopify, paginato, con cache e pull-to-refresh. */
 public class PcShopActivity extends PcListFragment implements MainTabsActivity.TabFragmentDelegate {
-    private static final int T_PAIR = 0, T_FOOTER = 1;
+    private static final int T_PAIR = 0, T_FOOTER = 1, T_FILTER = 2;
 
     private final ArrayList<PcShopApi.Product> products = new ArrayList<>();
     private final HashSet<Long> seen = new HashSet<>();
+    private final ArrayList<PcShopApi.Product> shown = new ArrayList<>();
+    private String query = "", category = null;
+    private int sort = 0; // 0 predefinito, 1 prezzo crescente, 2 prezzo decrescente
+    private boolean onlyAvailable;
     private int nextPage = 1;
     private boolean hasMore = true, loading, fromCache, failed;
 
@@ -108,14 +112,80 @@ public class PcShopActivity extends PcListFragment implements MainTabsActivity.T
         });
     }
 
+    private void applyFilter() {
+        shown.clear();
+        final String q = query.trim().toLowerCase(java.util.Locale.ROOT);
+        for (PcShopApi.Product p : products) {
+            if (category != null && !category.equals(p.type)) {
+                continue;
+            }
+            if (onlyAvailable && !p.available()) {
+                continue;
+            }
+            if (!q.isEmpty() && !((p.title != null ? p.title : "") + " " + (p.type != null ? p.type : "") + " " + (p.vendor != null ? p.vendor : "")).toLowerCase(java.util.Locale.ROOT).contains(q)) {
+                continue;
+            }
+            shown.add(p);
+        }
+        if (sort == 1) {
+            java.util.Collections.sort(shown, (a, b) -> Double.compare(a.minPrice(), b.minPrice()));
+        } else if (sort == 2) {
+            java.util.Collections.sort(shown, (a, b) -> Double.compare(b.minPrice(), a.minPrice()));
+        }
+    }
+
+    @Override
+    protected void notifyData() {
+        applyFilter();
+        super.notifyData();
+    }
+
+    private ArrayList<String> categories() {
+        ArrayList<String> res = new ArrayList<>();
+        for (PcShopApi.Product p : products) {
+            if (p.type != null && !p.type.trim().isEmpty() && !res.contains(p.type)) {
+                res.add(p.type);
+            }
+        }
+        java.util.Collections.sort(res);
+        return res;
+    }
+
+    private void askQuery() {
+        if (getParentActivity() == null) {
+            return;
+        }
+        final android.widget.EditText edit = new android.widget.EditText(getParentActivity());
+        edit.setText(query);
+        edit.setSingleLine(true);
+        edit.setHint(LocaleController.getString(R.string.PcShopSearchHint));
+        edit.setTextColor(Theme.getColor(Theme.key_dialogTextBlack));
+        edit.setHintTextColor(Theme.getColor(Theme.key_dialogTextGray2));
+        android.widget.FrameLayout holder = new android.widget.FrameLayout(getParentActivity());
+        holder.setPadding(dp(20), dp(4), dp(20), 0);
+        holder.addView(edit, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+        org.telegram.ui.ActionBar.AlertDialog.Builder b = new org.telegram.ui.ActionBar.AlertDialog.Builder(getParentActivity());
+        b.setTitle(LocaleController.getString(R.string.PcShopSearch));
+        b.setView(holder);
+        b.setPositiveButton(LocaleController.getString(R.string.PcShopSearch), (d, w) -> {
+            query = edit.getText().toString();
+            notifyData();
+        });
+        b.setNegativeButton(LocaleController.getString(R.string.Cancel), null);
+        showDialog(b.create());
+    }
+
     @Override
     protected int itemCount() {
-        return (products.size() + 1) / 2 + 1;
+        return 1 + (shown.size() + 1) / 2 + 1;
     }
 
     @Override
     protected int itemViewType(int position) {
-        return position < (products.size() + 1) / 2 ? T_PAIR : T_FOOTER;
+        if (position == 0) {
+            return T_FILTER;
+        }
+        return position - 1 < (shown.size() + 1) / 2 ? T_PAIR : T_FOOTER;
     }
 
     @Override
@@ -125,6 +195,11 @@ public class PcShopActivity extends PcListFragment implements MainTabsActivity.T
 
     @Override
     protected View createRow(Context context, int viewType) {
+        if (viewType == T_FILTER) {
+            FilterRow f = new FilterRow(context);
+            f.setLayoutParams(new RecyclerView.LayoutParams(-1, -2));
+            return f;
+        }
         if (viewType == T_PAIR) {
             LinearLayout row = new LinearLayout(context);
             row.setOrientation(LinearLayout.HORIZONTAL);
@@ -145,21 +220,21 @@ public class PcShopActivity extends PcListFragment implements MainTabsActivity.T
 
     @Override
     protected void bindRow(View row, int viewType, int position) {
-        if (viewType == T_PAIR) {
+        if (viewType == T_FILTER) {
+            ((FilterRow) row).bind();
+        } else if (viewType == T_PAIR) {
             LinearLayout l = (LinearLayout) row;
+            final int pairIndex = position - 1;
             for (int i = 0; i < 2; i++) {
-                int idx = position * 2 + i;
+                int idx = pairIndex * 2 + i;
                 Card c = (Card) l.getChildAt(i);
-                if (idx < products.size()) {
+                if (idx < shown.size()) {
                     c.setVisibility(View.VISIBLE);
-                    c.bind(products.get(idx));
+                    c.bind(shown.get(idx));
                 } else {
                     c.setVisibility(View.INVISIBLE);
                     c.bind(null);
                 }
-            }
-            if (hasMore && !loading && !failed && position >= (products.size() + 1) / 2 - 3) {
-                AndroidUtilities.runOnUIThread(() -> loadMore(false));
             }
         } else {
             TextView t = (TextView) row;
@@ -167,11 +242,95 @@ public class PcShopActivity extends PcListFragment implements MainTabsActivity.T
                 t.setText(LocaleController.getString(products.isEmpty() ? R.string.PcShopError : R.string.PcShopOffline));
             } else if (loading || hasMore) {
                 t.setText(LocaleController.getString(R.string.PcShopLoading));
-            } else if (products.isEmpty()) {
-                t.setText(LocaleController.getString(R.string.PcShopEmpty));
+            } else if (shown.isEmpty()) {
+                t.setText(LocaleController.getString(products.isEmpty() ? R.string.PcShopEmpty : R.string.PcShopNoResults));
             } else {
                 t.setText(fromCache ? LocaleController.getString(R.string.PcShopOffline) : "");
             }
+            // il catalogo è piccolo: si carica tutto, così categorie e filtri sono completi
+            if (hasMore && !loading && !failed) {
+                AndroidUtilities.runOnUIThread(() -> loadMore(false));
+            }
+        }
+    }
+
+    private TextView chip(Context context, String text, boolean selected, View.OnClickListener l) {
+        TextView t = new TextView(context);
+        t.setText(text.toUpperCase());
+        t.setTextSize(12);
+        t.setTypeface(AndroidUtilities.bold());
+        t.setSingleLine(true);
+        t.setGravity(Gravity.CENTER);
+        t.setPadding(dp(12), 0, dp(12), 0);
+        if (selected) {
+            t.setBackground(PcUi.filled(Theme.getColor(Theme.key_chats_actionBackground)));
+            t.setTextColor(Theme.getColor(Theme.key_chats_actionIcon));
+        } else {
+            t.setBackground(PcUi.panel(true));
+            t.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteGrayText));
+        }
+        t.setOnClickListener(l);
+        return t;
+    }
+
+    private class FilterRow extends LinearLayout {
+        FilterRow(Context context) {
+            super(context);
+            setOrientation(VERTICAL);
+            setPadding(dp(8), dp(8), dp(8), dp(4));
+        }
+
+        void bind() {
+            final Context context = getContext();
+            removeAllViews();
+            // riga 1: ricerca + categorie
+            android.widget.HorizontalScrollView sv1 = new android.widget.HorizontalScrollView(context);
+            sv1.setHorizontalScrollBarEnabled(false);
+            LinearLayout r1 = new LinearLayout(context);
+            String searchLabel = query.trim().isEmpty() ? LocaleController.getString(R.string.PcShopSearch) : "\u201C" + query.trim() + "\u201D \u2715";
+            r1.addView(chip(context, searchLabel, !query.trim().isEmpty(), v -> {
+                if (query.trim().isEmpty()) {
+                    askQuery();
+                } else {
+                    query = "";
+                    notifyData();
+                }
+            }), LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, 34, 0, 0, 6, 0));
+            r1.addView(chip(context, LocaleController.getString(R.string.PcShopAll), category == null, v -> {
+                category = null;
+                notifyData();
+            }), LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, 34, 0, 0, 6, 0));
+            for (String c : categories()) {
+                r1.addView(chip(context, c, c.equals(category), v -> {
+                    category = c.equals(category) ? null : c;
+                    notifyData();
+                }), LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, 34, 0, 0, 6, 0));
+            }
+            sv1.addView(r1);
+            addView(sv1, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+            // riga 2: ordinamento + disponibili
+            android.widget.HorizontalScrollView sv2 = new android.widget.HorizontalScrollView(context);
+            sv2.setHorizontalScrollBarEnabled(false);
+            LinearLayout r2 = new LinearLayout(context);
+            r2.addView(chip(context, LocaleController.getString(R.string.PcShopSortLow), sort == 1, v -> {
+                sort = sort == 1 ? 0 : 1;
+                notifyData();
+            }), LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, 34, 0, 0, 6, 0));
+            r2.addView(chip(context, LocaleController.getString(R.string.PcShopSortHigh), sort == 2, v -> {
+                sort = sort == 2 ? 0 : 2;
+                notifyData();
+            }), LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, 34, 0, 0, 6, 0));
+            r2.addView(chip(context, LocaleController.getString(R.string.PcShopOnlyAvailable), onlyAvailable, v -> {
+                onlyAvailable = !onlyAvailable;
+                notifyData();
+            }), LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, 34, 0, 0, 6, 0));
+            sv2.addView(r2);
+            addView(sv2, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, 6, 0, 0));
+            TextView count = new TextView(context);
+            count.setTextSize(12);
+            count.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteGrayText));
+            count.setText(LocaleController.formatString(R.string.PcShopCount, shown.size()));
+            addView(count, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 4, 8, 4, 2));
         }
     }
 

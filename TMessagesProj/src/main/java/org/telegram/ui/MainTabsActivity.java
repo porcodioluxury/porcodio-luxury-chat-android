@@ -845,7 +845,7 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
         } else if (position == POSITION_PROFILE) {
             Bundle args = new Bundle();
             args.putBoolean("hasMainTabs", true);
-            return new SettingsActivity(args);
+            return new org.telegram.porcodio.PcSettingsActivity(args);
         }
         return null;
     }
