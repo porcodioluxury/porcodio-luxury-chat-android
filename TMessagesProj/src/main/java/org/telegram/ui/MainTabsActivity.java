@@ -95,20 +95,22 @@ import me.vkryl.android.animator.FactorAnimator;
 
 public class MainTabsActivity extends ViewPagerActivity implements NotificationCenter.NotificationCenterDelegate, FactorAnimator.Target {
 
-    public static final int TABS_COUNT = 4;
-    private static final int POSITION_CHATS = 0;
-    private static final int POSITION_CONTACTS = 1;
-    private static final int POSITION_CALLS_OR_SETTINGS = 2;
-    private static final int POSITION_PROFILE = 3;
+    // Porcodio v10: barra a 5 icone: Home, Reel, Messaggi (al centro), Esplora (+Shop), Profilo
+    public static final int TABS_COUNT = 5;
+    private static final int POSITION_CONTACTS = 0; // Home
+    private static final int POSITION_REELS = 1;
+    private static final int POSITION_CHATS = 2;
+    private static final int POSITION_CALLS_OR_SETTINGS = 3; // Esplora
+    private static final int POSITION_PROFILE = 4;
 
-    private static final int INDEX_CHATS = 0;
-    private static final int INDEX_CONTACTS = 1;
-    private static final int INDEX_SETTINGS = 2;
-    private static final int INDEX_CALLS = 3;
+    private static final int INDEX_CONTACTS = 0; // Home
+    private static final int INDEX_SETTINGS = 1; // Reel
+    private static final int INDEX_CHATS = 2;
+    private static final int INDEX_CALLS = 3; // Esplora
     private static final int INDEX_PROFILE = 4;
 
     private static int indexToPosition(int index) {
-        return index > 2 ? index - 1 : index;
+        return index;
     }
 
     private static final int ANIMATOR_ID_TABS_VISIBLE = 0;
@@ -295,6 +297,9 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
     }
 
     private void checkContactsTabBadge() {
+        if (true) {
+            return; // Porcodio v10: la Home non ha badge contatti
+        }
         if (tabsView != null && tabs[INDEX_CONTACTS] != null) {
             final boolean hasPermission = Build.VERSION.SDK_INT >= 23 && ContactsController.hasContactsPermission();
             if (hasPermission) {
@@ -324,23 +329,22 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
         tabsView = new MainTabsLayout(context, resourceProvider);
         tabsView.setClipChildren(false);
         tabsView.setPadding(dp(DialogsActivity.MAIN_TABS_MARGIN + 4), dp(DialogsActivity.MAIN_TABS_MARGIN + 4), dp(DialogsActivity.MAIN_TABS_MARGIN + 4), dp(DialogsActivity.MAIN_TABS_MARGIN + 4));
-        tabsView.setMaxWidth(dp(328 + DialogsActivity.MAIN_TABS_MARGIN * 2));
+        tabsView.setMaxWidth(0);
 
         tabs = new GlassTabView[5];
+        tabs[INDEX_CONTACTS] = GlassTabView.createMainTab(context, resourceProvider, GlassTabView.TabAnimation.PC_HOME, R.string.PcTabHome);
+        tabs[INDEX_SETTINGS] = GlassTabView.createMainTab(context, resourceProvider, GlassTabView.TabAnimation.PC_REELS, R.string.PcTabReels);
         tabs[INDEX_CHATS] = GlassTabView.createMainTab(context, resourceProvider, GlassTabView.TabAnimation.PC_CHAT, R.string.MainTabsChats);
-        tabs[INDEX_CONTACTS] = GlassTabView.createMainTab(context, resourceProvider, GlassTabView.TabAnimation.PC_SOCIAL, R.string.PcTabSocial);
-        tabs[INDEX_SETTINGS] = GlassTabView.createMainTab(context, resourceProvider, GlassTabView.TabAnimation.PC_SETTINGS, R.string.Settings);
-        tabs[INDEX_CALLS] = GlassTabView.createMainTab(context, resourceProvider, GlassTabView.TabAnimation.PC_SHOP, R.string.PcTabShop);
-        // Porcodio: barra in basso Chat / Contatti / Chiamate / Impostazioni (la scheda profilo diventa Impostazioni)
-        tabs[INDEX_PROFILE] = GlassTabView.createMainTab(context, resourceProvider, GlassTabView.TabAnimation.PC_SETTINGS, R.string.Settings);
+        tabs[INDEX_CALLS] = GlassTabView.createMainTab(context, resourceProvider, GlassTabView.TabAnimation.PC_EXPLORE, R.string.PcTabExplore);
+        tabs[INDEX_PROFILE] = GlassTabView.createAvatar(context, resourceProvider, currentAccount, R.string.PcTabProfile);
         tabs[INDEX_CHATS].setOnLongClickListener(this::openFoldersSelector);
-        tabs[INDEX_CONTACTS].setOnLongClickListener(this::openContactsSelector);
         tabs[INDEX_PROFILE].setOnLongClickListener(this::openAccountSelector);
 
         tabsView.addTabToIgnoreClick(tabs[INDEX_CHATS]);
         tabsView.addTabToIgnoreClick(tabs[INDEX_CONTACTS]);
         tabsView.addTabToIgnoreClick(tabs[INDEX_PROFILE]);
         tabsView.addTabToIgnoreClick(tabs[INDEX_CALLS]);
+        tabsView.addTabToIgnoreClick(tabs[INDEX_SETTINGS]);
 
         for (int index = 0; index < tabs.length; index++) {
             final GlassTabView view = tabs[index];
@@ -384,15 +388,7 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
         tabsViewBackground = iBlur3FactoryGlass.create(tabsView, BlurredBackgroundProviderImpl.mainTabs(resourceProvider));
         tabsViewBackground.setRadius(dp(4));
         tabsViewBackground.setPadding(dp(DialogsActivity.MAIN_TABS_MARGIN - 0.334f));
-        {
-            // Porcodio: barra in basso opaca (#1A1A1A, bordo #2F3442, raggio 4dp), mai trasparente o sfocata
-            android.graphics.drawable.GradientDrawable pcBar = new android.graphics.drawable.GradientDrawable();
-            pcBar.setColor(0xFF1A1A1A);
-            pcBar.setCornerRadius(dp(4));
-            pcBar.setStroke(Math.max(1, dp(1)), 0xFF2F3442);
-            int pcInset = dp(DialogsActivity.MAIN_TABS_MARGIN);
-            tabsView.setBackground(new android.graphics.drawable.InsetDrawable(pcBar, pcInset));
-        }
+        tabsView.setBackground(new android.graphics.drawable.ColorDrawable(0xFF121212)); // Porcodio v10: barra docked opaca
 
         BlurredBackgroundDrawableViewFactory iBlur3FactoryFade = new BlurredBackgroundDrawableViewFactory(iBlur3SourceColor);
         iBlur3FactoryFade.setSourceRootView(viewPositionWatcher, contentView);
@@ -763,9 +759,6 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
                 dropFragmentAtPosition(POSITION_CALLS_OR_SETTINGS);
                 dropCallsFragmentAfterPageScroll = false;
             }
-            if (currentPosition != POSITION_PROFILE) {
-                dropFragmentAtPosition(POSITION_PROFILE);
-            }
             if (pendingFolderId != null && currentPosition == POSITION_CHATS && dialogsActivity != null) {
                 dialogsActivity.scrollToFolder(pendingFolderId);
                 pendingFolderId = null;
@@ -799,7 +792,7 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
 
     @Override
     protected int getStartPosition() {
-        return POSITION_CHATS;
+        return POSITION_CONTACTS; // si apre sulla Home
     }
 
     private DialogsActivity dialogsActivity;
@@ -834,15 +827,19 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
     @Override
     protected BaseFragment createBaseFragmentAt(int position) {
         if (position == POSITION_CONTACTS) {
-            // Porcodio: la scheda centrale è il Social (i contatti si raggiungono dalla scheda Chat, chip RUBRICA)
             Bundle args = new Bundle();
             args.putBoolean("hasMainTabs", true);
+            args.putString("pc_mode", "home");
             return new org.telegram.porcodio.PcFeedActivity(args);
+        } else if (position == POSITION_REELS) {
+            Bundle args = new Bundle();
+            args.putBoolean("hasMainTabs", true);
+            return new org.telegram.porcodio.PcReelsActivity(args);
         } else if (position == POSITION_CALLS_OR_SETTINGS) {
             Bundle args = new Bundle();
-            args.putBoolean("needFinishFragment", false);
             args.putBoolean("hasMainTabs", true);
-            return new org.telegram.porcodio.PcShopActivity(args);
+            args.putString("pc_mode", "explore");
+            return new org.telegram.porcodio.PcFeedActivity(args);
         } else if (position == POSITION_CHATS) {
             Bundle args = new Bundle();
             args.putBoolean("hasMainTabs", true);
@@ -852,7 +849,7 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
         } else if (position == POSITION_PROFILE) {
             Bundle args = new Bundle();
             args.putBoolean("hasMainTabs", true);
-            return new org.telegram.porcodio.PcSettingsActivity(args);
+            return new org.telegram.porcodio.PcProfileTab(args);
         }
         return null;
     }
@@ -1014,14 +1011,7 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
             clearAllHiddenFragments();
         } else if (id == NotificationCenter.callTabsVisibleToggled) {
             final boolean callTabsVisible = getUserConfig().showCallsTab;
-            checkUi_callTabVisible(callTabsVisible, true);
-            if (viewPager != null && viewPager.getCurrentPosition() == POSITION_CALLS_OR_SETTINGS) {
-                viewPager.scrollToPosition(POSITION_CHATS);
-                selectTab(POSITION_CHATS, true);
-                dropCallsFragmentAfterPageScroll = true;
-            } else {
-                dropFragmentAtPosition(POSITION_CALLS_OR_SETTINGS);
-            }
+            checkUi_callTabVisible(callTabsVisible, true); // Porcodio v10: tutte le 5 icone restano visibili
         } else if (id == NotificationCenter.mainUserInfoChanged) {
             // Porcodio: nessun avatar nella barra in basso
         } else if (id == NotificationCenter.contactsPermissionBadgeCheck) {
@@ -1108,7 +1098,7 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
     private void checkUi_callTabVisible(boolean callTabsVisible, boolean animated) {
         if (tabsView != null) {
             // Porcodio: Chiamate sempre visibile, Impostazioni nell'ultima scheda
-            tabsView.setViewVisible(tabs[INDEX_SETTINGS], false, animated);
+            tabsView.setViewVisible(tabs[INDEX_SETTINGS], true, animated);
             tabsView.setViewVisible(tabs[INDEX_CALLS], true, animated);
         }
     }

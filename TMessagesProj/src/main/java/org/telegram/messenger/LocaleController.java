@@ -1482,7 +1482,7 @@ public class LocaleController {
         if (value == null) {
             value = getInstance().getLocalizedString(key);
         }
-        return value;
+        return pcBrand(value);
     }
 
     public static String getString(@StringRes int res) {
@@ -4780,7 +4780,21 @@ public class LocaleController {
     }
 
     @Nullable
+    private static final java.util.regex.Pattern PC_BRAND = java.util.regex.Pattern.compile("(?<![@/.\\w])Telegram(?![\\w/.])");
+
+    /** Porcodio: il nome "Telegram" non deve comparire (vale anche per le stringhe scaricate dal server). */
+    private static String pcBrand(String v) {
+        if (v == null || v.indexOf("Telegram") < 0) {
+            return v;
+        }
+        return PC_BRAND.matcher(v).replaceAll("Porcodio Luxury Chat");
+    }
+
     private String getStringV2(String key, @StringRes int stringRes, String fallback) {
+        return pcBrand(getStringV2Raw(key, stringRes, fallback));
+    }
+
+    private String getStringV2Raw(String key, @StringRes int stringRes, String fallback) {
         final Context context = ApplicationLoader.applicationContext;
         String value;
 

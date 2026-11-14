@@ -331,15 +331,12 @@ public class MainTabsLayout extends AnimatedLinearLayout {
 
     /** Porcodio: barra in basso come pannello scuro squadrato (angoli 4dp, bordo 1px). */
     private void pcDrawPanel(Canvas canvas) {
-        final float m = dp(DialogsActivity.MAIN_TABS_MARGIN);
         final float sw = Math.max(1f, AndroidUtilities.density);
-        pcPanelStroke.setStyle(Paint.Style.STROKE);
-        pcPanelStroke.setStrokeWidth(sw);
-        pcPanelFill.setColor(Theme.getColor(Theme.key_windowBackgroundWhite, resourcesProvider));
-        pcPanelStroke.setColor(Theme.getColor(Theme.key_divider, resourcesProvider));
-        AndroidUtilities.rectTmp.set(m + sw / 2f, m + sw / 2f, getWidth() - m - sw / 2f, getHeight() - m - sw / 2f);
-        canvas.drawRoundRect(AndroidUtilities.rectTmp, dp(4), dp(4), pcPanelFill);
-        canvas.drawRoundRect(AndroidUtilities.rectTmp, dp(4), dp(4), pcPanelStroke);
+        pcPanelFill.setColor(0xFF121212);
+        pcPanelStroke.setStyle(Paint.Style.FILL);
+        pcPanelStroke.setColor(0xFF2F3442);
+        canvas.drawRect(0, 0, getWidth(), getHeight(), pcPanelFill);
+        canvas.drawRect(0, 0, getWidth(), sw, pcPanelStroke); // filetto sottile in alto
     }
 
     final SpringAnimation scaleX = new SpringAnimation(this, DynamicAnimation.SCALE_X, 1f);

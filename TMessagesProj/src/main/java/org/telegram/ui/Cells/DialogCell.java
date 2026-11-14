@@ -169,9 +169,9 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
     private boolean drawCommunityAvatar;
     private boolean isShareToStoryCell;
     public ShareDialogCell.RepostStoryDrawable repostStoryDrawable;
-    public int avatarStart = 11;
-    public int messagePaddingStart = 72;
-    public int heightDefault = 70;
+    public int avatarStart = 14;
+    public int messagePaddingStart = 76;
+    public int heightDefault = 74;
     public int heightThreeLines = 76;
     public int addHeightForTags = 3;
     public int addForumHeightForTags = 11;
@@ -4905,7 +4905,7 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
             canvas.restore();
         }
 
-        if (useSeparator) {
+        if (false && useSeparator) { // Porcodio v10: niente divisori pesanti
             int left;
             if (fullSeparator || currentDialogFolderId != 0 && archiveHidden && !fullSeparator2 || fullSeparator2 && !archiveHidden) {
                 left = 0;

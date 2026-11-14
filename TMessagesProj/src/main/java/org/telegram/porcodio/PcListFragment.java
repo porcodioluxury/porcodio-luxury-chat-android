@@ -53,6 +53,36 @@ public abstract class PcListFragment extends BaseFragment {
         return false;
     }
 
+    /** true = l'intestazione sta sopra al contenuto (es. Reel a schermo intero): nessun margine superiore. */
+    protected boolean overlayHeader() {
+        return false;
+    }
+
+    @Override
+    protected void onViewCreated(View view) {
+        super.onViewCreated(view);
+        // Porcodio v10: il contenuto parte sempre sotto l'intestazione (niente titolo sovrapposto ai contenuti)
+        root.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
+            if (listView == null) {
+                return;
+            }
+            int want = 0;
+            if (!overlayHeader() && simpleActionBar != null && simpleActionBar.getVisibility() != View.GONE) {
+                want = simpleActionBar.getMeasuredHeight();
+                if (want <= 0) {
+                    return;
+                }
+            }
+            if (listView.getPaddingTop() != want) {
+                listView.setPadding(listView.getPaddingLeft(), want, listView.getPaddingRight(), listView.getPaddingBottom());
+                listView.setClipToPadding(false);
+                if (listView.getLayoutManager() instanceof LinearLayoutManager) {
+                    ((LinearLayoutManager) listView.getLayoutManager()).scrollToPositionWithOffset(0, 0);
+                }
+            }
+        });
+    }
+
     protected void onPullRefresh() {
     }
 

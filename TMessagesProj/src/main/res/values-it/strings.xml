@@ -1941,4 +1941,33 @@
     <string name="PcUpdAutoInfo">Se attivo, la nuova versione si scarica in background e ti viene chiesto solo di installarla.</string>
     <string name="PcUpdStatusAvailable">Nuova versione disponibile: %1$s</string>
     <!-- /PORCODIO PHASE3 -->
+    <!-- PORCODIO v10 -->
+    <string name="PcTabHome">Home</string>
+    <string name="PcTabReels">Reel</string>
+    <string name="PcTabExplore">Esplora</string>
+    <string name="PcTabProfile">Profilo</string>
+    <string name="PcReelsFriends">Amici</string>
+    <string name="PcReelsEmpty">Ancora nessun reel. Segui qualcuno o pubblica il primo.</string>
+    <string name="PcFollow">Segui</string>
+    <string name="PcFollowing">Segui già</string>
+    <string name="PcShare">Condividi</string>
+    <string name="PcExploreSearch">Cerca</string>
+    <string name="PcExploreForYou">Per te</string>
+    <string name="PcProfilePosts">post</string>
+    <string name="PcProfileFollowers">follower</string>
+    <string name="PcProfileFollowing">seguiti</string>
+    <string name="PcProfileDashboard">Dashboard professionale</string>
+    <string name="PcProfileViews30">%1$s visualizzazioni negli ultimi 30 giorni</string>
+    <string name="PcProfileAddLink">Aggiungi link</string>
+    <string name="PcProfileRepostsEmpty">Nessun contenuto ripubblicato</string>
+    <string name="PcProfileTaggedEmpty">Nessun post taggato</string>
+    <string name="PcProfileNoPosts">Ancora nessun post. Tocca + per pubblicare.</string>
+    <string name="PcProfileBoardOff">La tua bacheca è spenta. Accendila dalle Impostazioni.</string>
+    <string name="PcSendMoney">Invia denaro</string>
+    <string name="PcWalletTitle">Wallet</string>
+    <string name="PcWalletInfo">Portafoglio non-custodial su Base: ETH e PORCO, invia e ricevi</string>
+    <string name="PcVerifyTitle">Spunta blu</string>
+    <string name="PcVerifyInfo">Account verificato con vantaggi</string>
+    <string name="PcVerifySoon">La spunta blu arriva nel prossimo aggiornamento: 4,99 €/mese o 49,99 €/anno. I pagamenti non sono ancora attivi.</string>
+    <string name="PcSetWalletSection">Wallet e verifica</string>
 </resources>

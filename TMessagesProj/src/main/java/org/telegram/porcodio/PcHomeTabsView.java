@@ -63,25 +63,14 @@ public class PcHomeTabsView extends FrameLayout {
             });
             row.addView(buttons[i], LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, 32, Gravity.CENTER_VERTICAL, 0, 0, 6, 0));
         }
-        // scorciatoia al Feed interno (non cambia scheda della lista chat)
-        android.widget.TextView feed = new android.widget.TextView(context);
-        feed.setText(LocaleController.getString(R.string.PcChipFeed));
-        feed.setTextSize(13);
-        feed.setTypeface(AndroidUtilities.bold());
-        feed.setGravity(Gravity.CENTER);
-        feed.setPadding(dp(12), 0, dp(12), 0);
-        feed.setTextColor(color(Theme.key_windowBackgroundWhiteGrayText));
-        feed.setBackground(PcUi.panel(false));
-        feed.setOnClickListener(v -> fragment.presentFragment(new PcFeedActivity(new android.os.Bundle())));
-        row.addView(feed, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, 32, Gravity.CENTER_VERTICAL, 0, 0, 6, 0));
         android.widget.TextView book = new android.widget.TextView(context);
         book.setText(LocaleController.getString(R.string.PcChipContacts));
         book.setTextSize(13);
         book.setTypeface(AndroidUtilities.bold());
         book.setGravity(Gravity.CENTER);
         book.setPadding(dp(12), 0, dp(12), 0);
-        book.setTextColor(color(Theme.key_windowBackgroundWhiteGrayText));
-        book.setBackground(PcUi.panel(false));
+        book.setTextColor(0xFFBFBFBF);
+        book.setBackground(PcFeedActivity.pill(0xFF1A1A1A, 0xFF2F3442));
         book.setOnClickListener(v -> {
             android.os.Bundle ca = new android.os.Bundle();
             ca.putBoolean("needFinishFragment", false);
@@ -89,20 +78,6 @@ public class PcHomeTabsView extends FrameLayout {
             fragment.presentFragment(new org.telegram.ui.ContactsActivity(ca));
         });
         row.addView(book, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, 32, Gravity.CENTER_VERTICAL, 0, 0, 6, 0));
-        android.widget.TextView feats = new android.widget.TextView(context);
-        feats.setText(LocaleController.getString(R.string.PcFeaturesChip));
-        feats.setTextSize(13);
-        feats.setTypeface(AndroidUtilities.bold());
-        feats.setGravity(Gravity.CENTER);
-        feats.setPadding(dp(12), 0, dp(12), 0);
-        feats.setTextColor(color(Theme.key_windowBackgroundWhiteGrayText));
-        feats.setBackground(PcUi.panel(false));
-        feats.setOnClickListener(v -> {
-            android.os.Bundle fa = new android.os.Bundle();
-            fa.putBoolean("features_only", true);
-            fragment.presentFragment(new PcSettingsActivity(fa));
-        });
-        row.addView(feats, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, 32, Gravity.CENTER_VERTICAL, 0, 0, 6, 0));
         more = new MoreButton(context);
         more.setOnClickListener(v -> PcAntispam.showMenu(fragment, currentAccount, this::update));
         addView(more, LayoutHelper.createFrame(36, 32, Gravity.RIGHT | Gravity.CENTER_VERTICAL, 0, 0, 0, 0));
@@ -152,7 +127,7 @@ public class PcHomeTabsView extends FrameLayout {
         }
 
         void refresh() {
-            title = LocaleController.getString(TITLES[index]).toUpperCase();
+            title = LocaleController.getString(TITLES[index]);
             int n = PcHome.unread[index];
             count = n > 0 ? (n > 99 ? "99+" : String.valueOf(n)) : "";
             titleW = text.measureText(title);
@@ -174,23 +149,26 @@ public class PcHomeTabsView extends FrameLayout {
             stroke.setStrokeWidth(sw);
             RectF r = AndroidUtilities.rectTmp;
             r.set(sw / 2f, sw / 2f, getWidth() - sw / 2f, getHeight() - sw / 2f);
+            final float rad = getHeight() / 2f;
             if (selected) {
-                fill.setColor(color(Theme.key_chats_actionBackground));
-                canvas.drawRoundRect(r, dp(4), dp(4), fill);
-                text.setColor(color(Theme.key_chats_actionIcon));
+                fill.setColor(0xFF2F3442);
+                canvas.drawRoundRect(r, rad, rad, fill);
+                text.setColor(0xFFF2F2F2);
             } else {
-                stroke.setColor(color(Theme.key_divider));
-                canvas.drawRoundRect(r, dp(4), dp(4), stroke);
-                text.setColor(color(Theme.key_windowBackgroundWhiteGrayText));
+                fill.setColor(0xFF1A1A1A);
+                canvas.drawRoundRect(r, rad, rad, fill);
+                stroke.setColor(0xFF2F3442);
+                canvas.drawRoundRect(r, rad, rad, stroke);
+                text.setColor(0xFFBFBFBF);
             }
             float cy = getHeight() / 2f - (text.ascent() + text.descent()) / 2f;
             canvas.drawText(title, dp(12), cy, text);
             if (countW > 0) {
                 float cx = dp(12) + titleW + dp(6);
                 r.set(cx, getHeight() / 2f - dp(8), cx + countW, getHeight() / 2f + dp(8));
-                countFill.setColor(selected ? color(Theme.key_chats_actionIcon) : color(Theme.key_chats_unreadCounter));
-                canvas.drawRoundRect(r, dp(4), dp(4), countFill);
-                countText.setColor(selected ? color(Theme.key_chats_actionBackground) : color(Theme.key_chats_unreadCounterText));
+                countFill.setColor(0xFF6B7A99);
+                canvas.drawRoundRect(r, dp(8), dp(8), countFill);
+                countText.setColor(0xFFF2F2F2);
                 float ty = getHeight() / 2f - (countText.ascent() + countText.descent()) / 2f;
                 canvas.drawText(count, cx + (countW - countText.measureText(count)) / 2f, ty, countText);
             }
@@ -212,7 +190,7 @@ public class PcHomeTabsView extends FrameLayout {
             stroke.setStrokeWidth(sw);
             stroke.setColor(color(Theme.key_divider));
             AndroidUtilities.rectTmp.set(sw / 2f, sw / 2f, getWidth() - sw / 2f, getHeight() - sw / 2f);
-            canvas.drawRoundRect(AndroidUtilities.rectTmp, dp(4), dp(4), stroke);
+            canvas.drawRoundRect(AndroidUtilities.rectTmp, dp(16), dp(16), stroke);
             dot.setColor(color(Theme.key_windowBackgroundWhiteGrayText));
             float cy = getHeight() / 2f, cx = getWidth() / 2f;
             for (int i = -1; i <= 1; i++) {

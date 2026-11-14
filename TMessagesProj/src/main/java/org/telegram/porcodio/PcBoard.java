@@ -106,6 +106,28 @@ public class PcBoard {
         org.telegram.messenger.FileLog.e("PcBoard " + where + ": " + why);
     }
 
+    // ultimo errore RPC visto dall'app (per spiegare un invio rifiutato)
+    public static volatile String lastRpcText = "";
+    public static volatile int lastRpcCode;
+    public static volatile String lastRpcRequest = "";
+    public static volatile long lastRpcAt;
+
+    public static void noteRpc(int code, String text, String request) {
+        lastRpcCode = code;
+        lastRpcText = text == null ? "" : text;
+        lastRpcRequest = request == null ? "" : request;
+        lastRpcAt = System.currentTimeMillis();
+        org.telegram.messenger.FileLog.e("PcBoard rpc error " + code + " " + text + " in " + request);
+    }
+
+    /** Descrizione dell'ultimo errore RPC recente (ultimi 3 minuti) con codice preciso, o "" se non ce ne sono. */
+    public static String recentRpc() {
+        if (System.currentTimeMillis() - lastRpcAt > 180000 || lastRpcText.isEmpty()) {
+            return "";
+        }
+        return lastRpcText + " (codice " + lastRpcCode + ", " + lastRpcRequest + ")";
+    }
+
     public static String rpcText(TLRPC.TL_error e) {
         if (e == null) {
             return "risposta vuota";
@@ -151,6 +173,25 @@ public class PcBoard {
                 err.done(false);
             }
         });
+    }
+
+    // ---- seguiti (locale): usati da Reel > Amici e dal contatore del profilo
+    public static boolean isFollowed(long uid) {
+        return prefs().getBoolean("fol_" + uid, false);
+    }
+
+    public static void setFollowed(long uid, boolean on) {
+        prefs().edit().putBoolean("fol_" + uid, on).apply();
+    }
+
+    public static int followedCount() {
+        int n = 0;
+        for (java.util.Map.Entry<String, ?> e : prefs().getAll().entrySet()) {
+            if (e.getKey().startsWith("fol_") && Boolean.TRUE.equals(e.getValue())) {
+                n++;
+            }
+        }
+        return n;
     }
 
     // ---- stato proprio
@@ -462,9 +503,14 @@ public class PcBoard {
     }
 
     public static void loadFeed(int account, FeedCallback cb) {
+        loadFeed(account, 8, false, cb);
+    }
+
+    /** limit = messaggi per Bacheca; onlyMine = solo la mia Bacheca (profilo). */
+    public static void loadFeed(int account, final int limit, boolean onlyMine, FeedCallback cb) {
         final MessagesController mc = MessagesController.getInstance(account);
         final long me = UserConfig.getInstance(account).getClientUserId();
-        final ArrayList<long[]> sources = knownBoards(account);
+        final ArrayList<long[]> sources = onlyMine ? new ArrayList<>() : knownBoards(account);
         long mine = myBoardChat(account);
         if (mine != 0) {
             sources.add(new long[]{me, mine});
@@ -486,7 +532,7 @@ public class PcBoard {
                 }
                 TLRPC.TL_messages_getHistory req = new TLRPC.TL_messages_getHistory();
                 req.peer = peer;
-                req.limit = 8;
+                req.limit = limit;
                 ConnectionsManager.getInstance(account).sendRequest(req, (response, error) -> AndroidUtilities.runOnUIThread(() -> {
                     if (error != null) {
                         fail("loadFeed", rpcText(error));

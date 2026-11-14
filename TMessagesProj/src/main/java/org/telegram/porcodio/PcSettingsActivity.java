@@ -18,6 +18,7 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.telegram.PhoneFormat.PhoneFormat;
+import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.ApplicationLoader;
 import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.R;
@@ -98,6 +99,17 @@ public class PcSettingsActivity extends PcListFragment implements MainTabsActivi
         }
 
         if (!featuresOnly) {
+            section(R.string.PcSetWalletSection);
+            row(R.string.PcWalletTitle, R.string.PcWalletInfo, R.drawable.ic_pc_wallet, () -> presentFragment(new PcWalletActivity(new Bundle())));
+            row(R.string.PcVerifyTitle, R.string.PcVerifyInfo, R.drawable.ic_pc_shield, () -> {
+                if (getParentActivity() != null) {
+                    AlertDialog.Builder vb = new AlertDialog.Builder(getParentActivity());
+                    vb.setTitle(s(R.string.PcVerifyTitle));
+                    vb.setMessage(s(R.string.PcVerifySoon));
+                    vb.setPositiveButton(s(R.string.OK), null);
+                    showDialog(vb.create());
+                }
+            });
             section(R.string.PcSetSecurity);
             row(R.string.PcSetPrivacy, R.string.PcSetPrivacyInfo, R.drawable.ic_pc_shield, () -> presentFragment(new PrivacySettingsActivity()));
             row(R.string.PcSetPrivateTools, R.string.PcSetPrivateToolsInfo, R.drawable.ic_pc_lock, this::explainPrivateTools);
@@ -236,7 +248,7 @@ public class PcSettingsActivity extends PcListFragment implements MainTabsActivi
                 TextView t = PcUi.label(context, "", 11, true, Theme.key_windowBackgroundWhiteGrayText);
                 t.setAllCaps(true);
                 t.setLetterSpacing(0.12f);
-                t.setTypeface(android.graphics.Typeface.create(android.graphics.Typeface.SERIF, android.graphics.Typeface.NORMAL));
+                t.setTypeface(android.graphics.Typeface.DEFAULT);
                 t.setPadding(dp(20), dp(22), dp(16), dp(8));
                 t.setLayoutParams(new RecyclerView.LayoutParams(-1, -2));
                 return t;
@@ -283,7 +295,7 @@ public class PcSettingsActivity extends PcListFragment implements MainTabsActivi
             LinearLayout col = new LinearLayout(context);
             col.setOrientation(LinearLayout.VERTICAL);
             name = PcUi.label(context, "", 22, true, Theme.key_windowBackgroundWhiteBlackText);
-            name.setTypeface(android.graphics.Typeface.create(android.graphics.Typeface.SERIF, android.graphics.Typeface.BOLD));
+            name.setTypeface(AndroidUtilities.bold());
             name.setMaxLines(2);
             name.setEllipsize(TextUtils.TruncateAt.END);
             line = PcUi.label(context, "", 13, false, Theme.key_windowBackgroundWhiteGrayText);
@@ -331,9 +343,9 @@ public class PcSettingsActivity extends PcListFragment implements MainTabsActivi
             LinearLayout col = new LinearLayout(context);
             col.setOrientation(LinearLayout.VERTICAL);
             title = PcUi.label(context, "", 16, true, Theme.key_windowBackgroundWhiteBlackText);
-            title.setTypeface(android.graphics.Typeface.create(android.graphics.Typeface.SERIF, android.graphics.Typeface.BOLD));
+            title.setTypeface(AndroidUtilities.bold());
             sub = PcUi.label(context, "", 12, false, Theme.key_windowBackgroundWhiteGrayText);
-            sub.setTypeface(android.graphics.Typeface.create(android.graphics.Typeface.SERIF, android.graphics.Typeface.ITALIC));
+            sub.setTypeface(android.graphics.Typeface.DEFAULT);
             col.addView(title);
             col.addView(sub, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, 2, 0, 0));
             box.addView(col, LayoutHelper.createLinear(0, LayoutHelper.WRAP_CONTENT, 1f, 12, 0, 0, 0));

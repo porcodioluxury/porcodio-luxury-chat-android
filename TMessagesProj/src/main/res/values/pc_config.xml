@@ -6,4 +6,13 @@
     <!-- In alternativa (o in aggiunta) lo username dell'account ufficiale, con o senza @. Si risolve una volta con
          contacts.resolveUsername e l'ID resta in cache. Esempio: mario_ribecco -->
     <string name="pc_official_username" translatable="false"></string>
+    <!-- Portafoglio (rete Base, chain id 8453). Il token PORCODIO LUXURY non e' ancora su mainnet: finche' l'indirizzo
+         del contratto ERC-20 e' vuoto, PORCO appare come "in arrivo". Incollare qui l'indirizzo (0x...) quando sara' pubblicato. -->
+    <string name="pc_porco_contract" translatable="false"></string>
+    <string name="pc_porco_decimals" translatable="false">18</string>
+    <string name="pc_porco_symbol" translatable="false">PORCO</string>
+    <!-- RPC pubblico gratuito di Base e indice per lo storico (Blockscout, senza chiave) -->
+    <string name="pc_base_rpc" translatable="false">https://mainnet.base.org</string>
+    <string name="pc_base_explorer" translatable="false">https://basescan.org</string>
+    <string name="pc_base_history_api" translatable="false">https://base.blockscout.com/api/v2</string>
 </resources>
