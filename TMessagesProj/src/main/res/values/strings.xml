@@ -285,7 +285,7 @@
     <string name="Search">Search</string>
     <string name="SearchContacts">Search Contacts</string>
     <string name="SearchPeopleByUsername">Search people by username</string>
-    <string name="SearchChats">Search Chats</string>
+    <string name="SearchChats">Cerca chat</string>
     <string name="SearchTopics">Search Topics</string>
     <string name="MuteNotifications">Mute forever</string>
     <string name="MuteFor">Mute for %1$s</string>
