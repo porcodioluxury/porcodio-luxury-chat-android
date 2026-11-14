@@ -243,6 +243,7 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
     public boolean onFragmentCreate() {
         reload();
         getNotificationCenter().addObserver(this, NotificationCenter.storiesUpdated);
+        getNotificationCenter().addObserver(this, NotificationCenter.messageSendError);
         try {
             getMessagesController().getStoriesController().loadStories();
         } catch (Throwable ignore) {
@@ -254,11 +255,25 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
     @Override
     public void onFragmentDestroy() {
         getNotificationCenter().removeObserver(this, NotificationCenter.storiesUpdated);
+        getNotificationCenter().removeObserver(this, NotificationCenter.messageSendError);
         super.onFragmentDestroy();
+    }
+
+    private long watchUntil;
+
+    private void watchSend() {
+        watchUntil = System.currentTimeMillis() + 120000;
     }
 
     @Override
     public void didReceivedNotification(int id, int account, Object... args) {
+        if (id == NotificationCenter.messageSendError) {
+            if (System.currentTimeMillis() < watchUntil) {
+                PcBoard.fail("send", "invio rifiutato o interrotto (messageSendError)");
+                PcUi.toast(getParentActivity(), "Pubblicazione non riuscita: l'invio e' stato rifiutato o interrotto. Controlla la connessione e riprova.");
+            }
+            return;
+        }
         if (id == NotificationCenter.storiesUpdated && tabMode()) {
             notifyData();
         }
@@ -395,7 +410,7 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
             final String path = copyToCache(uri, video);
             AndroidUtilities.runOnUIThread(() -> {
                 if (path == null) {
-                    PcUi.toast(getParentActivity(), LocaleController.getString(R.string.PcBoardFailed));
+                    PcUi.toast(getParentActivity(), "Pubblicazione non riuscita: impossibile leggere il file scelto");
                 } else {
                     askCaption(path, video);
                 }
@@ -447,14 +462,17 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
             info.caption = cap;
             ArrayList<org.telegram.messenger.SendMessagesHelper.SendingMediaInfo> list = new ArrayList<>();
             list.add(info);
-            long chat = PcBoard.myBoardChat(currentAccount);
-            org.telegram.messenger.SendMessagesHelper.prepareSendingMedia(org.telegram.messenger.AccountInstance.getInstance(currentAccount), list, -chat, null, null, null, null,
-                false, false, null, true, 0, 0, 0, false, null, org.telegram.messenger.SendMessageChatArguments.EMPTY, 0, false, 0, 0, null);
-            PcUi.toast(getParentActivity(), LocaleController.getString(R.string.PcBoardPublished));
-            // il caricamento di un video richiede tempo: ricarico piu' volte finche' il post compare
-            for (int delay : new int[]{3000, 8000, 15000, 30000, 60000}) {
-                AndroidUtilities.runOnUIThread(() -> reload(true), delay);
-            }
+            final long chat = PcBoard.myBoardChat(currentAccount);
+            PcBoard.withBoard(currentAccount, () -> {
+                org.telegram.messenger.SendMessagesHelper.prepareSendingMedia(org.telegram.messenger.AccountInstance.getInstance(currentAccount), list, -chat, null, null, null, null,
+                    false, false, null, true, 0, 0, 0, false, null, org.telegram.messenger.SendMessageChatArguments.EMPTY, 0, false, 0, 0, null);
+                PcUi.toast(getParentActivity(), LocaleController.getString(R.string.PcBoardPublished));
+                watchSend();
+                // il caricamento di un video richiede tempo: ricarico piu' volte finche' il post compare
+                for (int delay : new int[]{3000, 8000, 15000, 30000, 60000}) {
+                    AndroidUtilities.runOnUIThread(() -> reload(true), delay);
+                }
+            }, ok -> PcUi.toast(getParentActivity(), "Pubblicazione non riuscita: " + PcBoard.lastError));
         });
         b.setNegativeButton(LocaleController.getString(R.string.Cancel), null);
         showDialog(b.create());
@@ -473,7 +491,7 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
             String title = (me != null ? UserObject.getUserName(me) : "") + " - " + LocaleController.getString(R.string.PcProfileBoard);
             PcBoard.enable(this, title, ok -> {
                 if (!ok) {
-                    PcUi.toast(getParentActivity(), LocaleController.getString(R.string.PcBoardFailed));
+                    PcUi.toast(getParentActivity(), "Pubblicazione non riuscita: " + PcBoard.lastError);
                 }
                 notifyData();
                 reload();
@@ -521,9 +539,17 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
         b.setPositiveButton(LocaleController.getString(R.string.PcBoardPublish), (d, w) -> {
             String text = edit.getText().toString();
             if (!text.trim().isEmpty()) {
-                PcBoard.publish(currentAccount, text);
-                PcUi.toast(getParentActivity(), LocaleController.getString(R.string.PcBoardPublished));
-                AndroidUtilities.runOnUIThread(this::reload, 2000);
+                PcBoard.publish(currentAccount, text, ok -> {
+                    if (ok) {
+                        PcUi.toast(getParentActivity(), LocaleController.getString(R.string.PcBoardPublished));
+                        watchSend();
+                        for (int delay : new int[]{2000, 6000, 15000}) {
+                            AndroidUtilities.runOnUIThread(() -> reload(true), delay);
+                        }
+                    } else {
+                        PcUi.toast(getParentActivity(), "Pubblicazione non riuscita: " + PcBoard.lastError);
+                    }
+                });
             }
         });
         b.setNegativeButton(LocaleController.getString(R.string.Cancel), null);
