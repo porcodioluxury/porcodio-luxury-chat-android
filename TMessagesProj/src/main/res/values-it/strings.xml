@@ -1785,5 +1785,16 @@
     <string name="PcMyStory">La mia storia</string>
     <string name="PcSocialStoriesNote">Le storie dei tuoi contatti sono nella riga qui sopra. Tocca + per pubblicare la tua.</string>
     <string name="PcSocialSectionEmpty">Ancora niente. Qui compaiono i post di chi usa l app.</string>
+    <string name="PcMyProfile">Il mio profilo</string>
+    <string name="PcMyCover">COPERTINA</string>
+    <string name="PcMyCoverChange">Cambia copertina</string>
+    <string name="PcMyCoverSaved">Copertina pubblicata</string>
+    <string name="PcMyLinks">LINK</string>
+    <string name="PcMyLinksNone">Nessun link</string>
+    <string name="PcMyLinksEdit">Modifica link</string>
+    <string name="PcMyLinksHint">Un link per riga</string>
+    <string name="PcMyLinksSaved">Link pubblicati</string>
+    <string name="PcMyGridNote">I tuoi post con foto e video</string>
+    <string name="PcMyBoardOff">Prima attiva la tua Bacheca nella scheda Social.</string>
     <!-- /PORCODIO PHASE3 -->
 </resources>

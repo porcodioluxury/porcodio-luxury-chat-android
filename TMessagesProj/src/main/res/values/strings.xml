@@ -11926,5 +11926,16 @@
     <string name="PcMyStory">My story</string>
     <string name="PcSocialStoriesNote">Stories of your contacts are in the row above. Tap + to publish yours.</string>
     <string name="PcSocialSectionEmpty">Nothing here yet. Posts of app users appear here.</string>
+    <string name="PcMyProfile">My profile</string>
+    <string name="PcMyCover">COVER</string>
+    <string name="PcMyCoverChange">Change cover</string>
+    <string name="PcMyCoverSaved">Cover published</string>
+    <string name="PcMyLinks">LINKS</string>
+    <string name="PcMyLinksNone">No links yet</string>
+    <string name="PcMyLinksEdit">Edit links</string>
+    <string name="PcMyLinksHint">One link per line</string>
+    <string name="PcMyLinksSaved">Links published</string>
+    <string name="PcMyGridNote">Your posts with photos and videos</string>
+    <string name="PcMyBoardOff">Turn on your Board in the Social tab first.</string>
     <!-- /PORCODIO PHASE3 -->
 </resources>

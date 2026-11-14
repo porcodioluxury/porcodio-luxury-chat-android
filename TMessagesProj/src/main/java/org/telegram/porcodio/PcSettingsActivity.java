@@ -288,7 +288,7 @@ public class PcSettingsActivity extends PcListFragment implements MainTabsActivi
             top.addView(col, LayoutHelper.createLinear(0, LayoutHelper.WRAP_CONTENT, 1f, 14, 0, 0, 0));
             box.addView(top, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
             LinearLayout buttons = new LinearLayout(context);
-            buttons.addView(PcUi.button(context, s(R.string.PcSetEditProfile), true, v -> presentFragment(new UserInfoActivity())), LayoutHelper.createLinear(0, 42, 1f, 0, 0, 4, 0));
+            buttons.addView(PcUi.button(context, s(R.string.PcSetEditProfile), true, v -> presentFragment(new PcProfileEditActivity())), LayoutHelper.createLinear(0, 42, 1f, 0, 0, 4, 0));
             buttons.addView(PcUi.button(context, s(R.string.PcProfileBoard), false, v -> presentFragment(new PcFeedActivity(new Bundle()))), LayoutHelper.createLinear(0, 42, 1f, 4, 0, 0, 0));
             box.addView(buttons, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, 12, 0, 0));
             addView(box, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.TOP, 12, 8, 12, 4));

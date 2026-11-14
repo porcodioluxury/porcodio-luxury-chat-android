@@ -62,7 +62,7 @@ public class PcFeedActivity extends PcListFragment implements org.telegram.ui.Ma
             loading = false;
             posts.clear();
             for (PcBoard.Post p : list) {
-                if (onlyAuthor == 0 || p.authorId == onlyAuthor) {
+                if ((onlyAuthor == 0 || p.authorId == onlyAuthor) && !PcBoard.isSpecial(p)) {
                     posts.add(p);
                 }
             }
