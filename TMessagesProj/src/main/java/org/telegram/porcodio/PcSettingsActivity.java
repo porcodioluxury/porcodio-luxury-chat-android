@@ -97,39 +97,67 @@ public class PcSettingsActivity extends PcListFragment implements MainTabsActivi
             items.add(new Item(T_PROFILE, null, null, 0, null));
         }
 
-        section(R.string.PcSetFeatures);
-        row(R.string.PcFeedInfo, R.string.PcFeedInfoSub, R.drawable.settings_channel, () -> presentFragment(new PcFeedActivity(new Bundle())));
-        row(R.string.PcQuickReplies, R.string.PcQuickRepliesInfo, R.drawable.settings_chat, () -> presentFragment(new PcQuickActivity()));
-        row(R.string.PcTabShop, R.string.PcSetShopInfo, R.drawable.settings_gift, () -> presentFragment(new PcShopActivity(new Bundle())));
-        row(R.string.PcSetPrivateTools, R.string.PcSetPrivateToolsInfo, R.drawable.settings_privacy, this::explainPrivateTools);
-        row(R.string.PcQuickCleanup, R.string.PcQuickCleanupInfo, R.drawable.settings_folders, () -> presentFragment(new PcCleanupActivity()));
-        row(R.string.PcAntispamMenu, R.string.PcSetAntispamInfo, R.drawable.settings_policy, () -> PcAntispam.showMenu(this, currentAccount, null));
-        row(R.string.PcMuteAllGroups, R.string.PcMuteAllGroupsInfo, R.drawable.settings_sounds, () -> PcAntispam.muteAllGroups(this, currentAccount, null));
-        row(R.string.PcUpdSettings, R.string.PcUpdSettingsInfo, R.drawable.settings_data, () -> PcUpdater.checkNow(getParentActivity()));
+        if (!featuresOnly) {
+            section(R.string.PcSetSecurity);
+            row(R.string.PcSetPrivacy, R.string.PcSetPrivacyInfo, R.drawable.ic_pc_shield, () -> presentFragment(new PrivacySettingsActivity()));
+            row(R.string.PcSetPrivateTools, R.string.PcSetPrivateToolsInfo, R.drawable.ic_pc_lock, this::explainPrivateTools);
+            row(R.string.PcSetSecretChats, R.string.PcSetSecretChatsInfo, R.drawable.ic_pc_lock, this::explainSecretChats);
+            row(R.string.PcSetDevices, R.string.PcSetDevicesInfo, R.drawable.ic_pc_device, () -> presentFragment(new SessionsActivity(0)));
 
+            section(R.string.PcSetLook);
+            row(R.string.PcSetTheme, R.string.PcSetThemeInfo, R.drawable.ic_pc_palette, () -> presentFragment(new ThemeActivity(ThemeActivity.THEME_TYPE_BASIC)));
+            row(R.string.PcSetFolders, R.string.PcSetFoldersInfo, R.drawable.ic_pc_folder, () -> presentFragment(new FiltersSetupActivity()));
+            row(R.string.PcSetLanguage, 0, R.drawable.ic_pc_globe, () -> presentFragment(new LanguageSelectActivity()));
+
+            section(R.string.PcSetNotifications);
+            row(R.string.PcSetNotificationsRow, R.string.PcSetNotificationsInfo, R.drawable.ic_pc_bell, () -> presentFragment(new NotificationsSettingsActivity()));
+
+            section(R.string.PcSetSpace);
+            row(R.string.PcSetData, R.string.PcSetDataInfo, R.drawable.ic_pc_data, () -> presentFragment(new DataSettingsActivity()));
+            row(R.string.PcQuickCleanup, R.string.PcQuickCleanupInfo, R.drawable.ic_pc_folder, () -> presentFragment(new PcCleanupActivity()));
+            row(R.string.PcSetPower, R.string.PcSetPowerInfo, R.drawable.ic_pc_spark, () -> presentFragment(new LiteModeSettingsActivity()));
+
+            section(R.string.PcSetSocial);
+        }
         if (featuresOnly) {
+            section(R.string.PcSetFeatures);
+        }
+        row(R.string.PcFeedInfo, R.string.PcFeedInfoSub, R.drawable.ic_pc_grid, () -> presentFragment(new PcFeedActivity(new Bundle())));
+        if (!featuresOnly) {
+            section(R.string.PcSetShopOrders);
+        }
+        row(R.string.PcTabShop, R.string.PcSetShopInfo, R.drawable.ic_pc_bag, () -> presentFragment(new PcShopActivity(new Bundle())));
+        if (!featuresOnly) {
+            section(R.string.PcSetFeatures);
+        }
+        row(R.string.PcQuickReplies, R.string.PcQuickRepliesInfo, R.drawable.ic_pc_chat, () -> presentFragment(new PcQuickActivity()));
+        row(R.string.PcAntispamMenu, R.string.PcSetAntispamInfo, R.drawable.ic_pc_shield, () -> PcAntispam.showMenu(this, currentAccount, null));
+        row(R.string.PcMuteAllGroups, R.string.PcMuteAllGroupsInfo, R.drawable.ic_pc_bell, () -> PcAntispam.muteAllGroups(this, currentAccount, null));
+        if (featuresOnly) {
+            row(R.string.PcSetPrivateTools, R.string.PcSetPrivateToolsInfo, R.drawable.ic_pc_lock, this::explainPrivateTools);
+            row(R.string.PcUpdSettings, R.string.PcUpdSettingsInfo, R.drawable.ic_pc_refresh, () -> PcUpdater.checkNow(getParentActivity()));
             items.add(new Item(T_FOOT, null, null, 0, null));
             return;
         }
 
-        section(R.string.PcSetAccount);
-        row(R.string.PcSetPrivacy, 0, R.drawable.settings_privacy, () -> presentFragment(new PrivacySettingsActivity()));
-        row(R.string.PcSetNotifications, 0, R.drawable.settings_sounds, () -> presentFragment(new NotificationsSettingsActivity()));
-        row(R.string.PcSetData, 0, R.drawable.settings_data, () -> presentFragment(new DataSettingsActivity()));
-        row(R.string.PcSetDevices, 0, R.drawable.settings_devices, () -> presentFragment(new SessionsActivity(0)));
-
-        section(R.string.PcSetLook);
-        row(R.string.PcSetTheme, 0, R.drawable.settings_chat, () -> presentFragment(new ThemeActivity(ThemeActivity.THEME_TYPE_BASIC)));
-        row(R.string.PcSetFolders, 0, R.drawable.settings_folders, () -> presentFragment(new FiltersSetupActivity()));
-        row(R.string.PcSetLanguage, 0, R.drawable.settings_language, () -> presentFragment(new LanguageSelectActivity()));
-        row(R.string.PcSetPower, 0, R.drawable.settings_power, () -> presentFragment(new LiteModeSettingsActivity()));
-
-        section(R.string.PcSetInfo);
-        items.add(new Item(T_ROW, s(R.string.PcSetAbout), versionLine(), R.drawable.settings_faq, null));
+        section(R.string.PcSetSupport);
+        row(R.string.PcUpdSettings, R.string.PcUpdSettingsInfo, R.drawable.ic_pc_refresh, () -> PcUpdater.checkNow(getParentActivity()));
+        items.add(new Item(T_ROW, s(R.string.PcSetAbout), versionLine(), R.drawable.ic_pc_info, null));
 
         section(R.string.PcSetAdvanced);
-        row(R.string.PcSetOriginal, R.string.PcSetOriginalInfo, R.drawable.settings_features, () -> presentFragment(new SettingsActivity(new Bundle())));
+        row(R.string.PcSetOriginal, R.string.PcSetOriginalInfo, R.drawable.ic_pc_edit, () -> presentFragment(new SettingsActivity(new Bundle())));
         items.add(new Item(T_FOOT, null, null, 0, null));
+    }
+
+    private void explainSecretChats() {
+        if (getParentActivity() == null) {
+            return;
+        }
+        AlertDialog.Builder b = new AlertDialog.Builder(getParentActivity());
+        b.setTitle(s(R.string.PcSetSecretChats));
+        b.setMessage(s(R.string.PcSetSecretChatsHow));
+        b.setPositiveButton(s(R.string.OK), null);
+        showDialog(b.create());
     }
 
     private String versionLine() {
@@ -202,8 +230,9 @@ public class PcSettingsActivity extends PcListFragment implements MainTabsActivi
             case T_SECTION: {
                 TextView t = PcUi.label(context, "", 11, true, Theme.key_windowBackgroundWhiteGrayText);
                 t.setAllCaps(true);
-                t.setLetterSpacing(0.08f);
-                t.setPadding(dp(18), dp(16), dp(16), dp(6));
+                t.setLetterSpacing(0.12f);
+                t.setTypeface(android.graphics.Typeface.create(android.graphics.Typeface.SERIF, android.graphics.Typeface.NORMAL));
+                t.setPadding(dp(20), dp(22), dp(16), dp(8));
                 t.setLayoutParams(new RecyclerView.LayoutParams(-1, -2));
                 return t;
             }
@@ -248,7 +277,8 @@ public class PcSettingsActivity extends PcListFragment implements MainTabsActivi
             top.addView(avatar, LayoutHelper.createLinear(72, 72));
             LinearLayout col = new LinearLayout(context);
             col.setOrientation(LinearLayout.VERTICAL);
-            name = PcUi.label(context, "", 20, true, Theme.key_windowBackgroundWhiteBlackText);
+            name = PcUi.label(context, "", 22, true, Theme.key_windowBackgroundWhiteBlackText);
+            name.setTypeface(android.graphics.Typeface.create(android.graphics.Typeface.SERIF, android.graphics.Typeface.BOLD));
             name.setMaxLines(2);
             name.setEllipsize(TextUtils.TruncateAt.END);
             line = PcUi.label(context, "", 13, false, Theme.key_windowBackgroundWhiteGrayText);
@@ -287,17 +317,18 @@ public class PcSettingsActivity extends PcListFragment implements MainTabsActivi
             setLayoutParams(new RecyclerView.LayoutParams(-1, -2));
             LinearLayout box = new LinearLayout(context);
             box.setGravity(Gravity.CENTER_VERTICAL);
-            box.setPadding(dp(12), dp(10), dp(14), dp(10));
+            box.setPadding(dp(12), dp(14), dp(14), dp(14));
             box.setBackground(PcUi.panel(true));
             icon = new ImageView(context);
             icon.setScaleType(ImageView.ScaleType.CENTER);
-            icon.setBackground(PcUi.panel(false));
             icon.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_windowBackgroundWhiteBlackText), PorterDuff.Mode.SRC_IN));
-            box.addView(icon, LayoutHelper.createLinear(40, 40));
+            box.addView(icon, LayoutHelper.createLinear(28, 28));
             LinearLayout col = new LinearLayout(context);
             col.setOrientation(LinearLayout.VERTICAL);
-            title = PcUi.label(context, "", 15, true, Theme.key_windowBackgroundWhiteBlackText);
+            title = PcUi.label(context, "", 16, true, Theme.key_windowBackgroundWhiteBlackText);
+            title.setTypeface(android.graphics.Typeface.create(android.graphics.Typeface.SERIF, android.graphics.Typeface.BOLD));
             sub = PcUi.label(context, "", 12, false, Theme.key_windowBackgroundWhiteGrayText);
+            sub.setTypeface(android.graphics.Typeface.create(android.graphics.Typeface.SERIF, android.graphics.Typeface.ITALIC));
             col.addView(title);
             col.addView(sub, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, 0, 2, 0, 0));
             box.addView(col, LayoutHelper.createLinear(0, LayoutHelper.WRAP_CONTENT, 1f, 12, 0, 0, 0));

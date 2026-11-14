@@ -1726,5 +1726,21 @@
     <string name="PcShopOnlyAvailable">Disponibili</string>
     <string name="PcShopCount">%1$d prodotti</string>
     <string name="PcShopNoResults">Nessun prodotto con questi filtri.</string>
+    <string name="PcSetSecurity">Account e sicurezza</string>
+    <string name="PcSetPrivacyInfo">Chi ti vede e chi può scriverti</string>
+    <string name="PcSetSecretChats">Chat super segrete</string>
+    <string name="PcSetSecretChatsInfo">Conversazioni private extra protette</string>
+    <string name="PcSetSecretChatsHow">Le chat super segrete arrivano con un prossimo aggiornamento automatico: un secondo livello di cifratura tra due persone che usano l\'app, timer di autodistruzione, blocco degli screenshot e blocco con impronta.</string>
+    <string name="PcSetDevicesInfo">Dove il tuo account è connesso</string>
+    <string name="PcSetThemeInfo">Colori, sfondi, dimensione del testo</string>
+    <string name="PcSetFoldersInfo">Organizza le tue chat</string>
+    <string name="PcSetNotificationsRow">Avvisi e suoni</string>
+    <string name="PcSetNotificationsInfo">Messaggi, gruppi, chiamate</string>
+    <string name="PcSetSpace">Spazio e dati</string>
+    <string name="PcSetDataInfo">Memoria, download, rete</string>
+    <string name="PcSetPowerInfo">Animazioni più leggere per risparmiare batteria</string>
+    <string name="PcSetSocial">Social Porcodio</string>
+    <string name="PcSetShopOrders">Shop e ordini</string>
+    <string name="PcSetSupport">Supporto e info</string>
     <!-- /PORCODIO PHASE3 -->
 </resources>

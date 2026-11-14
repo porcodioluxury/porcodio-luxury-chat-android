@@ -11867,5 +11867,21 @@
     <string name="PcShopOnlyAvailable">In stock</string>
     <string name="PcShopCount">%1$d products</string>
     <string name="PcShopNoResults">No product matches these filters.</string>
+    <string name="PcSetSecurity">Account and security</string>
+    <string name="PcSetPrivacyInfo">Who can see you and contact you</string>
+    <string name="PcSetSecretChats">Super secret chats</string>
+    <string name="PcSetSecretChatsInfo">Extra-protected private conversations</string>
+    <string name="PcSetSecretChatsHow">Super secret chats arrive in an upcoming update through automatic updates: a second layer of encryption between two people who use the app, self-destruct timer, screenshot block and fingerprint lock.</string>
+    <string name="PcSetDevicesInfo">Where your account is signed in</string>
+    <string name="PcSetThemeInfo">Colours, backgrounds, text size</string>
+    <string name="PcSetFoldersInfo">Organise your chats</string>
+    <string name="PcSetNotificationsRow">Alerts and sounds</string>
+    <string name="PcSetNotificationsInfo">Messages, groups, calls</string>
+    <string name="PcSetSpace">Space and data</string>
+    <string name="PcSetDataInfo">Storage, downloads, network</string>
+    <string name="PcSetPowerInfo">Lighter animations to save battery</string>
+    <string name="PcSetSocial">Porcodio social</string>
+    <string name="PcSetShopOrders">Shop and orders</string>
+    <string name="PcSetSupport">Support and info</string>
     <!-- /PORCODIO PHASE3 -->
 </resources>
