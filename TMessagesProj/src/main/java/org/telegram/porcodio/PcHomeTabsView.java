@@ -63,6 +63,17 @@ public class PcHomeTabsView extends FrameLayout {
             });
             row.addView(buttons[i], LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, 32, Gravity.CENTER_VERTICAL, 0, 0, 6, 0));
         }
+        // scorciatoia al Feed interno (non cambia scheda della lista chat)
+        android.widget.TextView feed = new android.widget.TextView(context);
+        feed.setText(LocaleController.getString(R.string.PcChipFeed));
+        feed.setTextSize(13);
+        feed.setTypeface(AndroidUtilities.bold());
+        feed.setGravity(Gravity.CENTER);
+        feed.setPadding(dp(12), 0, dp(12), 0);
+        feed.setTextColor(color(Theme.key_windowBackgroundWhiteGrayText));
+        feed.setBackground(PcUi.panel(false));
+        feed.setOnClickListener(v -> fragment.presentFragment(new PcFeedActivity(new android.os.Bundle())));
+        row.addView(feed, LayoutHelper.createLinear(LayoutHelper.WRAP_CONTENT, 32, Gravity.CENTER_VERTICAL, 0, 0, 6, 0));
         more = new MoreButton(context);
         more.setOnClickListener(v -> PcAntispam.showMenu(fragment, currentAccount, this::update));
         addView(more, LayoutHelper.createFrame(36, 32, Gravity.RIGHT | Gravity.CENTER_VERTICAL, 0, 0, 0, 0));

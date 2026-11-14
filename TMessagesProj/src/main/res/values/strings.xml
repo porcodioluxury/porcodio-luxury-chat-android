@@ -11751,7 +11751,7 @@
     <string name="PcFeedTitle">Feed</string>
     <string name="PcFeedEmpty">No posts yet. Find friends who use Porcodio Luxury Chat, or publish the first one.</string>
     <string name="PcBoardOffTitle">Your Board is off</string>
-    <string name="PcBoardOffText">Activating creates a public channel named after you with a link that only this app knows how to find, and adds a small tag ({tag}) to your bio. Anyone with the link can read it on Telegram. You can turn it off any time.</string>
+    <string name="PcBoardOffText">Activating creates a public channel named after you with a link that only this app knows how to find, and adds a small tag ({tag}) to your bio. Anyone with the link can read your posts. You can turn it off any time.</string>
     <string name="PcBoardOn">Activate Board</string>
     <string name="PcBoardOffBtn">Turn off</string>
     <string name="PcBoardWrite">Write a post</string>
@@ -11797,5 +11797,31 @@
     <string name="PcQuickHint">Reply text</string>
     <string name="PcQuickDelete">Delete</string>
     <string name="PcQuickManage">Manage replies</string>
+    <string name="PcNoteTitle">Private note</string>
+    <string name="PcNoteEmpty">Add a private note</string>
+    <string name="PcNoteHint">Only you can see this note.</string>
+    <string name="PcNoteSave">Save</string>
+    <string name="PcProfileAppUser">Uses Porcodio Luxury Chat</string>
+    <string name="PcProfileBoardLooking">Looking for the Board...</string>
+    <string name="PcProfileBoardNone">No Board found</string>
+    <string name="PcProfileLockOn">Locked</string>
+    <string name="PcFeedFrom">Posts from %1$s</string>
+    <string name="PcFeedInfo">Feed and Board</string>
+    <string name="PcFeedInfoSub">Posts from friends who use this app</string>
+    <string name="PcFeedLoading">Loading posts...</string>
+    <string name="PcBoardBusy">Looking for friends, wait a moment...</string>
+    <string name="PcBoardNoBudget">Search limit reached for today. Come back tomorrow.</string>
+    <string name="PcBoardNoFound">No new boards found.</string>
+    <string name="PcBoardPostHint">Write what you want to share</string>
+    <string name="PcLikes">%1$d</string>
+    <string name="PcViews">%1$d views</string>
+    <string name="PcQuickInsert">Insert a quick reply</string>
+    <string name="PcPinnedSection">Pinned</string>
+    <string name="PcAntispamReasonLinks">Links from unknown people</string>
+    <string name="PcAntispamReasonRepeat">Same message repeated</string>
+    <string name="PcAntispamReasonNew">New account with no photo</string>
+    <string name="PcAntispamReasonKeywords">Promotional keywords</string>
+    <string name="PcOn">On</string>
+    <string name="PcOff">Off</string>
     <!-- /PORCODIO PHASE3 -->
 </resources>

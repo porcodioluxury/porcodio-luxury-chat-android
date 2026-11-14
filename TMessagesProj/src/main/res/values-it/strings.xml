@@ -1610,7 +1610,7 @@
     <string name="PcFeedTitle">Feed</string>
     <string name="PcFeedEmpty">Ancora nessun post. Cerca amici che usano Porcodio Luxury Chat o pubblica il primo.</string>
     <string name="PcBoardOffTitle">La tua Bacheca è spenta</string>
-    <string name="PcBoardOffText">Attivandola si crea un canale pubblico a tuo nome con un link che solo quest\'app sa trovare, e si aggiunge un piccolo marcatore ({tag}) alla tua bio. Chiunque abbia il link può leggerla su Telegram. Puoi spegnerla quando vuoi.</string>
+    <string name="PcBoardOffText">Attivandola si crea un canale pubblico a tuo nome con un link che solo quest\'app sa trovare, e si aggiunge un piccolo marcatore ({tag}) alla tua bio. Chiunque abbia il link può leggere i tuoi post. Puoi spegnerla quando vuoi.</string>
     <string name="PcBoardOn">Attiva Bacheca</string>
     <string name="PcBoardOffBtn">Disattiva</string>
     <string name="PcBoardWrite">Scrivi un post</string>
@@ -1656,5 +1656,31 @@
     <string name="PcQuickHint">Testo della risposta</string>
     <string name="PcQuickDelete">Elimina</string>
     <string name="PcQuickManage">Gestisci risposte</string>
+    <string name="PcNoteTitle">Nota privata</string>
+    <string name="PcNoteEmpty">Aggiungi una nota privata</string>
+    <string name="PcNoteHint">Solo tu puoi vedere questa nota.</string>
+    <string name="PcNoteSave">Salva</string>
+    <string name="PcProfileAppUser">Usa Porcodio Luxury Chat</string>
+    <string name="PcProfileBoardLooking">Cerco la Bacheca...</string>
+    <string name="PcProfileBoardNone">Nessuna Bacheca trovata</string>
+    <string name="PcProfileLockOn">Bloccata</string>
+    <string name="PcFeedFrom">Post di %1$s</string>
+    <string name="PcFeedInfo">Feed e Bacheca</string>
+    <string name="PcFeedInfoSub">Post degli amici che usano quest\'app</string>
+    <string name="PcFeedLoading">Carico i post...</string>
+    <string name="PcBoardBusy">Cerco amici, un attimo...</string>
+    <string name="PcBoardNoBudget">Limite di ricerche raggiunto per oggi. Torna domani.</string>
+    <string name="PcBoardNoFound">Nessuna nuova bacheca trovata.</string>
+    <string name="PcBoardPostHint">Scrivi cosa vuoi condividere</string>
+    <string name="PcLikes">%1$d</string>
+    <string name="PcViews">%1$d visualizzazioni</string>
+    <string name="PcQuickInsert">Inserisci una risposta rapida</string>
+    <string name="PcPinnedSection">Fissate</string>
+    <string name="PcAntispamReasonLinks">Link da sconosciuti</string>
+    <string name="PcAntispamReasonRepeat">Stesso messaggio ripetuto</string>
+    <string name="PcAntispamReasonNew">Account nuovo senza foto</string>
+    <string name="PcAntispamReasonKeywords">Parole promozionali</string>
+    <string name="PcOn">Attivo</string>
+    <string name="PcOff">Spento</string>
     <!-- /PORCODIO PHASE3 -->
 </resources>

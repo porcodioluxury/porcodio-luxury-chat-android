@@ -204,6 +204,58 @@ public class PcBoard {
         }));
     }
 
+
+    private static boolean freshNegative(int account, long uid) {
+        JSONObject e = cache(account).optJSONObject(String.valueOf(uid));
+        return e != null && !e.optBoolean("ok") && System.currentTimeMillis() - e.optLong("ts") < TTL_NO;
+    }
+
+    /**
+     * Cerca le bacheche tra i contatti. Prima chi ha già il marcatore nella bio (profilo scaricato), poi gli altri,
+     * sempre nei limiti del budget giornaliero. done.run({trovate, controllati}).
+     */
+    public static void findFriends(int account, Utilities.Callback<int[]> done) {
+        final long me = UserConfig.getInstance(account).getClientUserId();
+        final MessagesController mc = MessagesController.getInstance(account);
+        ArrayList<Long> first = new ArrayList<>(), rest = new ArrayList<>();
+        for (TLRPC.TL_contact c : new ArrayList<>(org.telegram.messenger.ContactsController.getInstance(account).contacts)) {
+            long uid = c.user_id;
+            if (uid == me || knownBoard(account, uid) != 0 || freshNegative(account, uid)) {
+                continue;
+            }
+            TLRPC.User u = mc.getUser(uid);
+            if (u == null || u.bot || u.deleted) {
+                continue;
+            }
+            TLRPC.UserFull f = mc.getUserFull(uid);
+            if (f != null && aboutHasMarker(f.about)) {
+                first.add(uid);
+            } else {
+                rest.add(uid);
+            }
+        }
+        first.addAll(rest);
+        final int max = Math.min(first.size(), Math.min(budgetLeft(account), 12));
+        final ArrayList<Long> queue = new ArrayList<>(first.subList(0, max));
+        final int[] res = new int[]{0, 0};
+        Runnable[] step = new Runnable[1];
+        step[0] = () -> {
+            if (queue.isEmpty()) {
+                done.run(res);
+                return;
+            }
+            long uid = queue.remove(0);
+            res[1]++;
+            discover(account, uid, chat -> {
+                if (chat != null && chat != 0) {
+                    res[0]++;
+                }
+                step[0].run();
+            });
+        };
+        step[0].run();
+    }
+
     // ---- attivazione / disattivazione (solo da schermata esplicita)
     public interface Result {
         void done(boolean ok);
@@ -214,17 +266,20 @@ public class PcBoard {
         final MessagesController mc = MessagesController.getInstance(account);
         final long uid = UserConfig.getInstance(account).getClientUserId();
         final NotificationCenter nc = NotificationCenter.getInstance(account);
+        // un tentativo precedente può aver creato il canale senza riuscire a dargli lo username: lo riprendo
+        final long pending = prefs().getLong("pending_" + account, 0);
+        if (pending != 0 && mc.getChat(pending) != null) {
+            finishSetup(fragment, account, uid, pending, result);
+            return;
+        }
         final NotificationCenter.NotificationCenterDelegate[] d = new NotificationCenter.NotificationCenterDelegate[1];
         d[0] = (id, acc, args) -> {
             if (id == NotificationCenter.chatDidCreated) {
                 nc.removeObserver(d[0], NotificationCenter.chatDidCreated);
                 nc.removeObserver(d[0], NotificationCenter.chatDidFailCreate);
                 final long chatId = (Long) args[0];
-                mc.updateChannelUserName(fragment, chatId, username(uid), () -> {
-                    prefs().edit().putLong("mine_" + account, chatId).apply();
-                    enableReactions(account, chatId);
-                    setMarker(account, true, result);
-                }, () -> result.done(false));
+                prefs().edit().putLong("pending_" + account, chatId).apply();
+                finishSetup(fragment, account, uid, chatId, result);
             } else if (id == NotificationCenter.chatDidFailCreate) {
                 nc.removeObserver(d[0], NotificationCenter.chatDidCreated);
                 nc.removeObserver(d[0], NotificationCenter.chatDidFailCreate);
@@ -234,6 +289,14 @@ public class PcBoard {
         nc.addObserver(d[0], NotificationCenter.chatDidCreated);
         nc.addObserver(d[0], NotificationCenter.chatDidFailCreate);
         mc.createChat(title, new ArrayList<>(), ABOUT, ChatObject.CHAT_TYPE_CHANNEL, false, null, null, 0, fragment);
+    }
+
+    private static void finishSetup(BaseFragment fragment, int account, long uid, long chatId, Result result) {
+        MessagesController.getInstance(account).updateChannelUserName(fragment, chatId, username(uid), () -> {
+            prefs().edit().putLong("mine_" + account, chatId).remove("pending_" + account).apply();
+            enableReactions(account, chatId);
+            setMarker(account, true, result);
+        }, () -> result.done(false)); // username occupato, troppi canali pubblici, limite di richieste: l'utente può riprovare
     }
 
     private static void enableReactions(int account, long chatId) {

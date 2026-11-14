@@ -806,6 +806,8 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
         items.add(SettingCell.Factory.of(10, IconBackgroundColors.PURPLE.top, IconBackgroundColors.PURPLE.bottom, R.drawable.settings_language, getString(R.string.SettingsLanguage), LocaleController.getCurrentLanguageName()));
         items.add(SettingCell.Factory.of(40, IconBackgroundColors.CYAN.top, IconBackgroundColors.CYAN.bottom, R.drawable.settings_folders, getString(R.string.PcQuickCleanup), getString(R.string.PcQuickCleanupInfo)));
         items.add(SettingCell.Factory.of(41, IconBackgroundColors.RED.top, IconBackgroundColors.RED.bottom, R.drawable.settings_sounds, getString(R.string.PcMuteAllGroups), getString(R.string.PcMuteAllGroupsInfo)));
+        items.add(SettingCell.Factory.of(42, IconBackgroundColors.GREEN.top, IconBackgroundColors.GREEN.bottom, R.drawable.settings_channel, getString(R.string.PcFeedInfo), getString(R.string.PcFeedInfoSub)));
+        items.add(SettingCell.Factory.of(43, IconBackgroundColors.ORANGE_DEEP.top, IconBackgroundColors.ORANGE_DEEP.bottom, R.drawable.settings_chat, getString(R.string.PcQuickReplies), getString(R.string.PcQuickRepliesInfo)));
 
         items.add(UItem.asShadow(null));
         if (!walletAbove && getMessagesController().config.walletAvailable.get()) {
@@ -951,6 +953,12 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
                 break;
             case 41:
                 org.telegram.porcodio.PcAntispam.muteAllGroups(this, currentAccount, null);
+                break;
+            case 42:
+                presentSettingFragment(new org.telegram.porcodio.PcFeedActivity(new android.os.Bundle()));
+                break;
+            case 43:
+                presentSettingFragment(new org.telegram.porcodio.PcQuickActivity());
                 break;
 
             case 11:

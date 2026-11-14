@@ -2,7 +2,10 @@ package org.telegram.porcodio;
 
 import android.os.Bundle;
 
+import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.UserConfig;
+import org.telegram.messenger.UserObject;
+import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.ActionBar.INavigationLayout;
 import org.telegram.ui.ChatActivity;
@@ -30,7 +33,11 @@ public class PcHook {
         final Bundle args = f.getArguments();
         if (f instanceof ProfileActivity && args != null && !args.getBoolean(STOCK, false)
                 && args.getLong("user_id", 0) != 0 && onlyKnownProfileKeys(args)) {
-            params.fragment = new PcProfileActivity(args);
+            // casi che restano al profilo completo: io stesso, bot, account eliminati, utente non ancora noto
+            final TLRPC.User u = MessagesController.getInstance(f.getCurrentAccount()).getUser(args.getLong("user_id"));
+            if (u != null && !u.self && !u.bot && !UserObject.isDeleted(u) && !UserObject.isReplyUser(u)) {
+                params.fragment = new PcProfileActivity(args);
+            }
             return false;
         }
         if (f instanceof ChatActivity && args != null && !args.getBoolean("pc_unlocked", false)) {

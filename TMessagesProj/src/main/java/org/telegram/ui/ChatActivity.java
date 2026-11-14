@@ -1707,6 +1707,7 @@ public class ChatActivity extends BaseFragment implements
     private final static int view_as_topics = 59;
 
     private final static int search = 40;
+    private final static int pc_quick = 9001;
 
     private final static int topic_close = 60;
     private final static int open_forum = 61;
@@ -3988,6 +3989,14 @@ public class ChatActivity extends BaseFragment implements
                     getSendMessagesHelper().sendMessage(SendMessagesHelper.SendMessageParams.of("/help", dialog_id, null, null, null, false, null, null, null, true, 0, 0, null, false));
                 } else if (id == bot_settings) {
                     getSendMessagesHelper().sendMessage(SendMessagesHelper.SendMessageParams.of("/settings", dialog_id, null, null, null, false, null, null, null, true, 0, 0, null, false));
+                } else if (id == pc_quick) {
+                    org.telegram.porcodio.PcQuick.showPicker(ChatActivity.this, text -> {
+                        if (chatActivityEnterView != null) {
+                            CharSequence cur = chatActivityEnterView.getFieldText();
+                            chatActivityEnterView.setFieldText(cur == null || cur.length() == 0 ? text : cur + " " + text);
+                            chatActivityEnterView.getEditField().requestFocus();
+                        }
+                    });
                 } else if (id == search) {
                     openSearchWithText(isSupportedTags() ? "" : null);
                 } else if (id == translate) {
@@ -4397,6 +4406,9 @@ public class ChatActivity extends BaseFragment implements
 
             if (searchItem != null) {
                 headerItem.lazilyAddSubItem(search, R.drawable.msg_search, LocaleController.getString(R.string.Search));
+            }
+            if (chatMode == MODE_DEFAULT) {
+                headerItem.lazilyAddSubItem(pc_quick, R.drawable.msg_edit, LocaleController.getString(R.string.PcQuickReplies));
             }
             if (ChatObject.isBoostSupported(currentChat) && (getUserConfig().isPremium() || ChatObject.isBoosted(chatInfo) || ChatObject.hasAdminRights(currentChat))) {
                 RLottieDrawable drawable = new RLottieDrawable(R.raw.boosts, dp(24), dp(24));
